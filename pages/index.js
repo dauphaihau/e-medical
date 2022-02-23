@@ -3,7 +3,7 @@ import Router from "next/router";
 import Button from "../components/button";
 import {MainProvider} from "../context/main-context";
 import Staff from "./staff";
-import Card from "../components/card/card";
+import Card from '@components/card'
 
 export default function App() {
   const cards = [
