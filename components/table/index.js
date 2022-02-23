@@ -16,7 +16,10 @@ const TableRow = ({data}) => {
 
 const Table = ({theadData, tbodyData}) => {
   return (
-    <div className='container_table drop-shadow-2xl'>
+    <div className='container_table drop-shadow-2xl
+
+    w:[1000px]
+    '>
       <table className='table'>
         <thead>
         <tr>
