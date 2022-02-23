@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+//custom components
+// @import './components/responsive';
+// @import './components/header';
+// @import './components/navbar';
+@import './components/buttons';
+// @import './components/sidebar';
+// @import './components/table';
+// @import './components/form';
+// @import './components/staff';s
+// @import './components/doctor';
+
+@tailwind utilities;
+@layer base {
+  body {
+    @apply text-black text-sm text-black;
+  }
+}
