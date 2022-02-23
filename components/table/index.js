@@ -14,9 +14,10 @@ const TableRow = ({data}) => {
   );
 };
 
-const Table = ({theadData, tbodyData}) => {
+const Table = ({theadData, tbodyData, title, className, children, ...other}) => {
   return (
-    <div className='container_table drop-shadow-2xl'>
+    <div className="container_table drop-shadow-2xl">
+      <h1 className="font-bold ml-6">{title}</h1>
       <table className='table'>
         <thead>
         <tr>
