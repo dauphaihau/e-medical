@@ -159,9 +159,17 @@ export const MENU = {
     },
     {
       title: "Quản lý hồ sơ học sinh",
-      link: "/benh-nhan",
+      link: "/students",
       roles: ["agent", "manager", "admin"],
       icon: "mdi mdi-clipboard-account",
+      subNav: [
+        {
+          title: "Giáo viên",
+          link: "/students",
+          roles: ["agent", "manager", "admin"],
+          icon: "mdi mdi-medical-bag",
+        },
+      ]
     },
     {
       title: "Quản lý nhân sự trường",
