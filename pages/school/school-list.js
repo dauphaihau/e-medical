@@ -31,9 +31,7 @@ const tbodyData = [
 const SchoolList = () => {
   return (
     <TitleContent title='Tổ chức'>
-      <form className='navbar-search-form'>
-        <Input name='search' placeholder='Search anything...'/>
-      </form>
+      <Input name='search' placeholder='Search anything...'/>
       <div className="box mt-[50px] drop-shadow-2xl overflow-x-auto">
         <Table theadData={theadData} tbodyData={tbodyData}/>
         {/*<Pagination/>*/}
