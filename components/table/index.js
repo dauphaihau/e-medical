@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import {useState} from "react";
 import Badge from "./badge";
 import {getBadge} from "./constant";
@@ -82,6 +83,42 @@ export default function DataTable({data, columns, pagination}) {
               </div>
             </div>
           </div>)}
+=======
+import { useState } from "react";
+import Badge from "@components/badge"
+import Pagination from "../pagination";
+// import {getBadge} from "./constant";
+
+export default function Table({ data, columns }) {
+  // const numberPagination = handleCountPage(data);
+  return (
+    <>
+      <div className="container_table drop-shadow-2xl">
+        <table className="table">
+          <thead>
+            <tr>
+              {columns && columns.map((item, idx) => (
+                <th
+                  key={idx}
+                >{item.text}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {data && data.map((item, idx) => (
+              <tr className="sorting_1 " key={idx}>
+                <td>{item.id}</td>
+                <td>{item.fullName}</td>
+                <td>{item.className}</td>
+                <td>...</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <Pagination
+          data={data}
+        />
+>>>>>>> origin/develop
       </div>
     </>
   )
