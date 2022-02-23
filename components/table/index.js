@@ -1,10 +1,8 @@
 import { useState } from "react";
 import Badge from "@components/badge"
 import Pagination from "../pagination";
-// import {getBadge} from "./constant";
 
 export default function Table({ data, columns }) {
-  // const numberPagination = handleCountPage(data);
   return (
     <>
       <div className="container_table drop-shadow-2xl">
