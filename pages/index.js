@@ -2,13 +2,17 @@ import { useEffect } from "react";
 import Router from "next/router";
 import Button from "../components/button";
 import {MainProvider} from "../context/main-context";
-import School from "./school";
+import Staff from "./school";
+import AddStudents from "../pages/students/addStudents"
+import Student from "./students";
 
 export default function App() {
 
   return (
     <MainProvider>
-      <School/>
+      {/* <Staff/> */}
+      <AddStudents/>
+      <Student/>
     </MainProvider>
   );
 }

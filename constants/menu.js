@@ -173,26 +173,26 @@ export const MENU = {
     },
     {
       title: "Quản lý nhân sự trường",
-      link: "/school",
+      link: "/personnel",
       roles: ["manager", "admin"],
       icon: "mdi mdi-account-box",
       subNav: [
         {
           title: "Giáo viên",
           link: "/benh-nhan?scoring=0",
-          roles: ["agent", "manager", "admin"],
+          roles: ["manager", "admin"],
           icon: "mdi mdi-medical-bag",
         },
         {
           title: "Cán bộ quản lý",
           link: "/benh-nhan?scoringFrom=75",
-          roles: ["agent", "manager", "admin"],
+          roles: ["manager", "admin"],
           icon: "mdi mdi-needle",
         },
         {
-          title: "Nhân ",
+          title: "Nhân viên ",
           link: "/benh-nhan?scoringFrom=75",
-          roles: ["agent", "manager", "admin"],
+          roles: ["manager", "admin"],
           icon: "mdi mdi-needle",
         },
       ],
