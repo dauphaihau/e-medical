@@ -13,7 +13,7 @@ export default function Pagination({ data }) {
     const numberPagination = handleCountPage(data);
     return (
         <div className="pagination rounded-xl">
-            <p>Showing 1 to {data.length} of entries</p>
+            <p>Showing 1 to {data?.length} of entries</p>
             <div className="num_pagination">
                 <div className="item_pagination">
                     <p>Previous</p>

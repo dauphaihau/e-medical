@@ -9,7 +9,6 @@ const Checkbox = ({label,value,name,id,title,color,types,fors}) => (
       <label className="form-check-label" for={fors} style={{color : `${color}`}}>{title}</label>
     </div>
     </div>
-  
 );
 
 export default Checkbox;
