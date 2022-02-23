@@ -14,7 +14,7 @@ export const MENU = {
       subNav: [
         {
           title: "Thêm CBQL",
-          link: "/staff/ho-so",
+          link: "/school/ho-so",
           roles: ["manager", "admin"],
           icon: "mdi mdi-account-plus",
         },
@@ -82,14 +82,14 @@ export const MENU = {
 
     {
       title: "Danh sách nhân viên",
-      link: "/staff",
+      link: "/school",
       roles: ["manager", "admin"],
       icon: "mdi mdi-account-box",
 
       subNav: [
         {
           title: "Thêm nhân viên",
-          link: "/staff/ho-so",
+          link: "/school/ho-so",
           roles: ["manager", "admin"],
           icon: "mdi mdi-account-plus",
         },
@@ -165,7 +165,7 @@ export const MENU = {
     },
     {
       title: "Quản lý nhân sự trường",
-      link: "/staff",
+      link: "/school",
       roles: ["manager", "admin"],
       icon: "mdi mdi-account-box",
       subNav: [

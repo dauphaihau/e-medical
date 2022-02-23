@@ -3,25 +3,26 @@ import Header from "../../components/header";
 import Sidebar from "../../components/sidebar";
 import Input from "../../components/form/input";
 import Select from "../../components/form/select";
-import Form from "./staff-form";
-import StaffTable from "./staff-list/staff-table";
-import StaffList from "./staff-list/staff-list";
+import Form from "./school-form";
+import SchoolTable from "./school-list/school-table";
+import SchoolList from "./school-list/school-list";
 import CbqlList from "./cbql-list";
 import StaffDetail from "./staff-detail";
-import StaffForm from "./staff-form";
+import StaffForm from "./school-form";
+import SchoolForm from "./school-form";
 
-const Staff = () => {
+const School = () => {
 
   return (
     <>
       <Header/>
       <Sidebar/>
-      {/*<StaffForm/>*/}
+      {/*<SchoolForm/>*/}
       {/*<StaffDetail/>*/}
       {/*<CbqlList pagination/>*/}
-      {/*<StaffList/>*/}
+      <SchoolList/>
     </>
   )
 }
 
-export default Staff;
+export default School;
