@@ -18,7 +18,7 @@ const Staff = () => {
       <Sidebar/>
       {/*<StaffForm/>*/}
       {/*<StaffDetail/>*/}
-      <CbqlList pagination/>
+      {/*<CbqlList pagination/>*/}
       {/*<StaffList/>*/}
     </>
   )

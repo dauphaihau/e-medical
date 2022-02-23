@@ -1,21 +1,25 @@
 @tailwind base;
 @tailwind components;
 //custom components
-// @import './components/responsive';
-// @import './components/header';
-// @import './components/navbar';
+@import './components/header';
+@import './components/navbar';
 @import './components/buttons';
 @import './components/badges';
-// @import './components/sidebar';
-@import './components/tables';
+@import './components/sidebar';
+@import './components/table';
 @import './components/pagination';
-// @import './components/form';
-// @import './components/staff';s
-// @import './components/doctor';
+@import './components/form';
 
 @tailwind utilities;
 @layer base {
   body {
     @apply text-black text-sm text-black;
+  }
+
+  .content-title {
+    @apply pb-24 mt-24 px-4;
+    h2 {
+      @apply py-4 pr-4 text-2xl
+    }
   }
 }

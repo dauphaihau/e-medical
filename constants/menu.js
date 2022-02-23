@@ -1,32 +1,4 @@
 export const MENU = {
-  patient: [
-    {
-      title: "Trang chính",
-      link: "/",
-    },
-    {
-      title: "Cập nhật hồ sơ",
-      link: "/benh-nhan/ho-so",
-    },
-    {
-      title: "Cập nhật tình trạng",
-      link: "/benh-nhan/thong-tin-hang-ngay",
-    },
-  ],
-  doctor: [
-    {
-      title: "Trang chính",
-      link: "/",
-    },
-    {
-      title: "Cập nhật hồ sơ",
-      link: "/bac-si/ho-so",
-    },
-    {
-      title: "Danh sách bệnh nhân",
-      link: "/benh-nhan",
-    },
-  ],
   staff_manager: [
     {
       title: "Trang chính",
@@ -126,7 +98,7 @@ export const MENU = {
   ],
   staff_agent: [
     {
-      title: "Dashboard",
+      title: "Tổng quan",
       link: "/",
       roles: ["agent", "manager", "admin"],
       icon: "icon-Layout-4-blocks",
@@ -153,25 +125,31 @@ export const MENU = {
 
     },
     {
-      title: "Appointments",
+      title: "Tổ chức",
       link: "/can-bo-quan-ly",
       roles: ["manager", "admin"],
       icon: "mdi mdi-account-circle",
-    },
-    {
-      title: "Patients",
-      link: "/benh-nhan",
-      roles: ["agent", "manager", "admin"],
-      icon: "mdi mdi-clipboard-account",
       subNav: [
         {
-          title: "Patients",
+          title: "Trường",
           link: "/benh-nhan?scoring=0",
           roles: ["agent", "manager", "admin"],
           icon: "mdi mdi-medical-bag",
         },
         {
-          title: "Patients Details",
+          title: "Niên Khoá",
+          link: "/benh-nhan?scoringFrom=75",
+          roles: ["agent", "manager", "admin"],
+          icon: "mdi mdi-needle",
+        },
+        {
+          title: "Khối",
+          link: "/benh-nhan?scoringFrom=75",
+          roles: ["agent", "manager", "admin"],
+          icon: "mdi mdi-needle",
+        },
+        {
+          title: "Lớp",
           link: "/benh-nhan?scoringFrom=75",
           roles: ["agent", "manager", "admin"],
           icon: "mdi mdi-needle",
@@ -180,31 +158,54 @@ export const MENU = {
 
     },
     {
-      title: "Reports",
+      title: "Quản lý hồ sơ học sinh",
+      link: "/benh-nhan",
+      roles: ["agent", "manager", "admin"],
+      icon: "mdi mdi-clipboard-account",
+    },
+    {
+      title: "Quản lý nhân sự trường",
       link: "/staff",
       roles: ["manager", "admin"],
       icon: "mdi mdi-account-box",
+      subNav: [
+        {
+          title: "Giáo viên",
+          link: "/benh-nhan?scoring=0",
+          roles: ["agent", "manager", "admin"],
+          icon: "mdi mdi-medical-bag",
+        },
+        {
+          title: "Cán bộ quản lý",
+          link: "/benh-nhan?scoringFrom=75",
+          roles: ["agent", "manager", "admin"],
+          icon: "mdi mdi-needle",
+        },
+        {
+          title: "Nhân ",
+          link: "/benh-nhan?scoringFrom=75",
+          roles: ["agent", "manager", "admin"],
+          icon: "mdi mdi-needle",
+        },
+      ],
     },
     {
-      title: "Doctors",
+      title: "Phòng chống Covid-19",
       link: "/bac-si",
       roles: ["manager", "admin"],
       icon: "mdi mdi-account-card-details",
-
-      subNav: [
-        {
-          title: "Doctors",
-          link: "/bac-si/ho-so",
-          roles: ["manager", "admin"],
-          icon: "mdi mdi-account-plus",
-        },
-        {
-          title: "Doctor Details",
-          link: "/bac-si/ho-so",
-          roles: ["manager", "admin"],
-          icon: "mdi mdi-account-plus",
-        },
-      ],
+    },
+    {
+      title: "Thông tin lan truyền",
+      link: "/bac-si",
+      roles: ["manager", "admin"],
+      icon: "mdi mdi-account-card-details",
+    },
+    {
+      title: "Người dùng",
+      link: "/bac-si",
+      roles: ["manager", "admin"],
+      icon: "mdi mdi-account-card-details",
     },
   ]
 };
