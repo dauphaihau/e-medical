@@ -1,61 +1,60 @@
 import Table from "../../components/table";
 import TitleContent from "../../components/title-content";
 
-const columns = [
-    {
-      dataField: 'stt',
-      text: 'STT',
-    },
-    {
-      dataField: 'Data Check In',
-      text: 'Họ và tên',
-    },
-    {
-      dataField: 'Patient Name',
-      text: 'Tên lớp'
-    },
-    {
-      dataField: 'Patient Name',
-      text: 'Xem chi tiết'
-    },
-  ];
-  // //data demo
-  const data = [
-    {
-      id: 1,
-      fullName: 'A',
-      className: 'nặng',
-    },
-    {
-      id: 1,
-      fullName: 'B',
-      className: 'nặng',
-    },
-    {
-      id: 1,
-      fullName: 'C',
-      className: 'nặng',
-    },
-    {
-      id: 1,
-      fullName: 'D',
-      className: 'nặng',
-    },
-    {
-      id: 1,
-      fullName: 'E',
-      className: 'nặng',
-      status: 'nặng',
-    },
-  ];
+const theadData = [
+
+  'STT',
+
+  'Tên trường', 'Niên khoá',
+
+  'Số lớp',
+
+  'Số học sinh',
+
+  'Thời gian bắt đầu',
+
+  , 'Thời gian kết thúc'
+
+  , 'Chỉnh sửa'
+
+];
+
+
+
+const tbodyData = [
+
+  {
+
+    id: "1",
+
+    items: ["1", "Effort", "2000-2001", "A1", '10', '10/20/1990', '10/20/1991', ''],
+
+  },
+
+  {
+
+    id: "2",
+
+    items: ["2", "Effort", "2000-2001", "A1", '10', '10/20/1990', '10/20/1991', ''],
+
+  },
+
+  {
+
+    id: "3",
+
+    items: ["2", "Effort", "2000-2001", "A1", '10', '10/20/1990', '10/20/1991', ''],
+
+  },
+
+];
 const Student=()=>{
     return(
         <TitleContent title="Danh sách lớp học">
-            {/* <Table
-                columns={columns}
-                data={data}
-            /> */}
-            <StaffForm/>
+            <Table
+                theadData={theadData}
+                tbodyData={tbodyData}
+            />
         </TitleContent>
     )
 }
