@@ -1,10 +1,8 @@
 .main-sidebar {
   @apply
     //fixed
-    //top-0 left-0 min-h-full w-75 hidden grid-cols-2;
-  top-0 left-0 min-h-full grid-cols-2 bg-primary-light;
+  top-0 left-0 min-h-full grid-cols-2 bg-primary-light pt-20;
   transition: all 0.5s ease;
-  padding-top: 80px;
   //z-index: 100;
   border-right: 0 solid rgba(72, 94, 144, .16);
   @screen md {

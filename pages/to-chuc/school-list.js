@@ -1,6 +1,7 @@
 import TitleContent from "../../components/title-content";
 import Input from "../../components/form/input";
 import Table from "../../components/table";
+import Pagination from "../../components/table/pagination";
 
 const theadData = [
   'STT',
@@ -8,7 +9,7 @@ const theadData = [
   'Số lớp',
   'Số học sinh',
   'Thời gian bắt đầu',
-  , 'Thời gian kết thúc'
+  'Thời gian kết thúc'
   , 'Chỉnh sửa'
 ];
 
@@ -31,10 +32,10 @@ const tbodyData = [
 const SchoolList = () => {
   return (
     <TitleContent title='Tổ chức'>
-      <Input name='search' placeholder='Search anything...'/>
+      <Input width='md:w-1/2 lg:w-1/4' name='search' placeholder='Search anything...'/>
       <div className="box mt-[50px] drop-shadow-2xl overflow-x-auto">
         <Table theadData={theadData} tbodyData={tbodyData}/>
-        {/*<Pagination/>*/}
+        {/*<Pagination staffPerPage={10} totalStaff={[1,3,1,3,1,3,1,31,31]}/>*/}
       </div>
     </TitleContent>
   );
