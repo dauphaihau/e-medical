@@ -35,17 +35,6 @@ const Header = () => {
               />
             </svg>
           </a>
-          <form className='navbar-search-form'>
-            <div>
-              <input type="text" placeholder="Search anything..."/>
-              <div>
-                <i className="icon-Search">
-                  <span className="path1"/>
-                  <span className="path2"/>
-                </i>
-              </div>
-            </div>
-          </form>
         </div>
         <div className='navbar-right'>
           <div>
