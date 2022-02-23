@@ -1,0 +1,51 @@
+.navbar {
+  @apply flex flex-wrap w-full items-center justify-between ml-75 px-6;
+  min-height: 80px;
+  border-bottom: 1px solid #efeffd;
+  -moz-transition: margin-left 0.3s ease-in-out;
+  -o-transition: margin-left 0.3s ease-in-out;
+  -webkit-transition: margin-left 0.3s ease-in-out;
+  transition: margin-left 0.3s ease-in-out;
+
+  .navbar-left {
+    @apply flex;
+    a:nth-child(1) {
+      @apply md:block btn-hamburger bg-[#fbfaff] hover:bg-[#5156be] hover:text-white transition duration-300;
+    }
+
+    a:nth-child(2) {
+      @apply md:hidden btn-hamburger bg-[#fbfaff] hover:bg-[#5156be] hover:text-white transition duration-300;
+    }
+  }
+
+  .navbar-right {
+    @apply flex;
+    div {
+      @apply mr-3 text-right;
+      p:nth-child(1) {
+        @apply font-black text-[#5156be];
+      }
+      p:nth-child(2) {
+        @apply text-[gray] text-[0.7rem];
+      }
+    }
+    img {
+      @apply h-10 rounded-lg;
+    }
+  }
+}
+
+.navbar-search-form {
+  @apply hidden lg:block;
+  div {
+    @apply relative;
+    input {
+      @apply h-[45px] w-64 pr-8 pl-5 rounded z-0 focus:shadow focus:outline-none bg-[#fbfaff];
+    }
+
+    div {
+      @apply absolute top-4 right-3;
+    }
+  }
+}
+

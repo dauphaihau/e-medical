@@ -2,3 +2,30 @@
   // @apply ....
   // có thể custom css ở đây
 }
+
+.btn-hamburger {
+  @apply bg-primary-light;
+  height: 45px;
+  width: 45px;
+  padding: 10px;
+  text-align: center;
+  line-height: 28px;
+  font-size: 1.714rem;
+  margin: 0 5px;
+  // background-color: #fbfaff;
+  border-radius: 10px;
+  -webkit-box-shadow: 0 3px 5px 1px rgb(0 0 0 / 0%);
+  box-shadow: 0 3px 5px 1px rgb(0 0 0 / 0%);
+}
+
+.btn {
+  @apply bg-primary-light hover:shadow-2xl ;
+  color: white;
+  padding: 8px 16px;
+  text-align: center;
+  line-height: 28px;
+  font-size: 1.1rem;
+  //margin: 0 5px;
+  background-color: #5059b8;
+  border-radius: 10px;
+}

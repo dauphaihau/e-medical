@@ -1,3 +1,43 @@
 // template: https://medical-admin-template.multipurposethemes.com/main/forms_advanced.html
 // stylesheet cho input, select, textarea, checkbox,...
 // form-control: ví dụ https://getbootstrap.com/docs/5.1/forms/form-control/ chuan bi css
+
+
+.form {
+  @apply mx-4 ml-0
+  mr-0 block p-6 rounded-lg shadow-lg bg-white pb-4;
+  h3 {
+    @apply border-b-2 mb-12 pb-4 text-xl;
+  }
+}
+
+.form-group {
+  @apply mb-8 lg:mb-8;
+  label {
+    @apply block mb-2 text-sm font-medium;
+  }
+}
+
+.form-control-input {
+  @apply
+  bg-gray-100 border
+  border-gray-300
+  text-black rounded-lg
+  block w-full p-2.5;
+}
+
+.form-radio-input {
+  @apply my-8;
+  p {
+    @apply mb-2
+  }
+  div {
+    @apply flex
+  }
+
+}
+
+.form-select {
+  @apply bg-gray-100 p-[0.85rem] border border-gray-300 text-black rounded-lg
+  focus:ring-gray-300 focus:border-gray-300 block w-full
+}

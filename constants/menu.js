@@ -42,7 +42,7 @@ export const MENU = {
       subNav: [
         {
           title: "Thêm CBQL",
-          link: "/nhan-vien/ho-so",
+          link: "/staff/ho-so",
           roles: ["manager", "admin"],
           icon: "mdi mdi-account-plus",
         },
@@ -110,14 +110,14 @@ export const MENU = {
 
     {
       title: "Danh sách nhân viên",
-      link: "/nhan-vien",
+      link: "/staff",
       roles: ["manager", "admin"],
       icon: "mdi mdi-account-box",
 
       subNav: [
         {
           title: "Thêm nhân viên",
-          link: "/nhan-vien/ho-so",
+          link: "/staff/ho-so",
           roles: ["manager", "admin"],
           icon: "mdi mdi-account-plus",
         },
@@ -126,95 +126,81 @@ export const MENU = {
   ],
   staff_agent: [
     {
-      title: "Trang chính",
+      title: "Dashboard",
       link: "/",
       roles: ["agent", "manager", "admin"],
       icon: "icon-Layout-4-blocks",
-    },
-    {
-      title: "Danh sách CBQL",
-      link: "/can-bo-quan-ly",
-      roles: ["manager", "admin"],
-      icon: "mdi mdi-account-circle",
       subNav: [
         {
-          title: "Thêm CBQL",
-          link: "/nhan-vien/ho-so",
-          roles: ["manager", "admin"],
-          icon: "mdi mdi-account-plus",
-        },
-      ],
-    },
-    {
-      title: "Danh sách bệnh nhân",
-      link: "/benh-nhan",
-      roles: ["agent", "manager", "admin"],
-      icon: "mdi mdi-clipboard-account",
-      subNav: [
-        {
-          title: "Danh sách hồi phục",
+          title: "Patients Dashboard",
           link: "/benh-nhan?scoring=0",
           roles: ["agent", "manager", "admin"],
           icon: "mdi mdi-medical-bag",
         },
         {
-          title: "Danh sách nặng",
+          title: "Patients Dashboard",
           link: "/benh-nhan?scoringFrom=75",
           roles: ["agent", "manager", "admin"],
           icon: "mdi mdi-needle",
         },
         {
-          title: "Danh sách vừa",
-          link: "/benh-nhan?scoringFrom=25&scoringTo=74",
+          title: "Hospital Dashboard",
+          link: "/benh-nhan?scoringFrom=75",
           roles: ["agent", "manager", "admin"],
-          icon: "mdi mdi-pill",
-        },
-        {
-          title: "Danh sách nhẹ",
-          link: "/benh-nhan?scoringFrom=1&scoringTo=24",
-          roles: ["agent", "manager", "admin"],
-          icon: "mdi mdi-heart",
-        },
-        {
-          title: "Thêm bệnh nhân",
-          link: "/benh-nhan/thong-tin-ban-dau",
-          roles: ["agent", "manager", "admin"],
-          icon: "mdi mdi-account-plus",
-        },
-        {
-          title: "Tải dữ liệu excel",
-          link: "/benh-nhan/nhap-du-lieu",
-          roles: ["agent", "manager", "admin"],
-          icon: "mdi mdi-file-excel",
+          icon: "mdi mdi-needle",
         },
       ],
+
     },
     {
-      title: "Danh sách bác sĩ",
+      title: "Appointments",
+      link: "/can-bo-quan-ly",
+      roles: ["manager", "admin"],
+      icon: "mdi mdi-account-circle",
+    },
+    {
+      title: "Patients",
+      link: "/benh-nhan",
+      roles: ["agent", "manager", "admin"],
+      icon: "mdi mdi-clipboard-account",
+      subNav: [
+        {
+          title: "Patients",
+          link: "/benh-nhan?scoring=0",
+          roles: ["agent", "manager", "admin"],
+          icon: "mdi mdi-medical-bag",
+        },
+        {
+          title: "Patients Details",
+          link: "/benh-nhan?scoringFrom=75",
+          roles: ["agent", "manager", "admin"],
+          icon: "mdi mdi-needle",
+        },
+      ],
+
+    },
+    {
+      title: "Reports",
+      link: "/staff",
+      roles: ["manager", "admin"],
+      icon: "mdi mdi-account-box",
+    },
+    {
+      title: "Doctors",
       link: "/bac-si",
       roles: ["manager", "admin"],
       icon: "mdi mdi-account-card-details",
 
       subNav: [
         {
-          title: "Thêm bác sĩ",
+          title: "Doctors",
           link: "/bac-si/ho-so",
           roles: ["manager", "admin"],
           icon: "mdi mdi-account-plus",
         },
-      ],
-    },
-
-    {
-      title: "Danh sách nhân viên",
-      link: "/nhan-vien",
-      roles: ["manager", "admin"],
-      icon: "mdi mdi-account-box",
-
-      subNav: [
         {
-          title: "Thêm nhân viên",
-          link: "/nhan-vien/ho-so",
+          title: "Doctor Details",
+          link: "/bac-si/ho-so",
           roles: ["manager", "admin"],
           icon: "mdi mdi-account-plus",
         },

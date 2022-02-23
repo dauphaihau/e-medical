@@ -1,0 +1,22 @@
+.main-header {
+  @apply fixed inset-x-0 top-0 bg-white;
+  max-height: 125px;
+  z-index: 200;
+}
+
+.logo-mini {
+  @apply hidden md:block md:w-[4.4rem] lg:w-[4.15rem] pt-[13px];
+}
+
+.logo-box {
+  @apply flex items-center justify-center float-left lg:w-[22.6%] md:w-[70%];
+  border-bottom: 1px solid #fbfaff;
+  border-right: 1px solid rgba(72, 94, 144, 0);
+  background: #fbfaff;
+}
+
+.logo {
+  @apply flex justify-center;
+  height: 80px;
+  padding: 0 15px;
+}
