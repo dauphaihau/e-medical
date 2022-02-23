@@ -1,4 +1,48 @@
-.table {
-  // template: https://medical-admin-template.multipurposethemes.com/main/tables_simple.html
-  // template: https://medical-admin-template.multipurposethemes.com/main/patients.html
+// .table {
+//   // template: https://medical-admin-template.multipurposethemes.com/main/tables_simple.html
+//   // template: https://medical-admin-template.multipurposethemes.com/main/patients.html
+// }
+.container_table{
+  position: relative;
+  background-color: #fff;
+  height: auto;
+  border-radius: 10px;
+  padding: 20px 0;
+  display: flex;
+  flex-direction: column;
+  margin:0 4px;
+}
+.table{
+  margin-top: 6px;
+  margin-bottom: 6px;
+  tr th{
+    user-select: none;
+    height: 68px;
+    width: auto;
+    margin-top: 50px;
+    padding-top: 16px;
+    padding-bottom: 8px;
+    color: black;
+    border-bottom: 1px solid black;
+  }
+  tr td{
+    color:black;
+    user-select: none;
+    height: 68px;
+    border-bottom: 1px solid #DDDDDD;
+    width: auto;
+    text-align: center;
+  }
+}
+
+.action > .ls-action {
+  display: none;
+}
+
+.action:focus + .ls-action {
+  display: block;
+}
+
+.btn-action:focus + .ls-action {
+  display: block;
 }
