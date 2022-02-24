@@ -6,7 +6,7 @@ const Select = ({label='', options, direction = '', width=''}) => {
       <label>{label}</label>
       <select className="form-select">
         {options.map((option, index) => (
-          <option key={index} selected>{option}</option>
+          <option class="form-option" key={index} selected>{option}</option>
         ))}
       </select>
     </div>

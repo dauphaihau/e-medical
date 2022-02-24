@@ -23,7 +23,9 @@
   bg-gray-100 border
   border-gray-300
   text-black rounded-lg
+  focus:outline-white 
   block w-full p-2.5;
+
 }
 
 .form-radio-input {
@@ -39,5 +41,9 @@
 
 .form-select {
   @apply bg-gray-100 p-[0.85rem] border border-gray-300 text-black rounded-lg
-  focus:ring-gray-300 focus:border-gray-300 block w-full
+  focus:ring-gray-300 focus:outline-white block w-full
+}
+.form-option {
+  @apply bg-gray-100 p-[0.85rem] border-white text-black rounded-lg
+  focus:ring-gray-300 focus:outline-white block w-full
 }
