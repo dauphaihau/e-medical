@@ -1,6 +1,5 @@
 import Select from "../../components/form/select";
 import Input from "../../components/form/input";
-import TitleContent from "../../components/title-content";
 
 const KhoiForm = () => {
 

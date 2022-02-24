@@ -1,8 +1,5 @@
-import TitleContent from "../../components/title-content";
 import Input from "../../components/form/input";
 import Table from "../../components/table";
-import Pagination from "../../components/table/pagination";
-import {detectDomainLocale} from "next/dist/shared/lib/i18n/detect-domain-locale";
 import Select from "../../components/form/select";
 
 const theadData = [

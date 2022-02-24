@@ -8,9 +8,9 @@ import KhoiList from "./khoi-list";
 const ToChuc = () => {
   return (
     <>
-      {/*<NienKhoaForm/>*/}
+      <NienKhoaForm/>
       {/*<NienKhoaList/>*/}
-      <KhoiForm/>
+      {/*<KhoiForm/>*/}
       {/*<KhoiList/>*/}
     </>
   )

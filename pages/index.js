@@ -1,7 +1,5 @@
-import {useEffect, useState} from "react";
-import Router from "next/router";
+import {useState} from "react";
 import Button from "../components/button";
-import {MainProvider} from "../context/main-context";
 import AddStudents from "./hoc-sinh/addStudents"
 import Student from "./hoc-sinh";
 import Header from "../components/header";
@@ -16,8 +14,9 @@ export default function App() {
     <>
       <Header stateSidebar={stateSideBar} setStateSidebar={setStateSideBar}/>
       <Sidebar stateSidebar={stateSideBar}/>
-      <TitleContent>
+      <TitleContent stateSidebar={stateSideBar}>
         <ToChuc/>
+        {/*<AddStudents stateSidebar={stateSideBar}/>*/}
       </TitleContent>
     </>
   );
