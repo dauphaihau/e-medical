@@ -10,7 +10,7 @@ const ToChuc = () => {
     <>
       {/*<NienKhoaForm/>*/}
       {/*<NienKhoaList/>*/}
-      {/*<KhoiForm/>*/}
+      <KhoiForm/>
       {/*<KhoiList/>*/}
     </>
   )
