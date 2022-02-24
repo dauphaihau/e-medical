@@ -1,5 +1,6 @@
 import Input from "../../components/form/input";
 import Table from "../../components/table";
+import TitleContent from "../../components/title-contet";
 
 const theadData = [
   'STT',
@@ -61,13 +62,15 @@ const tbodyData = [
 ];
 
 
-const NienKhoaList = () => {
+const NienKhoaList = ({stateSidebar}) => {
   return (
     <>
-      <Input width='md:w-1/2 lg:w-1/4' name='search' placeholder='Search anything...'/>
-      <div className="box mt-[50px] drop-shadow-2xl overflow-x-auto">
-        <Table theadData={theadData} tbodyData={tbodyData}/>
-      </div>
+      <TitleContent title='Niên khoá' stateSidebar={stateSidebar}>
+        <Input width='md:w-1/2 lg:w-1/4' name='search' placeholder='Search anything...'/>
+        <div className="box mt-[50px] drop-shadow-2xl overflow-x-auto">
+          <Table theadData={theadData} tbodyData={tbodyData}/>
+        </div>
+      </TitleContent>
     </>
   );
 }

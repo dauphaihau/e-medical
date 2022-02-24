@@ -1,6 +1,7 @@
 import Input from "../../components/form/input";
 import Table from "../../components/table";
 import Select from "../../components/form/select";
+import TitleContent from "../../components/title-contet";
 
 const theadData = [
   'STT',
@@ -41,17 +42,17 @@ const tbodyData = [
 ];
 
 
-const KhoiList = () => {
+const KhoiList = ({stateSidebar}) => {
   return (
-    <>
-      <div className='grid grid-col-4'>
-        <Input width='md:w-1/2 lg:w-1/4' name='search' placeholder='Search anything...'/>
-        <Select width='md:w-1/2 lg:w-1/4' options={['Nien Khoa', '2009-2011']}/>
+    <TitleContent stateSidebar={stateSidebar}>
+      <div className='grid w-1/2 lg:grid-cols-4 lg:gap-8'>
+        <Input name='search' placeholder='Search anything...'/>
+        <Select options={['Nien Khoa', '2009-2011']}/>
       </div>
       <div className="box mt-[50px] drop-shadow-2xl overflow-x-auto">
         <Table theadData={theadData} tbodyData={tbodyData}/>
       </div>
-    </>
+    </TitleContent>
   );
 }
 

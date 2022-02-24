@@ -1,5 +1,5 @@
 import Table from "../../components/table";
-import TitleContent from "../../components/title-content";
+import TitleContent from "../../components/title-contet";
 
 const columns = [
     {

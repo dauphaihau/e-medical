@@ -1,7 +1,7 @@
 import Input from "../../components/form/input";
 import Select from "../../components/form/select";
 import Table from "../../components/table";
-import TitleContent from "../../components/title-content";
+import TitleContent from "../../components/title-contet";
 
 const theadData = ['STT', 'Họ và tên', 'Tên lớp', 'Xem chi tiết'];
 

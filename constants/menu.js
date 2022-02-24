@@ -130,27 +130,27 @@ export const MENU = {
       roles: ["manager", "admin"],
       icon: "mdi mdi-account-circle",
       subNav: [
-        {
-          title: "Trường",
-          link: "/to-chuc/truong",
-          roles: ["agent", "manager", "admin"],
-          icon: "mdi mdi-medical-bag",
-        },
+        // {
+        //   title: "Trường",
+        //   link: "/to-chuc/nien-khoa-list/",
+        //   roles: ["agent", "manager", "admin"],
+        //   icon: "mdi mdi-medical-bag",
+        // },
         {
           title: "Niên Khoá",
-          link: "/to-chuc/nien-khoa",
+          link: "/to-chuc/nien-khoa-list",
           roles: ["agent", "manager", "admin"],
           icon: "mdi mdi-needle",
         },
         {
           title: "Khối",
-          link: "/to-chuc/khoi",
+          link: "/to-chuc/khoi-list",
           roles: ["agent", "manager", "admin"],
           icon: "mdi mdi-needle",
         },
         {
           title: "Lớp",
-          link: "/to-chuc/lop",
+          link: "/to-chuc/lop-list",
           roles: ["agent", "manager", "admin"],
           icon: "mdi mdi-needle",
         },

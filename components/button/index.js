@@ -1,6 +1,28 @@
-export default function warning({className, children, variant='primary', ...other}) {
-  const cls = `button button-${variant}${className?' ' + className: ''}`
+const Button = (props) => {
+
+  const {
+    children = '',
+    variant = 'primary',
+  } = props;
+
   return (
-    <button className={cls} {...other}>{children}</button>
+    // <button
+    //   className={`
+    //     btn bg-primary-light hover:bg-primary text-primary hover:text-white
+    //   `}>
+    //   {children}
+    // </button>
+
+    <button className={`
+    btn 
+    btn-${variant}
+    hover:btn-${variant}
+    text-${variant}
+    hover:text-${variant}
+    `}>
+      {children}
+    </button>
   );
 }
+
+export default Button;

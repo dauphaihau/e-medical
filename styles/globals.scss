@@ -17,6 +17,13 @@
     @apply text-black text-sm text-black;
   }
 
+  select {
+    line-height: 1;
+    background: url(http://cdn1.iconfinder.com/data/icons/cc_mono_icon_set/blacks/16x16/br_down.png) no-repeat right #ddd;
+    -webkit-appearance: none;
+    background-position-x: right 20px;
+  }
+
   .content-title {
     @apply pb-24 mt-24 px-4;
     h2 {

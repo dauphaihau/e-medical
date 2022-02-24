@@ -1,23 +1,16 @@
 import {useState} from "react";
-import Button from "../components/button";
 import AddStudents from "./hoc-sinh/addStudents"
 import Student from "./hoc-sinh";
 import Header from "../components/header";
 import Sidebar from "../components/sidebar";
 import ToChuc from "./to-chuc";
-import TitleContent from "../components/title-content";
+import TitleContent from "../components/title-contet";
 
 export default function App() {
 
-  const [stateSideBar, setStateSideBar] = useState(false)
   return (
     <>
-      <Header stateSidebar={stateSideBar} setStateSidebar={setStateSideBar}/>
-      <Sidebar stateSidebar={stateSideBar}/>
-      <TitleContent stateSidebar={stateSideBar}>
-        <ToChuc/>
-        {/*<AddStudents stateSidebar={stateSideBar}/>*/}
-      </TitleContent>
+      <ToChuc/>
     </>
   );
 }
