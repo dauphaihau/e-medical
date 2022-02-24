@@ -17,10 +17,10 @@ const TableRow = ({data}) => {
 const Table = ({theadData, tbodyData, title, className, children, ...other}) => {
   return (
     <div className="container_table drop-shadow-2xl">
-      <h1 className="font-bold ml-6">{title}</h1>
+      <h1 className="font-bold ml-6 text-xl">{title}</h1>
       <table className='table'>
         <thead>
-        <tr>
+        <tr className="font-bold">
           {theadData.map((h) => (<TableHeadItem key={h} item={h}/>))}
         </tr>
         </thead>

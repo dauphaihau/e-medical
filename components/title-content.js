@@ -10,7 +10,7 @@ const TitleContent = ({children, title}) => {
 
   return (
     <div className={`content-title ${isSidebarOpen ? 'md:pl-20 lg:pl-24' : 'md:pl-[20rem] lg:pl-[21rem]'}`}>
-      <h2>{title}</h2>
+      <h2 className='text-5xl'>{title}</h2>
       {children}
     </div>
   );
