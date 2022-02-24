@@ -2,7 +2,7 @@ import Select from "../../components/form/select";
 import Input from "../../components/form/input";
 import TitleContent from "../../components/title-content";
 
-const SchoolForm = () => {
+const KhoiForm = () => {
 
   return (
     <TitleContent title='Thiết lập niên khoá'>
@@ -27,4 +27,4 @@ const SchoolForm = () => {
   );
 }
 
-export default SchoolForm;
+export default KhoiForm;

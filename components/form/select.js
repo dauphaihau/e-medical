@@ -1,8 +1,8 @@
 import React from 'react';
 
-const Select = ({label, options, direction = ''}) => {
+const Select = ({label='', options, direction = '', width=''}) => {
   return (
-    <div className={`form-group ${direction}`}>
+    <div className={`form-group ${direction} ${width}`}>
       <label>{label}</label>
       <select className="form-select">
         {options.map((option, index) => (

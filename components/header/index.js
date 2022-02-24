@@ -1,31 +1,28 @@
-import {useMainContext} from "../../context/main-context";
 import logo from "../../assets/images/logo.svg";
 import onlyLogo from "../../assets/images/onlylogo.png";
 
 import Image from 'next/image'
 
-const Header = () => {
-  const {isSidebarOpen, openSidebar} = useMainContext();
+const Header = ({stateSidebar, setStateSidebar}) => {
   return (
     <div className="main-header fixed flex">
-      {isSidebarOpen ? (
+      {stateSidebar ? (
           <div className='logo-mini'>
             <Image src={onlyLogo} alt="logomini"/>
           </div>
         )
-        : (<div className={isSidebarOpen ? ' md:logo-box w-[4.34rem]' : 'hidden md:block logo-box'}>
+        : (<div className={stateSidebar ? ' md:logo-box w-[4.34rem]' : 'hidden md:block logo-box'}>
             <a className='logo'>
               <Image src={logo} alt="logo3"/>
             </a>
           </div>
         )
       }
-      <div className={isSidebarOpen ? 'ml-0  navbar' : 'ml-0 navbar'}>
+      <div className={stateSidebar ? 'ml-0  navbar' : 'ml-0 navbar'}>
         <div className='navbar-left'>
-          <a
-            href='#'
+          <button
             className='btn-hamburger'
-            onClick={() => openSidebar(!isSidebarOpen)}
+            onClick={() => setStateSidebar(!stateSidebar)}
           >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
               <path
@@ -34,7 +31,7 @@ const Header = () => {
                 clipRule="evenodd"
               />
             </svg>
-          </a>
+          </button>
         </div>
         <div className='navbar-right'>
           <div>

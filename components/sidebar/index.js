@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
 import {MENU} from "../../constants";
-import {useMainContext} from "../../context/main-context";
 
 const SubNav = ({open, items}) => {
   return (
@@ -18,10 +17,9 @@ const SubNav = ({open, items}) => {
   );
 }
 
-const ArrowDropdown = ({open}) => {
-  const {isSidebarOpen} = useMainContext();
+const ArrowDropdown = ({open, stateSidebar}) => {
     return (
-      <div className={`${isSidebarOpen && 'hidden'}`}>
+      <div className={`${stateSidebar && 'hidden'}`}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           className={open ? 'hidden' : 'sidebar-dropdown right-2'}
@@ -42,9 +40,8 @@ const ArrowDropdown = ({open}) => {
   }
 ;
 
-const Item = ({item}) => {
+const Item = ({item, stateSidebar}) => {
   const [active, setActive] = useState(false)
-  const {isSidebarOpen} = useMainContext();
   return (
     <li>
       <a
@@ -54,25 +51,24 @@ const Item = ({item}) => {
         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 inline mr-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" />
         </svg>
-        <span className={isSidebarOpen ? 'hidden' : ''}>{item.title}</span>
-        {item.subNav && <ArrowDropdown open={active}/>}
-        {isSidebarOpen ? '' : <SubNav items={item.subNav} open={active}/>}
+        <span className={stateSidebar ? 'hidden' : ''}>{item.title}</span>
+        {item.subNav && <ArrowDropdown stateSidebar={stateSidebar} open={active}/>}
+        {stateSidebar ? '' : <SubNav items={item.subNav} open={active}/>}
       </a>
     </li>
   )
 };
 
-const Sidebar = () => {
-  const {isSidebarOpen} = useMainContext();
+const Sidebar = ({stateSidebar}) => {
   return (
-    <aside className={`main-sidebar ${isSidebarOpen ? 'main-sidebar-open w-0 md:w-16' : 'main-sidebar-open'}`}>
+    <aside className={`main-sidebar ${stateSidebar ? 'main-sidebar-open w-0 md:w-16' : 'main-sidebar-open'}`}>
       <div>
         <ul className='sidebar-menu tree' data-widget='tree'>
           {MENU.staff_agent.map((item, index) => (
-            <Item key={index} item={item}/>
+            <Item key={index} item={item} stateSidebar={stateSidebar}/>
           ))}
         </ul>
-        <div className={isSidebarOpen ? 'hidden' : 'sidebar-copyright'}>
+        <div className={stateSidebar ? 'hidden' : 'sidebar-copyright'}>
           <div>
             <div><strong>Ứng dụng được phát triển bởi</strong></div>
             <div><a href="https://edoctor.io">eDoctor</a> © 2021</div>

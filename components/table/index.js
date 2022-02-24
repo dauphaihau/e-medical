@@ -1,3 +1,5 @@
+import Pagination from "./pagination";
+
 const TableHeadItem = ({item}) => {
   return (
     <td title={item}>
@@ -27,6 +29,7 @@ const Table = ({theadData, tbodyData}) => {
         {tbodyData.map((item) => (<TableRow key={item.id} data={item.items}/>))}
         </tbody>
       </table>
+      <Pagination data={tbodyData}/>
     </div>
   );
 };

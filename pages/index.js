@@ -1,19 +1,24 @@
-import { useEffect } from "react";
+import {useEffect, useState} from "react";
 import Router from "next/router";
 import Button from "../components/button";
 import {MainProvider} from "../context/main-context";
-import Staff from "./school";
-import AddStudents from "../pages/students/addStudents"
-import Student from "./students";
-import School from "./to-chuc";
+import AddStudents from "./hoc-sinh/addStudents"
+import Student from "./hoc-sinh";
+import Header from "../components/header";
+import Sidebar from "../components/sidebar";
+import ToChuc from "./to-chuc";
+import TitleContent from "../components/title-content";
 
 export default function App() {
 
+  const [stateSideBar, setStateSideBar] = useState(false)
   return (
-    <MainProvider>
-      {/*<AddStudents/>*/}
-      {/*<Student/>*/}
-      <School/>
-    </MainProvider>
+    <>
+      <Header stateSidebar={stateSideBar} setStateSidebar={setStateSideBar}/>
+      <Sidebar stateSidebar={stateSideBar}/>
+      <TitleContent>
+        <ToChuc/>
+      </TitleContent>
+    </>
   );
 }
