@@ -1,4 +1,5 @@
 import Card from "../../components/card";
+import Layout from "../../components/layout";
 
 const cards = [
   {title: 'Tổng số lớp học', valueNumber: 48},
@@ -13,7 +14,7 @@ const twoCards = [
 
 const TongQuan = () => {
   return (
-    <div className='md:px-8'>
+    <div>
       <h2 className='font-black'>TỔNG QUAN</h2>
       <div className='box'>
         <h3>Thống kê niên khoá hiện tại</h3>
@@ -56,3 +57,5 @@ const TongQuan = () => {
 }
 
 export default TongQuan;
+
+TongQuan.getLayout = (page) => <Layout>{page}</Layout>;
