@@ -1,17 +1,32 @@
-.card{
-  // template https://medical-admin-template.multipurposethemes.com/main/box_basic.html
-  @apply 
+.card {
+  @apply relative mb-[1.5rem] bg-gray-100 p-0 flex flex-col;
+  .card-title {
+    @apply text-black block relative py-4 px-2 text-center;
+    h4 {
+      @apply inline-block m-0 font-bold text-base text-black text-xl z-auto
+    }
+  }
+
+  .card-number {
+    @apply py-4 flex-auto text-center;
+    p {
+      @apply font-black text-4xl text-[#696969]
+    }
+  }
 }
+
 
 .box {
   @apply rounded-xl m-0 relative mb-6 w-full bg-white border-r-4
-  p-0 flex flex-col;
+  p-0 flex flex-col px-8;
   transition: .5s;
-  box-shadow: 0 3px 5px 1px rgba(0,0,0,.05);
+  box-shadow: 0 3px 5px 1px rgba(0, 0, 0, .05);
   border: 1px solid #efeffd;
-  h4 {
-    @apply font-medium text-xl
+
+  h3 {
+    @apply mb-4 p-4 font-black text-xl;
   }
+
 }
 
 .box-header {
@@ -25,4 +40,14 @@
 .box-body {
   @apply p-6 rounded-xl;
   flex: 1 1 auto;
+}
+
+.box-grid {
+  @apply grid md:grid-cols-2 lg:grid-cols-3 gap-4;
+}
+
+.box-grid-custom {
+  display: grid;
+  grid-gap: 10px;
+  grid-template-columns: repeat(auto-fit, 390px);
 }

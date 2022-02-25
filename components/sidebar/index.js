@@ -59,7 +59,7 @@ const Item = ({item, stateSidebar}) => {
   const [active, setActive] = useState(false)
   return (
     <li>
-      <a onClick={() => setActive(!active)}>
+      <a href={item.link ? item.link : '#'} onClick={() => setActive(!active)}>
         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 inline mr-4" fill="none" viewBox="0 0 24 24"
              stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}

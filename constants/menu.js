@@ -102,55 +102,34 @@ export const MENU = {
       link: "/",
       roles: ["agent", "manager", "admin"],
       icon: "icon-Layout-4-blocks",
+    },
+    {
+      title: "Tổ chức",
+      // link: "/to-chuc",
+      roles: ["manager", "admin"],
+      icon: "mdi mdi-account-circle",
       subNav: [
         {
-          title: "Patients Dashboard",
-          link: "/benh-nhan?scoring=0",
+          title: "Trường",
+          link: "/to-chuc/truong",
           roles: ["agent", "manager", "admin"],
           icon: "mdi mdi-medical-bag",
         },
         {
-          title: "Patients Dashboard",
-          link: "/benh-nhan?scoringFrom=75",
-          roles: ["agent", "manager", "admin"],
-          icon: "mdi mdi-needle",
-        },
-        {
-          title: "Hospital Dashboard",
-          link: "/benh-nhan?scoringFrom=75",
-          roles: ["agent", "manager", "admin"],
-          icon: "mdi mdi-needle",
-        },
-      ],
-
-    },
-    {
-      title: "Tổ chức",
-      link: "/to-chuc",
-      roles: ["manager", "admin"],
-      icon: "mdi mdi-account-circle",
-      subNav: [
-        // {
-        //   title: "Trường",
-        //   link: "/to-chuc/nien-khoa-list/",
-        //   roles: ["agent", "manager", "admin"],
-        //   icon: "mdi mdi-medical-bag",
-        // },
-        {
           title: "Niên Khoá",
-          link: "/to-chuc/nien-khoa-list",
+          link: "/to-chuc/nien-khoa",
           roles: ["agent", "manager", "admin"],
           icon: "mdi mdi-needle",
         },
         {
           title: "Khối",
-          link: "/to-chuc/khoi-list",
+          link: "/to-chuc/khoi",
           roles: ["agent", "manager", "admin"],
           icon: "mdi mdi-needle",
         },
         {
           title: "Lớp",
-          link: "/to-chuc/lop-list",
+          link: "/to-chuc/lop",
           roles: ["agent", "manager", "admin"],
           icon: "mdi mdi-needle",
         },

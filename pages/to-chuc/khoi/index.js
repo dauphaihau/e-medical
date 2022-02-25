@@ -1,7 +1,8 @@
-import Input from "../../components/form/input";
-import Table from "../../components/table";
-import Select from "../../components/form/select";
-import TitleContent from "../../components/title-contet";
+import Input from "../../../components/form/input";
+import Table from "../../../components/table";
+import Layout from "../../../components/layout";
+import Card from "../../../components/card";
+import Select from "../../../components/form/select";
 
 const theadData = [
   'STT',
@@ -42,18 +43,35 @@ const tbodyData = [
 ];
 
 
-const KhoiList = ({stateSidebar}) => {
+const options = [
+  {value: 'chocolate', label: 'Chocolate'},
+  {value: 'strawberry', label: 'Strawberry'},
+  {value: 'vanilla', label: 'Vanilla'}
+]
+
+const KhoiList = () => {
   return (
-    <TitleContent stateSidebar={stateSidebar}>
-      <div className='grid w-1/2 lg:grid-cols-4 lg:gap-8'>
-        <Input name='search' placeholder='Search anything...'/>
-        <Select options={['Nien Khoa', '2009-2011']}/>
+    <>
+      <h2>Khối</h2>
+      <div className='w-1/4'>
+        <Card title='ABCBKA' valueNumber='49'/>
       </div>
-      <div className="box mt-[50px] drop-shadow-2xl overflow-x-auto">
+      <div className='grid-container'>
+        <Input name='search' placeholder='Search anything...'/>
+        <Select
+          name='nienKhoa'
+          options={options}
+          defaultValue='Chọn niên khoá'
+        />
+      </div>
+      <div className="mt-8 drop-shadow-2xl overflow-x-auto lg:overflow-x-visible">
         <Table theadData={theadData} tbodyData={tbodyData}/>
       </div>
-    </TitleContent>
+    </>
   );
 }
 
 export default KhoiList;
+
+
+KhoiList.getLayout = (page) => <Layout>{page}</Layout>;

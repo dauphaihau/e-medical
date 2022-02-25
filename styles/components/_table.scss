@@ -5,7 +5,7 @@
 
 .container-table {
   @apply w-[1000px] lg:w-full relative h-auto bg-white flex flex-col mr-[20px] rounded-xl
-  shadow-2xl pt-[20px];
+  shadow-2xl pt-[20px] px-4 ;
 }
 
 .table {

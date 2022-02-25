@@ -1,9 +1,9 @@
-import React, {useEffect} from 'react';
+import {useEffect} from 'react';
 
 const TitleContent = ({children, title, stateSidebar}) => {
 
   useEffect(() => {
-      window.scrollTo(0, 0)
+    window.scrollTo(0, 0)
   }, [])
 
   return (

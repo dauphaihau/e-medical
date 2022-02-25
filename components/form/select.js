@@ -1,13 +1,29 @@
-const Select = ({label = '', options, direction = '', width = ''}) => {
+import ReactSelect from "react-select";
+import React from "react";
+
+const Select = (props) => {
+
+  const {
+    label = '',
+    options = [],
+    direction = '',
+    width = '',
+    name = '',
+    error = '',
+    defaultValue = '',
+    ...others
+  } = props;
 
   return (
     <div className={`form-group ${direction} ${width}`}>
       <label>{label}</label>
-      <select className="form-select">
-        {options.map((option, index) => (
-          <option className="form-option" key={index} selected>{option}</option>
-        ))}
-      </select>
+      <ReactSelect
+        defaultValue={defaultValue}
+        name={name}
+        {...others}
+        options={options}
+      />
+      <p className='mt-[-12px]'>{error}</p>
     </div>
   );
 }

@@ -2,26 +2,37 @@
 // stylesheet cho input, select, textarea, checkbox,...
 // form-control: ví dụ https://getbootstrap.com/docs/5.1/forms/form-control/ chuan bi css
 
-
 .form {
-  @apply mx-4 ml-0
-  mr-0 block p-6 rounded-lg shadow-lg bg-white pb-4;
+  @apply mx-4 ml-0 mr-0 p-6 rounded-lg shadow-lg bg-white pb-4;
   h3 {
     @apply border-b-2 mb-12 pb-4 text-xl;
   }
 }
 
+.form-login {
+  @apply flex p-8 justify-center items-center h-screen;
+  form {
+    @apply w-[400px]
+  }
+}
+
 .form-group {
   @apply mb-8 lg:mb-8;
+
   label {
     @apply block mb-2 text-sm font-medium;
+  }
+
+  p {
+    @apply text-sm font-medium tracking-[0.0333em] leading-6 text-left text-danger;
+    margin: 3px 14px 0 4px;
   }
 }
 
 .form-control-input {
   @apply
-  bg-gray-100 border
-  border-gray-300
+  bg-gray-100
+  border border-gray-300
   text-black rounded-lg
   focus:outline-white
   block w-full p-2.5;
@@ -38,13 +49,9 @@
   }
 }
 
-.form-select {
-  @apply bg-gray-100 h-[42px] p-[10px] text-base
-  border border-gray-300 text-black rounded-lg
-  focus:ring-gray-300 focus:outline-white block w-full
-}
-
-.form-option {
-  @apply bg-gray-100 p-[0.85rem] border-white text-black rounded-lg
-  focus:ring-gray-300 focus:outline-white block w-full
+// custom react-select
+.css-1s2u09g-control {
+  @apply rounded-sm h-[42px] border border-gray-300 ;
+  border-color: rgb(228 230 239 / var(--tw-border-opacity)) !important;
+  background-color: #f3f6f9 !important;
 }

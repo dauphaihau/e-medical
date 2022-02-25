@@ -8,6 +8,7 @@ const Input = (props) => {
     direction = '',
     placeholder = '',
     className ='',
+    error='',
     ...others
   } = props;
 
@@ -22,6 +23,7 @@ const Input = (props) => {
         required
         {...others}
       />
+      <p>{error}</p>
     </div>
   )
 };

@@ -18,7 +18,7 @@ const TableRow = ({data}) => {
 
 const Table = ({theadData, tbodyData}) => {
   return (
-    <div className='container-table '>
+    <div className='container-table'>
       <table className='table'>
         <thead>
         <tr>
