@@ -1,13 +1,14 @@
 import Select from "../../components/form/select";
 import Input from "../../components/form/input";
 import TitleContent from "../../components/title-contet";
+import Button from "../../components/button";
 
 const NienKhoaForm = ({stateSidebar}) => {
 
   return (
     <TitleContent stateSidebar={stateSidebar}>
       <form className='form'>
-        <div className='grid md:grid-cols-2 lg:grid-cols-4 gap-4'>
+        <div className='grid-container'>
           <Input label='Niên khoá*'/>
           <Select label='Kế thừa dữ liệu nếu có' options={['one', 'two', 'three']}/>
         </div>
@@ -16,12 +17,10 @@ const NienKhoaForm = ({stateSidebar}) => {
           <Input label='Thời gian bắt đầu'/>
           <Input label='Thời gian kết thúc'/>
         </div>
-        <button className="btn ml-[7px]" style={{transform: `translate(-30px, 90px)`}}>
-          Lưu
-        </button>
-        <button className="btn ml-[7px]" style={{transform: `translate(-30px, 90px)`}}>
-          Huỷ
-        </button>
+        <div className='ml-2' style={{transform: `translate(-30px, 90px)`}}>
+          <Button className='mr-4'>Lưu</Button>
+          <Button>Huỷ</Button>
+        </div>
       </form>
     </TitleContent>
   );

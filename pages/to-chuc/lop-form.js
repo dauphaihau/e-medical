@@ -9,7 +9,7 @@ const LopForm = ({stateSidebar}) => {
   return (
     <TitleContent stateSidebar={stateSidebar}>
       <h2>Thêm mới lớp học</h2>
-      <div className='mb-4 flex gap-4'>
+      <div className='mb-4 flex flex-col md:flex-row gap-4 w-1/2'>
         <Index variant='danger'>
           Tổng quan
         </Index>
@@ -21,7 +21,7 @@ const LopForm = ({stateSidebar}) => {
         </Index>
       </div>
       <form className='form'>
-        <div className='grid md:grid-cols-2 lg:grid-cols-4 gap-12'>
+        <div className='grid-container'>
           <Input label='Tên lớp'/>
           <Select label='Niên khoá' options={['Chọn niên khoá', 'two', 'three']}/>
           <Select label='Khối' options={['one', 'two', 'three']}/>

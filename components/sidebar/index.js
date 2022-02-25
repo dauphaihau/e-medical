@@ -6,7 +6,7 @@ import {useRouter} from "next/router";
 const SubNav = ({open, items}) => {
   const router = useRouter();
   return (
-    <ul className={`${!open && 'hidden'} sidebar-subnav`}>
+    <ul className={!open && 'hidden'}>
       {items?.map((item, index) => (
         <li key={index} className={router.pathname == item.link ? 'active' : ''}>
           <Link passHref href={item.link}>
