@@ -3,13 +3,13 @@
 //   // template: https://medical-admin-template.multipurposethemes.com/main/patients.html
 // }
 
-.container_table {
-  @apply w-[1000px] lg:w-full relative h-auto bg-white flex flex-col mr-[20px] rounded-xl;
-  padding: 20px 20px;
+.container-table {
+  @apply w-[1000px] lg:w-full relative h-auto bg-white flex flex-col mr-[20px] rounded-xl
+  shadow-2xl pt-[20px];
 }
 
 .table {
-  @apply mt-[6px] mb-[6px];
+  @apply mt-[6px] mb-[6px] w-[1000px] lg:w-full;
 
   tr th {
     @apply h-[68px] w-auto mt-[50px] pb-2 text-black select-none;

@@ -7,7 +7,7 @@ const Input = (props) => {
     name = '',
     direction = '',
     placeholder = '',
-    width = '',
+    className ='',
     ...others
   } = props;
 
@@ -17,10 +17,10 @@ const Input = (props) => {
       <input
         placeholder={placeholder}
         name={name}
-        {...others}
         type="text"
-        className={`form-control-input ${width}`}
+        className={`form-control-input ${className}`}
         required
+        {...others}
       />
     </div>
   )

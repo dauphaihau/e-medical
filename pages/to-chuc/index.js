@@ -16,9 +16,9 @@ const ToChuc = () => {
       <Sidebar stateSidebar={stateSideBar}/>
       {/*<NienKhoaList stateSidebar={stateSideBar}/>*/}
       {/*<KhoiList stateSidebar={stateSideBar}/>*/}
-      <LopList stateSidebar={stateSideBar} />
+      {/*<LopList stateSidebar={stateSideBar} />*/}
       {/*<NienKhoaForm stateSidebar={stateSideBar}/>*/}
-      {/*<KhoiForm stateSidebar={stateSideBar}/>*/}
+      <KhoiForm stateSidebar={stateSideBar}/>
       {/*<LopForm stateSidebar={stateSideBar}/>*/}
     </>
   )
