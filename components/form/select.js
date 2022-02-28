@@ -10,7 +10,7 @@ const Select = (props) => {
     width = '',
     name = '',
     error = '',
-    defaultValue = '',
+    placeholder ='',
     ...others
   } = props;
 
@@ -18,7 +18,7 @@ const Select = (props) => {
     <div className={`form-group ${direction} ${width}`}>
       <label>{label}</label>
       <ReactSelect
-        defaultValue={defaultValue}
+        placeholder={placeholder}
         name={name}
         {...others}
         options={options}

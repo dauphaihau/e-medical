@@ -3,6 +3,9 @@ import Table from "../../../components/table";
 import Layout from "../../../components/layout";
 import Card from "../../../components/card";
 import Select from "../../../components/form/select";
+import {editIcon} from "../../../utils/icons";
+import Link from "next/link";
+import Button from "../../../components/button";
 
 const theadData = [
   'STT',
@@ -13,11 +16,6 @@ const theadData = [
   , 'Chỉnh sửa'
 ];
 
-const editIcon = <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                      stroke="currentColor">
-  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-        d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
-</svg>;
 
 const tbodyData = [
   {
@@ -49,21 +47,24 @@ const options = [
   {value: 'vanilla', label: 'Vanilla'}
 ]
 
-const KhoiList = () => {
+const UnitList = () => {
   return (
     <>
       <h2>Khối</h2>
-      <div className='w-1/4'>
-        <Card title='ABCBKA' valueNumber='49'/>
-      </div>
       <div className='grid-container'>
         <Input name='search' placeholder='Search anything...'/>
         <Select
           name='nienKhoa'
           options={options}
           defaultValue='Chọn niên khoá'
+          placeholder='Chọn niên khoá'
         />
       </div>
+      <Link href='/to-chuc/khoi/them-khoi'>
+        <a>
+          <Button>Tạo khối</Button>
+        </a>
+      </Link>
       <div className="mt-8 drop-shadow-2xl overflow-x-auto lg:overflow-x-visible">
         <Table theadData={theadData} tbodyData={tbodyData}/>
       </div>
@@ -71,7 +72,7 @@ const KhoiList = () => {
   );
 }
 
-export default KhoiList;
+export default UnitList;
 
 
-KhoiList.getLayout = (page) => <Layout>{page}</Layout>;
+UnitList.getLayout = (page) => <Layout>{page}</Layout>;

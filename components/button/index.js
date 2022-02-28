@@ -5,6 +5,7 @@ const Button = (props) => {
     children = '',
     type = '',
     variant = 'primary',
+    ...others
   } = props;
 
   return (
@@ -13,7 +14,9 @@ const Button = (props) => {
       className={`
       ${className}
         btn bg-primary-light hover:bg-primary text-primary hover:text-white
-      `}>
+      `}
+      {...others}
+    >
       {children}
     </button>
 

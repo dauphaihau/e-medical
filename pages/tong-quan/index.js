@@ -1,5 +1,6 @@
 import Card from "../../components/card";
 import Layout from "../../components/layout";
+import Select from "../../components/form/select";
 
 const cards = [
   {title: 'Tổng số lớp học', valueNumber: 48},
@@ -12,10 +13,27 @@ const twoCards = [
   {title: 'Tổng số lớp học', valueNumber: 48},
 ];
 
-const TongQuan = () => {
+const options = [
+  {value: '2009-2010', label: '2009-2010'},
+  {value: '2019-2012', label: '2009-2010'},
+  {value: '2009-2012', label: '2009-2010'},
+]
+
+const Summary = () => {
   return (
     <div>
-      <h2 className='font-black'>TỔNG QUAN</h2>
+      <div className='lg:flex justify-between'>
+        <h2 className='font-black'>TỔNG QUAN</h2>
+        <div className='lg:flex'>
+          <p className='leading-[3.5rem] mr-4 text-xl'>Niên khoá</p>
+          <Select
+            width='w-[250px]'
+            name='nienKhoa'
+            options={options}
+            defaultValue='Chọn niên khoá'
+          />
+        </div>
+      </div>
       <div className='box'>
         <h3>Thống kê niên khoá hiện tại</h3>
         <div className='box-grid'>
@@ -33,7 +51,7 @@ const TongQuan = () => {
         <div className='box-grid'>
           <Card cards={cards}/>
         </div>
-        <div className='grid md:grid-cols-2 lg:grid-cols-2 gap-4'>
+        <div className='box-grid lg:grid-cols-2'>
           <Card cards={twoCards}/>
         </div>
       </div>
@@ -56,6 +74,6 @@ const TongQuan = () => {
   );
 }
 
-export default TongQuan;
+export default Summary;
 
-TongQuan.getLayout = (page) => <Layout>{page}</Layout>;
+Summary.getLayout = (page) => <Layout>{page}</Layout>;

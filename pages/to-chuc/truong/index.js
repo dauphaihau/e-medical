@@ -1,6 +1,10 @@
+import Link from "next/link";
+
 import Table from "../../../components/table";
 import Layout from "../../../components/layout";
 import Input from "../../../components/form/input";
+import Button from "../../../components/button";
+import {editIcon, deleteIcon} from "../../../utils/icons";
 
 const theadData = [
   'STT',
@@ -9,64 +13,47 @@ const theadData = [
   'Số học sinh',
   'Thời gian bắt đầu',
   'Thời gian kết thúc'
-  , 'Chỉnh sửa'
+  , '', ''
 ];
 
-const editIcon = <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                      stroke="currentColor">
-  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-        d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
-</svg>;
 
 const tbodyData = [
   {
     id: "1",
-    items: ["1", "Harvard", "2000-2001", "A1", '10', '10/20/1990', '10/20/1991', editIcon],
+    items: ["1", "Harvard", "2000-2001", "A1", '10', '10/20/1990', '10/20/1991', editIcon, deleteIcon],
   },
   {
     id: "2",
-    items: ["2", "Harvard", "2000-2001", "A1", '10', '10/20/1990', '10/20/1991', editIcon],
+    items: ["2", "Harvard", "2000-2001", "A1", '10', '10/20/1990', '10/20/1991', editIcon, deleteIcon],
   },
   {
     id: "3",
-    items: ["2", "Harvard", "2000-2001", "A1", '10', '10/20/1990', '10/20/1991', editIcon],
+    items: ["2", "Harvard", "2000-2001", "A1", '10', '10/20/1990', '10/20/1991', editIcon, deleteIcon],
   },
   {
     id: "3",
-    items: ["2", "Harvard", "2000-2001", "A1", '10', '10/20/1990', '10/20/1991', editIcon],
+    items: ["2", "Harvard", "2000-2001", "A1", '10', '10/20/1990', '10/20/1991', editIcon, deleteIcon],
   },
   {
     id: "3",
-    items: ["2", "Harvard", "2000-2001", "A1", '10', '10/20/1990', '10/20/1991', editIcon],
+    items: ["2", "Harvard", "2000-2001", "A1", '10', '10/20/1990', '10/20/1991', editIcon, deleteIcon],
   },
   {
     id: "3",
-    items: ["2", "Harvard", "2000-2001", "A1", '10', '10/20/1990', '10/20/1991', editIcon],
-  },
-  {
-    id: "3",
-    items: ["2", "Harvard", "2000-2001", "A1", '10', '10/20/1990', '10/20/1991', editIcon],
-  },
-  {
-    id: "3",
-    items: ["2", "Harvard", "2000-2001", "A1", '10', '10/20/1990', '10/20/1991', editIcon],
-  },
-  {
-    id: "3",
-    items: ["2", "Harvard", "2000-2001", "A1", '10', '10/20/1990', '10/20/1991', editIcon],
-  },
-  {
-    id: "3",
-    items: ["2", "Harvard", "2000-2001", "A1", '10', '10/20/1990', '10/20/1991', editIcon],
+    items: ["2", "Harvard", "2000-2001", "A1", '10', '10/20/1990', '10/20/1991', editIcon, deleteIcon],
   },
 ];
 
-const TruongList = () => {
+const SchoolList = () => {
   return (
-
     <>
       <h2>Trường</h2>
       <Input className='md:w-1/2 lg:w-1/4' name='search' placeholder='Tìm kiếm...'/>
+      <Link href='/to-chuc/truong/them-truong'>
+        <a>
+          <Button>Tạo trường</Button>
+        </a>
+      </Link>
       <div className="mt-8 drop-shadow-2xl overflow-x-auto lg:overflow-x-visible">
         <Table theadData={theadData} tbodyData={tbodyData}/>
       </div>
@@ -74,6 +61,6 @@ const TruongList = () => {
   );
 }
 
-export default TruongList;
+export default SchoolList;
 
-TruongList.getLayout = (page) => <Layout>{page}</Layout>;
+SchoolList.getLayout = (page) => <Layout>{page}</Layout>;

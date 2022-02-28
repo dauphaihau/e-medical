@@ -11,10 +11,28 @@
 
 .form-login {
   @apply flex p-8 justify-center items-center h-screen;
+  background-image: url("/images/bg-1.jpg");
+
   form {
-    @apply w-[400px]
+    @apply w-[500px] h-[720px] bg-white rounded-2xl lg:p-8 py-8 lg:shadow-2xl;
+    h2 {
+      @apply text-[1.6rem] lg:text-[2rem] text-primary pb-8
+    }
   }
 }
+
+
+//.form-add-staff {
+//  @apply flex p-8 justify-center items-center h-screen;
+//  background-image: url("/images/bg-1.jpg");
+//
+//  form {
+//    @apply w-[700px] h-[720px] flex flex-wrap bg-white rounded-2xl lg:p-8 py-8 lg:shadow-2xl;
+//    h2 {
+//      @apply text-[1.6rem] lg:text-[2rem] text-primary pb-8
+//    }
+//  }
+//}
 
 .form-group {
   @apply mb-8 lg:mb-8;
@@ -39,13 +57,27 @@
 }
 
 .form-radio-input {
-  @apply my-8;
+  @apply mb-8 ;
   p {
     @apply mb-2
   }
 
   div {
     @apply flex
+  }
+}
+
+.form-textarea-input {
+  @apply mb-3 xl:w-96;
+  label {
+    @apply inline-block mb-2 text-black;
+  }
+
+  textarea {
+    @apply resize-none block w-full px-3 py-1.5 text-base font-normal
+    text-black bg-white bg-clip-padding border border-solid border-black rounded
+    transition ease-in-out m-0 focus:text-black focus:bg-white
+    focus:border-primary-light focus:outline-none
   }
 }
 

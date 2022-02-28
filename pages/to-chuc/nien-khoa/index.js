@@ -63,7 +63,6 @@ const tbodyData = [
 
 const NienKhoaList = () => {
   return (
-
     <>
       <h2>Niên khoá</h2>
       <Input className='md:w-1/2 lg:w-1/4' name='search' placeholder='Tìm kiếm...'/>

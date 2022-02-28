@@ -33,7 +33,7 @@ const tbodyData = [
 ];
 
 
-const HocSinhList = () => {
+const StudentList = () => {
   return (
     <>
       <h2>Thêm mới lớp học</h2>
@@ -57,6 +57,6 @@ const HocSinhList = () => {
   );
 }
 
-export default HocSinhList;
+export default StudentList;
 
-HocSinhList.getLayout = (page) => <Layout>{page}</Layout>;
+StudentList.getLayout = (page) => <Layout>{page}</Layout>;

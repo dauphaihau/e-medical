@@ -3,29 +3,21 @@
   transition: all 0.5s ease;
   //z-index: 100;
   border-right: 0 solid rgba(72, 94, 144, .16);
+
   div {
-    @apply pb-2.5 relative w-full
+    @apply relative w-full
   }
 }
 
 .main-sidebar-open {
   @apply fixed top-0 left-0 min-h-full w-75
-  duration-300 ease-in transition-all;
-  padding-top: 80px;
-  z-index: 100;
+  duration-300 ease-in transition-all pt-20 z-[100] bg-[#fbfaff];
   border-right: 0 solid rgba(72, 94, 144, .16);
-  background-color: #fbfaff;
 }
 
 .main-sidebar-mini {
-  @apply fixed top-0 left-0 min-h-full w-16;
-  padding-top: 80px;
-  z-index: 100;
+  @apply fixed top-0 left-0 min-h-full w-16 pt-20 z-[100] bg-[#fbfaff];
   border-right: 0 solid rgba(72, 94, 144, .16);
-  background-color: #fbfaff;
-  @screen md {
-    @apply flex;
-  }
 }
 
 
@@ -84,4 +76,8 @@
   div {
     @apply text-center;
   }
+}
+
+.submenu-active {
+  @apply bg-primary-light rounded-xl;
 }

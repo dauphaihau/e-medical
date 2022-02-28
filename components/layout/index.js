@@ -1,17 +1,19 @@
 import Header from "../header";
 import Sidebar from "../sidebar";
 import {useState} from "react";
-import TitleContent from "./title-content";
+import Content from "./content";
+import Modal from "../modal";
 
 const Layout = ({children}) => {
   const [stateSideBar, setStateSideBar] = useState(false)
   return (
     <>
+      {/*<Modal/>*/}
       <Header stateSidebar={stateSideBar} setStateSidebar={setStateSideBar}/>
       <Sidebar stateSidebar={stateSideBar}/>
-      <TitleContent stateSidebar={stateSideBar}>
+      <Content stateSidebar={stateSideBar}>
         {children}
-      </TitleContent>
+      </Content>
     </>
   );
 }

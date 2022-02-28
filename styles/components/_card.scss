@@ -18,7 +18,7 @@
 
 .box {
   @apply rounded-xl m-0 relative mb-6 w-full bg-white border-r-4
-  p-0 flex flex-col px-8;
+  p-0 flex flex-col px-8 py-4;
   transition: .5s;
   box-shadow: 0 3px 5px 1px rgba(0, 0, 0, .05);
   border: 1px solid #efeffd;
@@ -49,5 +49,5 @@
 .box-grid-custom {
   display: grid;
   grid-gap: 10px;
-  grid-template-columns: repeat(auto-fit, 390px);
+  grid-template-columns: repeat(auto-fit, minmax(390px, 1fr));
 }

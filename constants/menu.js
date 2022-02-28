@@ -144,7 +144,7 @@ export const MENU = {
     },
     {
       title: "Quản lý nhân sự trường",
-      link: "/nhan-su",
+      // link: "/nhan-su",
       roles: ["manager", "admin"],
       icon: "mdi mdi-account-box",
       subNav: [
@@ -170,7 +170,7 @@ export const MENU = {
     },
     {
       title: "Phòng chống Covid-19",
-      link: "/protection",
+      // link: "/protection",
       roles: ["manager", "admin"],
       icon: "mdi mdi-account-card-details",
     },
