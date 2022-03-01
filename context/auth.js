@@ -7,6 +7,10 @@ const defaultValues = {
 
 const AuthContext = createContext(defaultValues);
 
+export const getUser = async (ctx) => {
+  
+};
+
 export function useAuth() {
   return useContext(AuthContext);
 }

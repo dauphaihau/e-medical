@@ -1,4 +1,5 @@
 import React from "react";
+import {ErrorMessage} from "formik";
 
 const Input = (props) => {
 
@@ -20,10 +21,9 @@ const Input = (props) => {
         name={name}
         type="text"
         className={`form-control-input ${className}`}
-        required
         {...others}
       />
-      <p>{error}</p>
+      <ErrorMessage name={name} />
     </div>
   )
 };
