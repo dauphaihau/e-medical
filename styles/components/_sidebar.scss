@@ -30,9 +30,9 @@
 .sidebar-menu {
   @apply overflow-hidden whitespace-nowrap list-none pb-7;
   li {
-    @apply relative my-1.5 mx-1.5 p-2.5 cursor-pointer  hover:text-primary transition duration-500 ;
+    @apply relative my-[5px] mx-1.5 cursor-pointer  hover:text-primary transition duration-500 ;
     > div {
-      @apply text-black opacity-90 whitespace-nowrap items-center font-medium py-2.5 px-1.5 leading-6;
+      @apply text-black opacity-90 whitespace-nowrap items-center font-medium py-2.5 px-1.5 leading-6 pl-[0.8005rem];
 
       > i {
         @apply w-8.5 leading-7 text-xl inline-block align-middle text-gray-100 text-center rounded-xl mr-2.5;
@@ -42,6 +42,12 @@
         @apply relative top-[3px] text-base;
       }
     }
+  }
+}
+
+.sidebar-submenu {
+  li {
+    @apply p-2.5 pl-8
   }
 }
 

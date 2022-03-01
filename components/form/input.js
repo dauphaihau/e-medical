@@ -7,8 +7,8 @@ const Input = (props) => {
     name = '',
     direction = '',
     placeholder = '',
-    className ='',
-    error='',
+    className = '',
+    error = '',
     ...others
   } = props;
 
@@ -22,7 +22,9 @@ const Input = (props) => {
         className={`form-control-input ${className}`}
         {...others}
       />
-      <ErrorMessage className='text-danger' name={name} />
+      <div className='text-danger mt-[5px]'>
+        {/*<ErrorMessage name={name}/>*/}
+      </div>
     </div>
   )
 };

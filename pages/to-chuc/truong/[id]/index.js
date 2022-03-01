@@ -34,6 +34,7 @@ const DetailSchool = () => {
 
   useEffect(async () => {
     const {id} = router.query;
+    console.log(id);
     await getDetailSchool(id);
   }, []);
 
@@ -64,52 +65,43 @@ const DetailSchool = () => {
       }}
     >
       {({
-          handleSubmit,
           handleChange,
-          touched,
-          errors,
           values,
         }) => (
-        <Form className='form py-8' onSubmit={handleSubmit}>
+        <Form className='form py-8'>
           <h3>Thông tin trường</h3>
           <div className='grid lg:grid-cols-2 gap-4 lg:w-1/2'>
             <Input
               label='Tên trường'
               name='schoolname'
-              error={errors.schoolname && touched.schoolname ? errors.schoolname : null}
               onChange={handleChange}
               value={values.schoolname}
             />
             <Input
               label='Địa chỉ'
               name='address'
-              error={errors.address && touched.address ? errors.address : null}
               onChange={handleChange}
               value={values.address}
             />
             <Input
               label='Tỉnh'
               name='province'
-              error={errors.province && touched.province ? errors.province : null}
               onChange={handleChange}
               value={values.province}
             />
             <Input
               label='Quận'
               name='district'
-              error={errors.district && touched.district ? errors.district : null}
               onChange={handleChange}
               value={values.district}
             />
             <Input
               label='Phường' name='ward'
-              error={errors.ward && touched.ward ? errors.ward : null}
               onChange={handleChange}
               value={values.ward}
             />
             <Input
               label='Nhóm trường' name='civilGroup'
-              error={errors.civilGroup && touched.civilGroup ? errors.civilGroup : null}
               onChange={handleChange}
               value={values.civilGroup}
             />

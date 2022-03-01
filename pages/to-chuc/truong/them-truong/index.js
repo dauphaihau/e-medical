@@ -42,8 +42,6 @@ const AddSchool = () => {
       {({
           handleChange,
           handleBlur,
-          touched,
-          errors,
         }) => (
         <Form className='form'>
           <h3>Thêm trường</h3>

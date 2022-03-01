@@ -10,6 +10,10 @@ import Layout from "../../../../components/layout";
 import schoolYearService from "../../../../services/organize/school-year";
 import Select from "../../../../components/form/select";
 
+const validationSchema = Yup.object().shape({
+  schoolYearName: Yup.string().required('Tên niên khoá trường không được để trống'),
+});
+
 const DetailSchoolYear = () => {
 
   const router = useRouter();
@@ -53,17 +57,13 @@ const DetailSchoolYear = () => {
       }}
     >
       {({
-          handleSubmit,
           handleChange,
-          touched,
-          errors,
           setFieldValue
         }) => (
-        <Form className='form' onSubmit={handleSubmit}>
+        <Form className='form'>
           <div className='grid-container gap-8'>
             <Input
               name='schoolYearName' label='Niên khoá *'
-              // error={errors.schoolYearName && touched.schoolYearName ? errors.schoolYearName : null}
               onChange={handleChange}
             />
             <div>
@@ -83,12 +83,10 @@ const DetailSchoolYear = () => {
           <div className='grid-container gap-8'>
             <Input
               name='thoiGianBatDau' label='Thời gian bắt đầu'
-              // error={errors.thoiGianBatDau && touched.thoiGianBatDau ? errors.thoiGianBatDau : null}
               onChange={handleChange}
             />
             <Input
               name='thoiGianKetThuc' label='Thời gian kết thúc'
-              // error={errors.thoiGianKetThuc && touched.thoiGianKetThuc ? errors.thoiGianKetThuc : null}
               onChange={handleChange}
             />
           </div>

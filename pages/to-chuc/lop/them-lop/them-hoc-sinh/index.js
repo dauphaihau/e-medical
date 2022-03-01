@@ -102,10 +102,7 @@ const AddStudent = () => {
         }}
       >
         {({
-            handleSubmit,
             handleChange,
-            touched,
-            errors,
             setFieldValue
           }) => (
           <Form className='form'>
@@ -117,17 +114,14 @@ const AddStudent = () => {
             <div className='grid-container gap-8'>
               <Input
                 name='hoTen' label='Họ Tên'
-                // error={errors.tenKhoi && touched.tenKhoi ? errors.tenKhoi : null}
                 onChange={handleChange}
               />
               <Input
                 name='ngaySinh' label='Ngày Sinh'
-                // error={errors.ngaySinh && touched.ngaySinh ? errors.ngaySinh : null}
                 onChange={handleChange}
               />
               <Input
                 name='gioiTinh' label='Giới Tính'
-                // error={errors.gioiTinh && touched.gioiTinh ? errors.gioiTinh : null}
                 onChange={handleChange}
               />
               <div className='form-radio-input'>
@@ -150,32 +144,26 @@ const AddStudent = () => {
             <div className='grid-container gap-8'>
               <Input
                 name='tenCha' label='Tên Cha'
-                // error={errors.tenCha && touched.tenCha ? errors.tenCha : null}
                 onChange={handleChange}
               />
               <Input
                 name='tenMe' label='Tên Mẹ'
-                // error={errors.tenMe && touched.tenMe ? errors.tenMe : null}
                 onChange={handleChange}
               />
               <Input
                 name='sdtCha' label='SDT Cha'
-                // error={errors.sdtCha && touched.sdtCha ? errors.sdtCha : null}
                 onChange={handleChange}
               />
               <Input
                 name='sdtMe' label='SDT Mẹ'
-                // error={errors.sdtMe && touched.sdtMe ? errors.sdtMe : null}
                 onChange={handleChange}
               />
               <Input
                 name='nguoiThanKhac' label='Người thân khác'
-                // error={errors.nguoiThanKhac && touched.nguoiThanKhac ? errors.nguoiThanKhac : null}
                 onChange={handleChange}
               />
               <Input
                 name='sdtNguoiThan' label='SDT người thân'
-                // error={errors.sdtNguoiThan && touched.sdtNguoiThan ? errors.sdtNguoiThan : null}
                 onChange={handleChange}
               />
             </div>
@@ -183,12 +171,10 @@ const AddStudent = () => {
             <div className='grid-container lg:grid-cols-3 gap-8'>
               <Input
                 name='chieuCao' label='Chiều cao (m)'
-                // error={errors.tenKhoi && touched.tenKhoi ? errors.tenKhoi : null}
                 onChange={handleChange}
               />
               <Input
                 name='hoTen' label='Cân nặng (kg)'
-                // error={errors.tenKhoi && touched.tenKhoi ? errors.tenKhoi : null}
                 onChange={handleChange}
               />
               <div className='form-radio-input'>
@@ -225,7 +211,6 @@ const AddStudent = () => {
                 onChange={e => setFieldValue('thoiGian', e.value)}
                 options={options}
                 placeholder='Thời gian'
-                // error={errors.thoiGian && touched.thoiGian ? errors.thoiGian : null}
               />
               <Select
                 label='Niên khoá'
@@ -233,7 +218,6 @@ const AddStudent = () => {
                 onChange={e => setFieldValue('loaiTheoDoi', e.value)}
                 options={options}
                 placeholder='Loại theo dõi'
-                // error={errors.loaiTheoDoi && touched.loaiTheoDoi ? errors.loaiTheoDoi : null}
               />
             </div>
             <Table theadData={theadDataLTDSK} tbodyData={tbodyDataLTDSK}/>

@@ -3,14 +3,13 @@ import apiRequest from "../request";
 const api = apiRequest.init("eschool");
 const classService = {
   getAllClass: async (idClass='') => {
-    const {request, ...response} = await api.get(
+    const {...response} = await api.get(
       `organization/classroom/${idClass}`,
     );
   },
   createClass: async (dataClass) => {
     return await api.post(
-      "organization/classroom",
-      {dataClass}
+      "organization/classroom", dataClass
     );
   },
   deleteClass: async (idClass) => {
@@ -21,8 +20,7 @@ const classService = {
   updateClass: async (idClass, dataUpdateClass) => {
     console.log(dataUpdateClass);
     return await api.patch(
-      `organization/classroom/${idClass}`,
-      {dataUpdateClass}
+      `organization/classroom/${idClass}`, dataUpdateClass
     );
   },
 }

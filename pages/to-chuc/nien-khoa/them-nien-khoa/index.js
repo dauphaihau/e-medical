@@ -8,13 +8,13 @@ import Layout from "../../../../components/layout";
 import schoolYearService from "../../../../services/organize/school-year";
 
 const validationSchema = Yup.object().shape({
-  schoolYearName: Yup.string().required('Niên khoá không được để trống'),
+  schoolYearName: Yup.string().required('Tên niên khoá trường không được để trống'),
+  schoolId: Yup.string().required('Mã trường không được để trống'),
 });
 
 const options = [
-  {value: '2009-2010', label: '2009-2010'},
-  {value: '2019-2012', label: '2009-2010'},
-  {value: '2009-2012', label: '2009-2010'},
+  {value: 'Không', label: 'Không'},
+  {value: 'Có', label: 'Có'},
 ]
 
 const handleSubmitForm = async (dataSchoolYear) => {
@@ -35,6 +35,7 @@ const AddSchoolYear = () => {
       enableReinitialize
       initialValues={{
         schoolYearName: '',
+        schoolId: '',
         keThuaDuLieu: '',
         thoiGianBatDau: '',
         thoiGianKetThuc: '',
@@ -42,17 +43,17 @@ const AddSchoolYear = () => {
       }}
     >
       {({
-          handleSubmit,
           handleChange,
-          touched,
-          errors,
           setFieldValue
         }) => (
         <Form className='form'>
           <div className='grid-container gap-8'>
             <Input
-              name='schoolYearName' label='Niên khoá *'
-              // error={errors.schoolYearName && touched.schoolYearName ? errors.schoolYearName : null}
+              name='schoolYearName' label='Tên niên khoá trường *'
+              onChange={handleChange}
+            />
+            <Input
+              name='schoolId' label='Mã trường'
               onChange={handleChange}
             />
             <div>
@@ -72,16 +73,14 @@ const AddSchoolYear = () => {
           <div className='grid-container gap-8'>
             <Input
               name='thoiGianBatDau' label='Thời gian bắt đầu'
-              // error={errors.thoiGianBatDau && touched.thoiGianBatDau ? errors.thoiGianBatDau : null}
               onChange={handleChange}
             />
             <Input
               name='thoiGianKetThuc' label='Thời gian kết thúc'
-              // error={errors.thoiGianKetThuc && touched.thoiGianKetThuc ? errors.thoiGianKetThuc : null}
               onChange={handleChange}
             />
           </div>
-          <div className='ml-2' style={{transform: `translate(-30px, 90px)`}}>
+          <div className='my-4'>
             <Button className='mr-4'>Lưu</Button>
             <Button>Huỷ</Button>
           </div>
