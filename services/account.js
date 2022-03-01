@@ -1,6 +1,6 @@
 import apiRequest from './request';
 
-const api = apiRequest.init("eschool");
+const api = apiRequest.init("anhquoc");
 const accountService = {
   requestPhonePin: async (phoneNumber) => {
     const { request, ...response } = await api.get(
@@ -9,7 +9,6 @@ const accountService = {
     );
   },
   loginViaOTP: async (phoneNumber, pin) => {
-    console.log(phoneNumber, pin);
     return await api.post(
       "/account/login/phonePin",
       {
@@ -17,6 +16,9 @@ const accountService = {
         pin,
       }
     );
+  },
+  me: async () => {
+    return await api.get("/account/me");
   }
 }
 export default accountService;

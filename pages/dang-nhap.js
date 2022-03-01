@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import Moment from "moment";
 import Image from "next/image";
 import Link from "next/link";
-import {Formik, Form} from "formik";
+import {Formik, Form, Field} from "formik";
 import Cookie from "cookie-cutter";
 import * as Yup from "yup";
 
@@ -90,20 +90,15 @@ export default function Login () {
       <Formik
         validationSchema={loginSchema}
         onSubmit={handleSubmitForm}
-        enableReinitialize
         initialValues={{
-          soDienThoai: '',
-          otp: '',
+          phoneNumber: '',
+          pin: '',
         }}
       >
         {({
             handleSubmit,
             handleChange,
             handleBlur,
-            values,
-            touched,
-            isValid,
-            errors,
           }) => (
           <Form>
             <div className='flex justify-center'>
@@ -120,13 +115,14 @@ export default function Login () {
             <Input
               label='Số điện thoại'
               name='phoneNumber'
+              onBlur={handleBlur}
               // error={errors.soDienThoai && touched.soDienThoai ? errors.soDienThoai : null}
               onChange={(e) => {
                 handleChange(e);
                 handlePhoneNumberChange(e.target.value);
               }}
             />
-            <Input label='OTP' name='pin' onChange={handleChange} />
+            <Input label='OTP' name='pin' onChange={handleChange} onBlur={handleBlur}/>
             <Button type='submit'>Đăng nhập</Button>
             <div className="copyright text-center mt-8">
               <div>
