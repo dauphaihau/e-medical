@@ -8,19 +8,10 @@ import Layout from "../../../../components/layout";
 import classService from "../../../../services/organize/class";
 
 const validationSchema = Yup.object().shape({
-  className: Yup.string().required('Tên lớp không được để trống'),
-  schoolYearId: Yup.string().required('Niên khoá không được để trống'),
-  tenKhoi: Yup.string().required('Tên khối không được để trống'),
-  giaoVienChuNhiem: Yup.string().required('Giáo viên chủ nhiệm không được để trống'),
+  className: Yup.string().required('Tên lớp không được để trống').min(5, 'Tên lớp ít nhất là 5 ký tự').max(50, 'Tên lớp tối đa là 50 ký tự'),
+  schoolYearId: Yup.string().required('Mã niên khoá trường không được để trống'),
+  schoolId: Yup.string().required('Mã trường không được để trống'),
 });
-
-// {
-//   "schoolId": "string",
-//   "schoolYearId": "string",
-//   "parentId": "string",
-//   "className": "string",
-//   "status": "1"
-// }
 
 const AddClass = () => {
 
@@ -61,51 +52,48 @@ const AddClass = () => {
         initialValues={{
           className: '',
           schoolYearId: '',
-          tenKhoi: '',
-          giaoVienChuNhiem: '',
+          schoolId: '',
+          parentId: '',
+          status: 1
         }}
       >
         {({
-            handleSubmit,
             handleChange,
-            touched,
-            errors,
             setFieldValue
           }) => (
           <Form className='form'>
             <div className='grid-container'>
               <Input
-                name='className' label='Tên lớp'
-                error={errors.className && touched.className ? errors.className : null}
+                label='Mã trường'
+                name='schoolId'
                 onChange={handleChange}
               />
               <Select
-                label='Niên khoá'
+                label='Nhóm lớp'
+                name='parentId'
+                onChange={e => setFieldValue('parentId', e.value)}
+                options={options}
+              />
+              <Input
+                label='Mã niên khoá trường'
                 name='schoolYearId'
-                onChange={e => setFieldValue('schoolYearId', e.value)}
-                options={options}
-                placeholder='Chọn niên khoá'
-                error={errors.schoolYearId && touched.schoolYearId ? errors.schoolYearId : null}
+                onChange={handleChange}
               />
-              <Select
-                label='Khối'
-                name='khoi'
-                onChange={e => setFieldValue('khoi', e.value)}
-                options={options}
-                placeholder='Chọn khối'
-                error={errors.khoi && touched.khoi ? errors.khoi : null}
+              <Input
+                label='Tên lớp'
+                name='className'
+                onChange={handleChange}
               />
-              <Select
-                label='Giáo viên chủ nhiệm'
-                name='giaoVienChuNhiem'
-                onChange={e => setFieldValue('giaoVienChuNhiem', e.value)}
-                options={options}
-                placeholder='Chọn Giáo viên chủ nhiệm'
-                error={errors.giaoVienChuNhiem && touched.giaoVienChuNhiem ? errors.giaoVienChuNhiem : null}
-              />
+              {/*<Select*/}
+              {/*  label='Người thân'*/}
+              {/*  name='giaoVienChuNhiem'*/}
+              {/*  onChange={e => setFieldValue('giaoVienChuNhiem', e.value)}*/}
+              {/*  options={options}*/}
+              {/*  placeholder='Chọn Giáo viên chủ nhiệm'*/}
+              {/*/>*/}
             </div>
-            <div className='ml-2' style={{transform: `translate(-30px, 90px)`}}>
-              <Button type='submit' className='mr-4'>Lưu</Button>
+            <div className='py-4'>
+              <Button type='submit' className='mr-4'>Thêm</Button>
               <Button>Huỷ</Button>
             </div>
           </Form>

@@ -9,8 +9,7 @@ const schoolService = {
   },
   createSchool: async (dataSchool) => {
     return await api.post(
-      "organization/school",
-      {dataSchool}
+      "organization/school", dataSchool
     );
   },
   deleteSchool: async (idSchool) => {
@@ -21,8 +20,7 @@ const schoolService = {
   updateSchool: async (idSchool, dataUpdateSchool) => {
     console.log(dataUpdateSchool);
     return await api.patch(
-      `organization/school/${idSchool}`,
-      {dataUpdateSchool}
+      `organization/school/${idSchool}`, dataUpdateSchool
     );
   },
 }

@@ -1,4 +1,5 @@
 import ReactSelect from "react-select";
+import {ErrorMessage} from "formik";
 
 const Select = (props) => {
 
@@ -23,7 +24,7 @@ const Select = (props) => {
         {...others}
         options={options}
       />
-      <p className='mt-[-12px]'>{error}</p>
+      {/*<ErrorMessage name={name} />*/}
     </div>
   );
 }

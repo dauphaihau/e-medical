@@ -7,7 +7,7 @@ import {MENU} from "../../constants";
 const SubMenu = ({open, items}) => {
   const router = useRouter();
   return (
-    <ul className={!open ? 'hidden' : ''}>
+    <ul className={`${!open ? 'hidden' : ''} sidebar-submenu`}>
       {items?.map((item) => (
         <li key={item.title} className={router.pathname == item.link ? 'submenu-active' : ''}>
           <Link passHref href={item.link}>

@@ -10,8 +10,7 @@ const schoolYearService = {
   createSchoolYear: async (dataSchoolYear) => {
     console.log(dataSchoolYear);
     return await api.post(
-      "organization/schoolyear",
-      {dataSchoolYear}
+      "organization/schoolyear", dataSchoolYear
     );
   },
   deleteSchool: async (idSchoolYear) => {
@@ -22,8 +21,7 @@ const schoolYearService = {
   updateSchoolYear: async (idSchoolYear, dataUpdateSchoolYear) => {
     console.log(dataUpdateSchoolYear);
     return await api.patch(
-      `organization/schoolyear/${idSchoolYear}`,
-      {dataUpdateSchoolYear}
+      `organization/schoolyear/${idSchoolYear}`, dataUpdateSchoolYear
     );
   },
 }

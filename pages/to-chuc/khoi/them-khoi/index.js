@@ -36,10 +36,7 @@ const AddUnit = () => {
       }}
     >
       {({
-          handleSubmit,
           handleChange,
-          touched,
-          errors,
           setFieldValue
         }) => (
         <Form className='form'>
@@ -47,7 +44,6 @@ const AddUnit = () => {
           <div className='grid-container'>
             <Input
               name='tenKhoi' label='Tên khối'
-              // error={errors.tenKhoi && touched.tenKhoi ? errors.tenKhoi : null}
               onChange={handleChange}
             />
             <Select
@@ -56,12 +52,10 @@ const AddUnit = () => {
               onChange={e => setFieldValue('nienKhoa', e.value)}
               options={options}
               placeholder='Chọn niên khoá'
-              // error={errors.nienKhoa && touched.nienKhoa ? errors.nienKhoa : null}
             />
             <Input
               name='khoiTruong'
               label='Khối trưởng'
-              // error={errors.khoiTruong && touched.khoiTruong ? errors.khoiTruong : null}
               onChange={handleChange}
             />
           </div>

@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import Cookie from "cookie-cutter";
+
 import accountService from "../services/account";
 
 const defaultValues = {
