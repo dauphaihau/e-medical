@@ -8,7 +8,6 @@ import Input from "../../../../components/form/input";
 import Layout from "../../../../components/layout";
 import {useEffect, useState} from "react";
 import {useRouter} from "next/router";
-import {http} from "../../../../utils/setting";
 import staffService from "../../../../services/personnel/staff";
 import schoolYearService from "../../../../services/organize/school-year";
 import swal from "sweetalert";
