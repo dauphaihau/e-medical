@@ -6,7 +6,7 @@ import Button from "../../../../components/button";
 import Select from "../../../../components/form/select";
 import Layout from "../../../../components/layout";
 
-const loginSchema = Yup.object().shape({
+const validationSchema = Yup.object().shape({
   tenKhoi: Yup.string().required('Tên khối không được để trống'),
   nienKhoa: Yup.string().required('Niên khoá không được để trống'),
   khoiTruong: Yup.string().required('Khối trưởng không được để trống'),
@@ -26,7 +26,7 @@ const AddUnit = () => {
 
   return (
     <Formik
-      validationSchema={loginSchema}
+      validationSchema={validationSchema}
       onSubmit={handleSubmitForm}
       enableReinitialize
       initialValues={{

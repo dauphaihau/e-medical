@@ -30,8 +30,9 @@ const AddStaff = () => {
   const handleSubmitForm = async (values) => {
     console.log(values);
     try {
-      const result = await http.post(`/v1/account/register`)
+      const result = await http.post(`/v1/account/register`, values)
       console.log(result);
+      alert('tao thanh cong')
     } catch (error) {
       console.log({error})
     }
@@ -67,6 +68,11 @@ const AddStaff = () => {
             <Input
               label='Tên nhân viên' name='username'
               error={errors.username && touched.username ? errors.username : null}
+              onChange={handleChange}
+            />
+            <Input
+              label='Mật khẩu' name='password'
+              error={errors.password && touched.password ? errors.password : null}
               onChange={handleChange}
             />
             <Input

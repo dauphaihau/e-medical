@@ -1,5 +1,5 @@
-.main-sidebar {
-  @apply fixed top-0 left-0 min-h-full grid-cols-2 bg-primary-light pt-20;
+.sidebar {
+  @apply fixed top-0 left-0 min-h-full grid-cols-2 bg-primary-light pt-20 lg:px-4;
   transition: all 0.5s ease;
   //z-index: 100;
   border-right: 0 solid rgba(72, 94, 144, .16);
@@ -9,32 +9,14 @@
   }
 }
 
-.main-sidebar-open {
-  @apply fixed top-0 left-0 min-h-full w-75
+.sidebar-open {
+  @apply fixed top-0 left-0 min-h-full w-75 p-0
   duration-300 ease-in transition-all pt-20 z-[100] bg-[#fbfaff];
   border-right: 0 solid rgba(72, 94, 144, .16);
 }
 
-.main-sidebar-mini {
-  @apply fixed top-0 left-0 min-h-full w-16 pt-20 z-[100] bg-[#fbfaff];
-  border-right: 0 solid rgba(72, 94, 144, .16);
-}
-
-
-.main-sidebar-mobile {
+.sidebar-mobile {
   @apply fixed top-0 left-0 min-h-full w-16;
-  padding-top: 80px;
-  z-index: 100;
-  transition: all 0.5s ease;
-  border-right: 0 solid rgba(72, 94, 144, .16);
-  background-color: #fbfaff;
-  @screen md {
-    @apply flex;
-  }
-}
-
-.main-sidebar-tablet {
-  @apply fixed top-0 left-0 min-h-full w-16 ;
   padding-top: 80px;
   z-index: 100;
   transition: all 0.5s ease;
@@ -48,10 +30,10 @@
 .sidebar-menu {
   @apply overflow-hidden whitespace-nowrap list-none pb-7;
   li {
-    @apply relative my-1.5 mx-1.5 px-2.5 cursor-pointer ;
-    > a {
-      @apply text-black opacity-90 whitespace-nowrap items-center font-medium py-2.5 px-1.5 leading-6 block
-      hover:text-primary transition duration-500 ;
+    @apply relative my-1.5 mx-1.5 p-2.5 cursor-pointer  hover:text-primary transition duration-500 ;
+    > div {
+      @apply text-black opacity-90 whitespace-nowrap items-center font-medium py-2.5 px-1.5 leading-6;
+
       > i {
         @apply w-8.5 leading-7 text-xl inline-block align-middle text-gray-100 text-center rounded-xl mr-2.5;
       }
@@ -68,7 +50,7 @@
 }
 
 .sidebar-dropdown {
-  @apply h-4 w-4 inline absolute top-[-1.1rem] right-0
+  @apply h-4 w-4 inline absolute top-[-1.3rem] right-0
   hover:text-primary transition duration-500 ;
 }
 

@@ -7,7 +7,7 @@ import Layout from "../../../../components/layout";
 import {http} from "../../../../utils/setting";
 
 const loginSchema = Yup.object().shape({
-  schoolname: Yup.string().required('Tên người dùng không được để trống').min(5, 'Tên trường ít nhất là 5 ký tự').max(50, 'Tên trường tối đa là 50 ký tự'),
+  schoolname: Yup.string().required('Tên trường không được để trống').min(5, 'Tên trường ít nhất là 5 ký tự').max(50, 'Tên trường tối đa là 50 ký tự'),
 });
 
 const AddSchool = () => {

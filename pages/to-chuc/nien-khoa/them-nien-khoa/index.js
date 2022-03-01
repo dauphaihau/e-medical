@@ -5,11 +5,10 @@ import Select from "../../../../components/form/select";
 import Input from "../../../../components/form/input";
 import Button from "../../../../components/button";
 import Layout from "../../../../components/layout";
+import {http} from "../../../../utils/setting";
 
-const loginSchema = Yup.object().shape({
-  nienKhoa: Yup.string().required('Niên khoá không được để trống'),
-  thoiGianBatDau: Yup.string().required('Thời gian bắt đầu không được để trống'),
-  thoiGianKetThuc: Yup.string().required('Thời gian kết thúc không được để trống'),
+const validationSchema = Yup.object().shape({
+  schoolYearName: Yup.string().required('Niên khoá không được để trống'),
 });
 
 const options = [
@@ -18,18 +17,24 @@ const options = [
   {value: '2009-2012', label: '2009-2010'},
 ]
 
-const handleSubmitForm = (values) => {
+const handleSubmitForm = async (values) => {
   console.log(values);
+  try {
+    await http.post(`/v1/organization/schoolyear`)
+    alert('them thanh cong')
+  } catch (error) {
+    console.log({error})
+  }
 };
 
 const AddSchoolYear = () => {
   return (
     <Formik
-      validationSchema={loginSchema}
+      validationSchema={validationSchema}
       onSubmit={handleSubmitForm}
       enableReinitialize
       initialValues={{
-        nienKhoa: '',
+        schoolYearName: '',
         keThuaDuLieu: '',
         thoiGianBatDau: '',
         thoiGianKetThuc: '',
@@ -45,8 +50,8 @@ const AddSchoolYear = () => {
         <Form className='form' onSubmit={handleSubmit}>
           <div className='grid-container gap-8'>
             <Input
-              name='nienKhoa' label='Niên khoá *'
-              error={errors.nienKhoa && touched.nienKhoa ? errors.nienKhoa : null}
+              name='schoolYearName' label='Niên khoá *'
+              error={errors.schoolYearName && touched.schoolYearName ? errors.schoolYearName : null}
               onChange={handleChange}
             />
             <div>

@@ -11,23 +11,11 @@ const theadData = [
   'STT',
   'Mã nhân viên',
   'Thông  nhân viên',
-  , '', ''
+  , '', ' '
 ];
 
 
 const tbodyData = [
-  {
-    id: "1",
-    items: ["1", '12', 'Nguyen B \n Niên khoá: 2021-2022', editIcon, deleteIcon],
-  },
-  {
-    id: "1",
-    items: ["1", '12', 'Nguyen B \n Niên khoá: 2021-2022', editIcon, deleteIcon],
-  },
-  {
-    id: "1",
-    items: ["1", '12', 'Nguyen B \n Niên khoá: 2021-2022', editIcon, deleteIcon],
-  },
   {
     id: "1",
     items: ["1", '12', 'Nguyen B \n Niên khoá: 2021-2022', editIcon, deleteIcon],

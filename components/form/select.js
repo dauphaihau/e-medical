@@ -1,5 +1,4 @@
 import ReactSelect from "react-select";
-import React from "react";
 
 const Select = (props) => {
 
@@ -20,6 +19,7 @@ const Select = (props) => {
       <ReactSelect
         placeholder={placeholder}
         name={name}
+        instanceId={name}
         {...others}
         options={options}
       />

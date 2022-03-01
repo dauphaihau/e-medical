@@ -6,7 +6,7 @@ import Button from "../../../../../components/button";
 import Radio from "../../../../../components/form/radio";
 import Layout from "../../../../../components/layout";
 import Table from "../../../../../components/table";
-import Textarea from "../../../../../components/form/Textarea";
+import Textarea from "../../../../../components/form/textarea";
 import Select from "../../../../../components/form/select";
 import {checkIcon} from "../../../../../utils/icons";
 

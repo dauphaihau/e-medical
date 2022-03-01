@@ -5,7 +5,6 @@ export const http = axios.create({
   timeout: 30000
 })
 
-export const ACCESS_TOKEN = 'accessToken'
 const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2MjFjNGIxMjVkMzAxYTQyY2MyNTJjZWYiLCJjcmVhdGVBdCI6IjIwMjItMDItMjhUMDg6NDA6MTUuNTIwWiIsImlhdCI6MTY0NjAzNzYxNSwiZXhwIjoxNjQ5NjM3NjE1fQ.qGUYq45Po7EWmfhBQo97X7peA0OEYO3orqE2rWxRkYE';
 
 http.interceptors.request.use((config) => {

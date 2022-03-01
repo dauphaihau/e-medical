@@ -13,7 +13,7 @@ const loginSchema = Yup.object().shape({
   giaoVienChuNhiem: Yup.string().required('Giáo viên chủ nhiệm không được để trống'),
 });
 
-const AddLop = () => {
+const AddClass = () => {
 
   const options = [
     {value: '2009-2010', label: '2009-2010'},
@@ -100,6 +100,6 @@ const AddLop = () => {
   );
 }
 
-export default AddLop;
+export default AddClass;
 
-AddLop.getLayout = (page) => <Layout>{page}</Layout>;
+AddClass.getLayout = (page) => <Layout>{page}</Layout>;

@@ -11,7 +11,7 @@ const TableHeadItem = ({item}) => {
 const TableRow = ({data}) => {
   return (
     <tr>
-      {data.map((item) => (<td key={item}>{item}</td>))}
+      {data.map((item) => (<td key={Math.random()}>{item}</td>))}
     </tr>
   );
 };

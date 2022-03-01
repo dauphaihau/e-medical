@@ -1,7 +1,6 @@
 import Input from "../../../components/form/input";
 import Table from "../../../components/table";
 import Layout from "../../../components/layout";
-import Card from "../../../components/card";
 import Select from "../../../components/form/select";
 import {editIcon} from "../../../utils/icons";
 import Link from "next/link";
