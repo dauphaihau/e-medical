@@ -1,44 +1,55 @@
 import {Formik, Form} from "formik";
+import swal from "sweetalert";
+import {useRouter} from "next/router";
+import {useEffect, useState} from "react";
 import * as Yup from "yup";
 
-import Select from "../../../../components/form/select";
-import Input from "../../../../components/form/input";
 import Button from "../../../../components/button";
+import Input from "../../../../components/form/input";
 import Layout from "../../../../components/layout";
 import schoolYearService from "../../../../services/organize/school-year";
+import Select from "../../../../components/form/select";
 
-const validationSchema = Yup.object().shape({
-  schoolYearName: Yup.string().required('Niên khoá không được để trống'),
-});
+const DetailSchoolYear = () => {
 
-const options = [
-  {value: '2009-2010', label: '2009-2010'},
-  {value: '2019-2012', label: '2009-2010'},
-  {value: '2009-2012', label: '2009-2010'},
-]
+  const router = useRouter();
+  const [schoolYear, setSchoolYear] = useState([]);
 
-const handleSubmitForm = async (dataSchoolYear) => {
-  console.log(dataSchoolYear);
-  try {
-    await schoolYearService.createSchoolYear(dataSchoolYear)
-    swal('Tạo Niên Khoá thanh cong')
-  } catch ({response}) {
-    console.log(response);
-  }
-};
+  const getSchoolYear = async (idSchoolYear) => {
+    try {
+      const {request, ...response} = await schoolYearService.getAllSchoolYear(idSchoolYear);
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-const AddSchoolYear = () => {
+  useEffect(async () => {
+    await getSchoolYear(router.query.id)
+  }, []);
+
+  const handleSubmitForm = async (dataUpdateSchoolYear) => {
+    console.log(dataUpdateSchoolYear);
+    try {
+      await schoolYearService.updateSchoolYear(router.query.id, dataUpdateSchoolYear);
+      await swal('Cap nhat thanh cong')
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <Formik
       validationSchema={validationSchema}
       onSubmit={handleSubmitForm}
       enableReinitialize
       initialValues={{
-        schoolYearName: '',
-        keThuaDuLieu: '',
-        thoiGianBatDau: '',
-        thoiGianKetThuc: '',
-        status: 0,
+        schoolId: schoolYear.schoolId,
+        schoolYearName: schoolYear.schoolYearName,
+        keThuaDuLieu: schoolYear,
+        thoiGianBatDau: schoolYear,
+        thoiGianKetThuc: schoolYear,
+        status: 1,
       }}
     >
       {({
@@ -48,7 +59,7 @@ const AddSchoolYear = () => {
           errors,
           setFieldValue
         }) => (
-        <Form className='form'>
+        <Form className='form' onSubmit={handleSubmit}>
           <div className='grid-container gap-8'>
             <Input
               name='schoolYearName' label='Niên khoá *'
@@ -88,9 +99,9 @@ const AddSchoolYear = () => {
         </Form>
       )}
     </Formik>
-  );
+  )
 }
+export default DetailSchoolYear
 
-export default AddSchoolYear;
+DetailSchoolYear.getLayout = (page) => <Layout>{page}</Layout>;
 
-AddSchoolYear.getLayout = (page) => <Layout>{page}</Layout>;

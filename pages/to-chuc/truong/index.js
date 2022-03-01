@@ -1,12 +1,12 @@
 import Link from "next/link";
+import {useEffect, useState} from "react";
 
 import Table from "../../../components/table";
 import Layout from "../../../components/layout";
 import Input from "../../../components/form/input";
 import Button from "../../../components/button";
 import {editIcon, deleteIcon} from "../../../utils/icons";
-import {useEffect, useState} from "react";
-import {http} from "../../../utils/setting";
+import schoolService from "../../../services/organize/school";
 
 const theadData = [
   'STT',
@@ -62,9 +62,8 @@ const SchoolList = () => {
 
   useEffect(async () => {
     try {
-      const result = await http.get(`/v1/organization/school`)
-      console.log(result);
-      alert('get Thanh Cong')
+      const {...response} = await schoolService.getAllSchool()
+      console.log(response);
     } catch (error) {
       console.log({error})
     }

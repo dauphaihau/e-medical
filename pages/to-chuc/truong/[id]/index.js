@@ -1,14 +1,15 @@
 import {Formik, Form} from "formik";
 import {useEffect, useState} from "react";
 import * as Yup from "yup";
+import swal from "sweetalert";
 import {useRouter} from "next/router";
 
 import Button from "../../../../components/button";
 import Input from "../../../../components/form/input";
 import Layout from "../../../../components/layout";
-import {http} from "../../../../utils/setting";
+import schoolService from "../../../../services/organize/school";
 
-const loginSchema = Yup.object().shape({
+const validationSchema = Yup.object().shape({
   schoolname: Yup.string().required('Tên người dùng không được để trống').min(5, 'Tên trường ít nhất là 5 ký tự').max(50, 'Tên trường tối đa là 50 ký tự'),
   address: Yup.string().required('Địa chỉ không được để trống'),
   province: Yup.string().required('Tỉnh không được để trống').email('Email không hợp lệ'),
@@ -22,10 +23,10 @@ const DetailSchool = () => {
   const router = useRouter();
   const [school, setSchool] = useState([]);
 
-  const getSchool = async (schoolId) => {
+  const getDetailSchool = async (idSchool) => {
     try {
-      const {request, ...response} = await http.get(`/v1/organization/school/${schoolId}`);
-      setSchool(response.data);
+      const {request, ...response} = await schoolService.getAllSchool(idSchool);
+      console.log(response);
     } catch (error) {
       console.log(error);
     }
@@ -33,14 +34,14 @@ const DetailSchool = () => {
 
   useEffect(async () => {
     const {id} = router.query;
-    await getSchool(id);
+    await getDetailSchool(id);
   }, []);
 
-  const handleSubmitForm = async (values) => {
-    console.log(values);
+  const handleSubmitForm = async (dataUpdateSchool) => {
+    console.log(dataUpdateSchool);
     try {
-      const {request, ...response} = await http.patch(`/v1/organization/school/${router.query.id}`);
-      setSchool(response.data);
+      await schoolService.updateSchool(router.query.id, dataUpdateSchool);
+      swal('Cap nhat thanh cong')
     } catch (error) {
       console.log(error);
     }
@@ -49,7 +50,7 @@ const DetailSchool = () => {
   return (
     <Formik
       className='my-4'
-      validationSchema={loginSchema}
+      validationSchema={validationSchema}
       onSubmit={handleSubmitForm}
       enableReinitialize
       initialValues={{

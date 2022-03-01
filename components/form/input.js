@@ -1,4 +1,3 @@
-import React from "react";
 import {ErrorMessage} from "formik";
 
 const Input = (props) => {
@@ -23,7 +22,7 @@ const Input = (props) => {
         className={`form-control-input ${className}`}
         {...others}
       />
-      <ErrorMessage name={name} />
+      <ErrorMessage className='text-danger' name={name} />
     </div>
   )
 };

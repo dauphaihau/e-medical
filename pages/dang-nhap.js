@@ -1,9 +1,10 @@
-import Router, { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import {useRouter} from "next/router";
+import {useState} from "react";
 import Moment from "moment";
 import Image from "next/image";
 import Link from "next/link";
-import {Formik, Form, Field} from "formik";
+import swal from "sweetalert";
+import {Formik, Form} from "formik";
 import Cookie from "cookie-cutter";
 import * as Yup from "yup";
 
@@ -24,7 +25,7 @@ const loginSchema = Yup.object().shape({
     .required('OTP không được để trống')
 });
 
-export default function Login () {
+export default function Login() {
   const router = useRouter();
   const [requestTime, setRequestTime] = useState({
     time: null,
@@ -33,14 +34,14 @@ export default function Login () {
 
   const handleSubmitForm = async (values) => {
     try {
-      const { request, ...response } = await accountService.loginViaOTP(values.phoneNumber,values.pin);
-      
+      const {request, ...response} = await accountService.loginViaOTP(values.phoneNumber, values.pin);
+
       Cookie.set("accessToken", response.data?.accessToken, {
         path: "/",
         expires: Moment().add(1, "years").toDate(),
       });
       await router.reload();
-    } catch ({ response }) {
+    } catch ({response}) {
       switch (response.data.message) {
         case "Wrong PIN":
           swal("", "Mã PIN chưa đúng", "error", {
@@ -67,6 +68,7 @@ export default function Login () {
           });
           break;
       }
+
     }
   };
 
@@ -109,7 +111,7 @@ export default function Login () {
               </Link>
             </div>
             <div className='text-center my-8'>
-              <h2 className='text-[2rem] text-primary pb-8'>Theo dõi bệnh nhân Covid-19</h2>
+              <h2 className='text-[2rem] text-primary pb-8'>Y Tế Học Đường - eDoctor</h2>
               <p>Vui lòng nhập số điện thoại để tiếp tục</p>
             </div>
             <Input

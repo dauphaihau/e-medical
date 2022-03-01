@@ -9,6 +9,9 @@ import Layout from "../../../../components/layout";
 import {useEffect, useState} from "react";
 import {useRouter} from "next/router";
 import {http} from "../../../../utils/setting";
+import staffService from "../../../../services/personnel/staff";
+import schoolYearService from "../../../../services/organize/school-year";
+import swal from "sweetalert";
 
 const phoneRegExp = /(([03+[2-9]|05+[6|8|9]|07+[0|6|7|8|9]|08+[1-9]|09+[1-4|6-9]]){3})+[0-9]{7}\b/
 const pinRegExp = /^\d{4}$/
@@ -47,9 +50,9 @@ const DetailStaff = () => {
   const router = useRouter();
   const [staff, setStaff] = useState([]);
 
-  const getStaff = async (staffId) => {
+  const getStaff = async (idStaff) => {
     try {
-      const { request, ...response } = await http.get(`/v1/staff/${staffId}`);
+      const {request, ...response} = await staffService.getAllStaff(idStaff);
       setStaff(response.data);
     } catch (error) {
       console.log(error);
@@ -57,12 +60,17 @@ const DetailStaff = () => {
   };
 
   useEffect(async () => {
-    const { id } = router.query;
-    await getStaff(id);
+    await getStaff(router.query.id);
   }, []);
 
-  const handleSubmitForm = (values) => {
-    console.log(values);
+  const handleSubmitForm = async (dataUpdateStaff) => {
+    console.log(dataUpdateStaff);
+    try {
+      await staffService.updateStaff(router.query.id, dataUpdateStaff);
+      await swal('Cap nhat thanh cong')
+    } catch (error) {
+      console.log({error});
+    }
   };
 
   return (

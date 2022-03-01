@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import Head from "next/head";
 import _ from "lodash";
 
@@ -14,23 +14,22 @@ const Layout = ({children}) => {
   const { user, setUser } = useAuth();
   return (
     <>
-      <Head>
-        <title>Y Tế Học Đường - eDoctor</title>
-        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-      </Head>
-      {user && !_.isEmpty(user)? (
+      {/*<Head>*/}
+      {/*  <title>Y Tế Học Đường - eDoctor</title>*/}
+      {/*  <meta name="viewport" content="initial-scale=1.0, width=device-width" />*/}
+      {/*</Head>*/}
+      {/*{user && !_.isEmpty(user)? (*/}
         <>
-          <Header stateSidebar={stateSideBar} setStateSidebar={setStateSideBar}/>
           <Sidebar stateSidebar={stateSideBar}/>
+          <Header stateSidebar={stateSideBar} setStateSidebar={setStateSideBar}/>
           <Content stateSidebar={stateSideBar}>
             {children}
           </Content>
         </>
-      )
-      : (
-        <>{children}</>
-      )}
-      
+       {/*)*/}
+       {/*: (*/}
+       {/*  <>{children}</>*/}
+       {/*)}*/}
     </>
   );
 }

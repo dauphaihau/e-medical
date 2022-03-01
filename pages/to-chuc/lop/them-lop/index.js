@@ -5,13 +5,22 @@ import Select from "../../../../components/form/select";
 import Input from "../../../../components/form/input";
 import Button from "../../../../components/button";
 import Layout from "../../../../components/layout";
+import classService from "../../../../services/organize/class";
 
-const loginSchema = Yup.object().shape({
-  tenLop: Yup.string().required('Tên lớp không được để trống'),
-  nienKhoa: Yup.string().required('Tên khối không được để trống'),
-  tenKhoi: Yup.string().required('Niên khoá không được để trống'),
+const validationSchema = Yup.object().shape({
+  className: Yup.string().required('Tên lớp không được để trống'),
+  schoolYearId: Yup.string().required('Niên khoá không được để trống'),
+  tenKhoi: Yup.string().required('Tên khối không được để trống'),
   giaoVienChuNhiem: Yup.string().required('Giáo viên chủ nhiệm không được để trống'),
 });
+
+// {
+//   "schoolId": "string",
+//   "schoolYearId": "string",
+//   "parentId": "string",
+//   "className": "string",
+//   "status": "1"
+// }
 
 const AddClass = () => {
 
@@ -21,8 +30,14 @@ const AddClass = () => {
     {value: '2009-2012', label: '2009-2010'},
   ]
 
-  const handleSubmitForm = (values) => {
-    console.log(values);
+  const handleSubmitForm = async (dataClass) => {
+    console.log(dataClass);
+    try {
+      await classService.createClass(dataClass)
+      swal('Tạo lớp thành công')
+    } catch ({response}) {
+      console.log(response);
+    }
   };
 
   return (
@@ -40,12 +55,12 @@ const AddClass = () => {
         </Button>
       </div>
       <Formik
-        validationSchema={loginSchema}
+        validationSchema={validationSchema}
         onSubmit={handleSubmitForm}
         enableReinitialize
         initialValues={{
-          tenLop: '',
-          nienKhoa: '',
+          className: '',
+          schoolYearId: '',
           tenKhoi: '',
           giaoVienChuNhiem: '',
         }}
@@ -57,20 +72,20 @@ const AddClass = () => {
             errors,
             setFieldValue
           }) => (
-          <Form className='form' onSubmit={handleSubmit}>
+          <Form className='form'>
             <div className='grid-container'>
               <Input
-                name='tenLop' label='Tên lớp'
-                error={errors.tenLop && touched.tenLop ? errors.tenLop : null}
+                name='className' label='Tên lớp'
+                error={errors.className && touched.className ? errors.className : null}
                 onChange={handleChange}
               />
               <Select
                 label='Niên khoá'
-                name='nienKhoa'
-                onChange={e => setFieldValue('nienKhoa', e.value)}
+                name='schoolYearId'
+                onChange={e => setFieldValue('schoolYearId', e.value)}
                 options={options}
                 placeholder='Chọn niên khoá'
-                error={errors.nienKhoa && touched.nienKhoa ? errors.nienKhoa : null}
+                error={errors.schoolYearId && touched.schoolYearId ? errors.schoolYearId : null}
               />
               <Select
                 label='Khối'

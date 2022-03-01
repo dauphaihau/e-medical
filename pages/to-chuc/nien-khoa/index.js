@@ -1,10 +1,12 @@
 import Link from "next/link";
+import {useEffect} from "react";
 
 import Input from "../../../components/form/input";
 import Table from "../../../components/table";
 import Layout from "../../../components/layout";
 import Button from "../../../components/button";
 import {editIcon} from "../../../utils/icons";
+import schoolYearService from "../../../services/organize/school-year";
 
 const theadData = [
   'STT',
@@ -31,7 +33,17 @@ const tbodyData = [
   },
 ];
 
-const NienKhoaList = () => {
+const SchoolYearList = () => {
+
+  useEffect(async () => {
+    try {
+      const {...response} = await schoolYearService.getAllSchoolYear()
+      console.log(response);
+    } catch (error) {
+      console.log({error})
+    }
+  }, []);
+
   return (
     <>
       <h2>Niên khoá</h2>
@@ -48,6 +60,6 @@ const NienKhoaList = () => {
   );
 }
 
-export default NienKhoaList;
+export default SchoolYearList;
 
-NienKhoaList.getLayout = (page) => <Layout>{page}</Layout>;
+SchoolYearList.getLayout = (page) => <Layout>{page}</Layout>;

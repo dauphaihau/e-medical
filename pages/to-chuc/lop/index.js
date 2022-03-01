@@ -1,8 +1,13 @@
+import {useEffect} from "react";
+import Link from "next/link";
+
 import Input from "../../../components/form/input";
 import Table from "../../../components/table";
 import Select from "../../../components/form/select";
 import Layout from "../../../components/layout";
 import {editIcon} from "../../../utils/icons";
+import classService from "../../../services/organize/class";
+import Button from "../../../components/button";
 
 const theadData = [
   'STT',
@@ -30,8 +35,17 @@ const options = [
   {value: 'vanilla', label: 'Vanilla'}
 ]
 
-
 const ClassList = () => {
+
+  useEffect(async () => {
+    try {
+      const {...response} = await classService.getAllClass()
+      console.log(response);
+    } catch (error) {
+      console.log({error})
+    }
+  }, []);
+
   return (
     <>
       <h2>Danh sách lớp học</h2>
@@ -48,6 +62,11 @@ const ClassList = () => {
           placeholder='Khối'
         />
       </div>
+      <Link href='/to-chuc/lop/them-lop'>
+        <a>
+          <Button>Tạo lớp</Button>
+        </a>
+      </Link>
       <div className="mt-8 drop-shadow-2xl overflow-x-auto lg:overflow-x-visible">
         <Table theadData={theadData} tbodyData={tbodyData}/>
       </div>

@@ -4,7 +4,7 @@ import * as Yup from "yup";
 import Button from "../../../../components/button";
 import Input from "../../../../components/form/input";
 import Layout from "../../../../components/layout";
-import {http} from "../../../../utils/setting";
+import staffService from "../../../../services/personnel/staff";
 
 const phoneRegExp = /(([03+[2-9]|05+[6|8|9]|07+[0|6|7|8|9]|08+[1-9]|09+[1-4|6-9]]){3})+[0-9]{7}\b/
 const pinRegExp = /^\d{4}$/
@@ -27,14 +27,13 @@ const loginSchema = Yup.object().shape({
 
 const AddStaff = () => {
 
-  const handleSubmitForm = async (values) => {
-    console.log(values);
+  const handleSubmitForm = async (dataStaff) => {
+    console.log(dataStaff);
     try {
-      const result = await http.post(`/v1/account/register`, values)
-      console.log(result);
-      alert('tao thanh cong')
-    } catch (error) {
-      console.log({error})
+      await staffService.createStaff(dataStaff)
+      alert('Tạo nhân viên thành công')
+    } catch ({response}) {
+      console.log(response);
     }
   };
 
@@ -67,47 +66,47 @@ const AddStaff = () => {
           <div className='grid lg:grid-cols-2 gap-4 lg:w-1/2'>
             <Input
               label='Tên nhân viên' name='username'
-              error={errors.username && touched.username ? errors.username : null}
+              // error={errors.username && touched.username ? errors.username : null}
               onChange={handleChange}
             />
             <Input
               label='Mật khẩu' name='password'
-              error={errors.password && touched.password ? errors.password : null}
+              // error={errors.password && touched.password ? errors.password : null}
               onChange={handleChange}
             />
             <Input
               label='Mã Pin' name='pin'
-              error={errors.pin && touched.pin ? errors.pin : null}
+              // error={errors.pin && touched.pin ? errors.pin : null}
               onChange={handleChange}
             />
             <Input
               label='Số điện thoại' name='phoneNumber'
-              error={errors.phoneNumber && touched.phoneNumber ? errors.phoneNumber : null}
+              // error={errors.phoneNumber && touched.phoneNumber ? errors.phoneNumber : null}
               onChange={handleChange}
             />
             <Input
               label='Email' name='email'
-              error={errors.email && touched.email ? errors.email : null}
+              // error={errors.email && touched.email ? errors.email : null}
               onChange={handleChange}
             />
             <Input
               label='Nguồn' name='source'
-              error={errors.source && touched.source ? errors.source : null}
+              // error={errors.source && touched.source ? errors.source : null}
               onChange={handleChange}
             />
             <Input
               label='Hoàn cảnh' name='medium'
-              error={errors.medium && touched.medium ? errors.medium : null}
+              // error={errors.medium && touched.medium ? errors.medium : null}
               onChange={handleChange}
             />
             <Input
               label='Chiến dịch' name='campaign'
-              error={errors.campaign && touched.campaign ? errors.campaign : null}
+              // error={errors.campaign && touched.campaign ? errors.campaign : null}
               onChange={handleChange}
             />
             <Input
               label='Nội dung' name='content'
-              error={errors.content && touched.content ? errors.content : null}
+              // error={errors.content && touched.content ? errors.content : null}
               onChange={handleChange}
             />
           </div>
