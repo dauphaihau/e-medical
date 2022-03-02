@@ -1,27 +1,30 @@
 import apiRequest from "../request";
 
 const api = apiRequest.init("eschool");
-const classService = {
-  getAllClass: async () => {
-    const {...response} = await api.get(
-      `/organization/classroom/`,
-    );
+export const classService = {
+  list: async (params) => {
+    try{
+      const {...response} = await api.get('/organization/classroom/', {params});
+      return response.data;
+    }
+    catch(e){
+      return false
+    }
   },
   createClass: async (dataClass) => {
     return await api.post(
-      "/organization/classroom", dataClass
+      "organization/classroom", dataClass
     );
   },
   deleteClass: async (idClass) => {
     return await api.delete(
-      `/organization/classroom/${idClass}`,
+      `organization/classroom/${idClass}`,
     );
   },
   updateClass: async (idClass, dataUpdateClass) => {
     console.log(dataUpdateClass);
     return await api.patch(
-      `/organization/classroom/${idClass}`, dataUpdateClass
+      `organization/classroom/${idClass}`, dataUpdateClass
     );
   },
 }
-export default classService;

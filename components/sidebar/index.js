@@ -12,10 +12,7 @@ const SubMenu = ({open, items}) => {
         <li key={item.title} className={router.pathname == item.link ? 'active' : ''}>
           <Link passHref href={item.link}>
             <a>
-              <i className="icon-Commit pr-[20px] pl-[10px] relative top-[-2px]">
-                <span className="path1"/>
-                <span className="path2"/>
-              </i>
+              <i className="icon-Commit"><span className="path1"></span><span className="path2"></span></i>
               {item.title}
             </a>
           </Link>
@@ -50,22 +47,16 @@ const ArrowDropdown = ({open, stateSidebar}) => {
 const Item = ({item, stateSidebar}) => {
   const [active, setActive] = useState(false)
   const router = useRouter();
-
-  const handleActive = (item) => router.pathname == item.link ? 'active' : '';
-
   return (
-    <li className={handleActive(item)}>
+    <li className={router.pathname == item.link ? 'active' : ''}>
       <Link href={item.link ? item.link : '#'}>
         <div onClick={() => setActive(!active)}>
-          <i className={`text-gray-400 ${item.icon} ${handleActive(item)}`}>
-            <span className="path1"/>
-            <span className="path2"/>
-          </i>
+          <i className={"text-gray-400 " + item.icon}><span className="path1"></span><span className="path2"></span></i>
           <a>
-            <span className={`${stateSidebar ? 'md:hidden' : ''} ${handleActive(item)}`}>{item.title}</span>
+            <span className={`${stateSidebar ? 'md:hidden' : ''} sidebar-menu-title`}>{item.title}</span>
           </a>
           {item.subNav && <ArrowDropdown stateSidebar={stateSidebar} open={active}/>}
-          {stateSidebar ? '' : <SubMenu items={item.subNav} open={active}/>}
+          <SubMenu items={item.subNav} open={active}/>
         </div>
       </Link>
     </li>
@@ -74,16 +65,18 @@ const Item = ({item, stateSidebar}) => {
 
 const Sidebar = ({stateSidebar}) => {
   return (
-    <aside className={`sidebar ${stateSidebar ? 'sidebar-open w-75 md:w-16' : 'sidebar-open'}`}>
-      <ul className='sidebar-menu'>
-        {MENU.staff_agent.map(item => (
-          <Item key={item.id} item={item} stateSidebar={stateSidebar}/>
-        ))}
-      </ul>
-      <div className={stateSidebar ? 'sidebar-copyright md:hidden' : 'sidebar-copyright hidden md:block'}>
-        <div>
-          <div><strong>Ứng dụng được phát triển bởi</strong></div>
-          <div><a href="https://edoctor.io">eDoctor</a> © 2021</div>
+    <aside className={`sidebar ${stateSidebar ? 'sidebar-open w-75 md:w-16' : 'sidebar-open w-0 md:w-[16.8rem] '}`}>
+      <div>
+        <ul className='sidebar-menu' data-widget='tree'>
+          {MENU.staff_agent.map( (item, idz) => (
+            <Item key={idz} item={item} stateSidebar={stateSidebar}/>
+          ))}
+        </ul>
+        <div className={stateSidebar ? 'sidebar-copyright md:hidden' : 'sidebar-copyright hidden md:block'}>
+          <div>
+            <div><strong>Ứng dụng được phát triển bởi</strong></div>
+            <div><a href="https://edoctor.io">eDoctor</a> © 2021</div>
+          </div>
         </div>
       </div>
     </aside>

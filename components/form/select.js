@@ -24,11 +24,9 @@ const Select = (props) => {
         {...others}
         options={options}
       />
-      {name && (
-        <div className='text-danger mt-[5px]'>
-          <ErrorMessage name={name}/>
-        </div>
-      )}
+      <div className='text-danger mt-[5px]'>
+        {(name) && <ErrorMessage name={name}/>}      
+      </div>
     </div>
   );
 }

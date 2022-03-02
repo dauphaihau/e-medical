@@ -19,8 +19,8 @@ const Layout = ({children}) => {
       </Head>
       {user && !_.isEmpty(user)? (
         <>
-          <Sidebar stateSidebar={stateSideBar}/>
           <Header stateSidebar={stateSideBar} setStateSidebar={setStateSideBar}/>
+          <Sidebar/>
           <Content stateSidebar={stateSideBar}>
             {children}
           </Content>
