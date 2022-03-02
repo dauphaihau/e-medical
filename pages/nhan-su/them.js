@@ -11,8 +11,8 @@ import Select from "@components/form/select";
 
 const phoneRegExp = /(([03+[2-9]|05+[6|8|9]|07+[0|6|7|8|9]|08+[1-9]|09+[1-4|6-9]]){3})+[0-9]{7}\b/
 const validationSchema = Yup.object().shape({
-  school: Yup.string().required(),
-  class: Yup.string().required(),
+  schoolId: Yup.string().required(),
+  classId: Yup.string().required(),
   fullName: Yup.string()
     .min(5, 'Tên trường ít nhất là 5 ký tự')
     .max(50, 'Tên trường tối đa là 50 ký tự')
@@ -101,8 +101,8 @@ const AddStaff = () => {
       onSubmit={handleSubmitForm}
       enableReinitialize
       initialValues={{
-        school: '',
-        class: '',
+        schoolId: '',
+        classId: '',
         fullName: '',
         address: '',
         phoneNumber: '',
@@ -122,18 +122,18 @@ const AddStaff = () => {
           <div className='grid lg:grid-cols-2 gap-x-4'>
             <Select
               label='Tên trường'
-              name='school'
+              name='schoolId'
               options={listSchool}
               onChange={(e) => {
                 onChangeSchool(e.value);
-                setFieldValue('school', e.value);
+                setFieldValue('schoolId', e.value);
               }}
             />
             <Select
               label='Lớp chủ nhiệm'
-              name='class'
+              name='classId'
               options={listClass}
-              onChange={(e) => setFieldValue('class', e.value)}
+              onChange={(e) => setFieldValue('classId', e.value)}
             />
           </div>
           <Input

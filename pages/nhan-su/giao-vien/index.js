@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import {useRouter} from "next/router";
 import { memberService } from "@services";
+import Link from 'next/link'
+import { PencilAltIcon } from '@heroicons/react/solid';
 import Input from "@components/form/input";
 
 const Teacher = () => {
@@ -25,20 +27,26 @@ const Teacher = () => {
           <table className='table'>
             <thead>
             <tr>
-              <th>STT</th>
-              <th>Nhân viên</th>
+              <th className="w-3">STT</th>
+              <th className="text-left">Nhân viên</th>
+              <th className="text-left">Phone</th>
               <th>Lớp CN</th>
-              <th></th>
+              <th className="w-5"></th>
             </tr>
             </thead>
             <tbody>
               {members?.total?
                 members.data.map( (row, idz) => (
-                  <tr>
+                  <tr key={idz}>
                     <td>{idz+1}</td>
                     <td>{row.fullName}</td>
-                    <td></td>
-                    <td></td>
+                    <td>{row.phoneNumber}</td>
+                    <td>{(row.schoolWorking && row.schoolWorking.length) ? row.schoolWorking[0].className : ''}</td>
+                    <td>
+                      <Link href={router.pathname + '/' + row._id}>
+                        <a><PencilAltIcon className="h-5 w-5 text-primary"/></a>
+                      </Link>
+                    </td>
                   </tr>
                 ))
               :(

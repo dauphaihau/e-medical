@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@heroicons/react": "^1.0.6",
     "axios": "^0.26.0",
     "cookie-cutter": "^0.2.0",
     "formik": "^2.2.9",
