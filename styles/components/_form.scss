@@ -3,9 +3,11 @@
 // form-control: ví dụ https://getbootstrap.com/docs/5.1/forms/form-control/ chuan bi css
 
 .form {
-  @apply mx-4 ml-0 mr-0 p-6 rounded-lg shadow-lg bg-white pb-4;
+  @apply mx-4 ml-0 mr-0 p-6 rounded-lg shadow-lg bg-white;
+  box-shadow: 0 3px 5px 1px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e4e6ef;
   h3 {
-    @apply border-b-2 mb-12 pb-4 text-xl;
+    @apply border-b-2 mb-4 pb-4 text-xl leading-[1.2rem] text-[1.28rem];
   }
 }
 
@@ -22,10 +24,10 @@
 }
 
 .form-group {
-  @apply mb-8 lg:mb-4;
+  @apply mb-4;
 
   label {
-    @apply block mb-2 text-sm font-medium;
+    @apply block mb-2 text-base font-medium;
   }
 
   p {
@@ -36,6 +38,7 @@
 
 .form-control-input {
   @apply
+    h-[33.5px]
   border border-[#8d8d8d]
   text-black text-base
   rounded-[5px]
@@ -74,6 +77,8 @@
 
 // custom react-select
 .css-1s2u09g-control {
-  @apply rounded-md h-[39px]  ;
+  @apply rounded-md h-[39px] ;
+  min-height: 0 !important;
+  height: 34px;
   border: 1px solid #8d8d8d !important;
 }

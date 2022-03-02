@@ -25,7 +25,7 @@ const Student = () => {
     <>
       <h4>Hồ sơ học sinh</h4>
       <div className="grid-container">
-        <Input name="name" placeholder="Tìm kiếm"/>
+        <Input placeholder="Tìm kiếm"/>
         <Select options={['one', 'two', 'three']}/>
         <Select options={['one', 'two', 'three']}/>
         <Select options={['one', 'two', 'three']}/>

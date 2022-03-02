@@ -1,4 +1,5 @@
 import {useEffect} from "react";
+import Link from "next/link";
 
 import Input from "../../../components/form/input";
 import Table from "../../../components/table";
@@ -6,6 +7,7 @@ import Select from "../../../components/form/select";
 import Layout from "../../../components/layout";
 import {editIcon} from "../../../utils/icons";
 import classService from "../../../services/organize/class";
+import Button from "../../../components/button";
 
 const theadData = [
   'STT',
@@ -22,7 +24,7 @@ const tbodyData = [
   },
   {
     id: "2",
-    items: ["1", "A1", '10', 'Hau', editIcon],
+    items: ["2", "A1", '10', 'Hau', editIcon],
   },
 ];
 
@@ -48,21 +50,23 @@ const ClassList = () => {
     <>
       <h4>Tổ chức</h4>
       <div className='grid-container'>
-        <Input name='search' placeholder='Tìm kiếm...'/>
+        <Input placeholder='Tìm kiếm...'/>
         <Select
-          name='nienKhoa'
           options={options}
           placeholder='Chọn niên khoá'
         />
         <Select
-          name='khoi'
           options={options}
           placeholder='Khối'
         />
       </div>
-      <div className="mt-8 drop-shadow-2xl overflow-x-auto lg:overflow-x-visible">
+      <Link href='/to-chuc/lop/them-lop'>
+        <a>
+          <Button>Thêm mới</Button>
+        </a>
+      </Link>
+      <div className="mt-8 overflow-x-auto lg:overflow-x-visible">
         <Table
-          pathLinkBtnAdd='/to-chuc/lop/them-lop'
           titleTable='Lớp'
           theadData={theadData} tbodyData={tbodyData}
         />

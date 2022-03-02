@@ -28,7 +28,7 @@ const Summary = () => {
           <p className='leading-[3.5rem] mr-4 text-base'>Niên khoá</p>
           <Select
             width='w-[250px]'
-            name='nienKhoa'
+            // name='nienKhoa'
             options={options}
             placeholder='Chọn niên khoá'
           />

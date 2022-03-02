@@ -1,9 +1,19 @@
+import {useState} from "react";
+import Image from 'next/image'
+import Link from 'next/link'
+
 import logo from "../../assets/images/logo.svg";
 import onlyLogo from "../../assets/images/onlylogo.png";
 
-import Image from 'next/image'
+const navigation = [
+  {name: 'Trang cá nhân', href: '/'},
+  {name: 'Cài đặt', href: '/'},
+  {name: 'Đăng xuất', href: '/'},
+]
 
 const Header = ({stateSidebar, setStateSidebar}) => {
+  const [dropdown, setDropdown] = useState(false)
+
   return (
     <div className="header">
       {stateSidebar ? (
@@ -34,11 +44,24 @@ const Header = ({stateSidebar, setStateSidebar}) => {
           </button>
         </div>
         <div className='navbar-right'>
-          <div>
-            <p>Tran Vo Cong Hau</p>
-            <p>CBQL</p>
+          <div className='navbar-right__info'>
+            <div>
+              <p>Tran Vo Cong Hau</p>
+              <p>CBQL</p>
+            </div>
+            <img src="https://i.pravatar.cc/300" className='cursor-pointer' alt='avatar' onClick={() => setDropdown(!dropdown)}/>
           </div>
-          <img src="https://i.pravatar.cc/300"/>
+          <div className={`navbar-right__profile ${dropdown ? 'block' : 'hidden'}`}>
+            <div>
+              <div role="menu" aria-orientation="vertical" aria-labelledby="user-menu">
+                {navigation.map(item => (
+                  <Link href={item.href} key={item.name}>
+                    <a>{item.name}</a>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

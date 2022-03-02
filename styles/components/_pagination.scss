@@ -1,24 +1,20 @@
 .pagination {
-  @apply my-4;
+  @apply mt-4 flex justify-between;
 
-  .pagination__entries {
-    @apply mt-[12px]
-  }
-
-  .pagination__num {
-    @apply flex items-center justify-end mb-4;
+  &__num {
+    @apply flex items-center justify-end;
 
     &__item {
-      @apply inline-block mb-[6px] mb-8 flex flex-row items-center;
+      @apply inline-block mb-[6px] flex flex-row items-center;
 
       p {
         @apply text-black cursor-pointer hover:bg-primary hover:text-white duration-300 transition ease-in-out rounded;
-        padding: 12px 16px;
+        padding: 7px 14px;
       }
 
       a {
         @apply cursor-pointer mx-2 text-center rounded-sm text-white bg-primary;
-        padding: 12px 16px;
+        padding: 7px 14px;
       }
     }
   }

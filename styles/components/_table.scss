@@ -4,35 +4,44 @@
 // }
 
 .container-table {
-  @apply w-[1000px] lg:w-full relative h-auto bg-white flex flex-col mr-[20px] rounded-xl
-  shadow-2xl pt-[20px] p-6;
-  div {
-    @apply flex justify-between mb-4;
+  @apply w-fit lg:w-full relative h-auto bg-white flex flex-col mr-[20px] rounded-xl
+  pt-[20px] p-6;
+  box-shadow: 0 3px 5px 1px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e4e6ef;
+
+  .table {
+    @apply mt-[6px] mb-[6px] w-[1000px] lg:w-full;
+
+    thead {
+      tr td {
+        @apply text-center font-bold w-auto mt-[50px] h-[50px] p-4 text-black select-none ;
+        height: 50px !important;
+        border-bottom: 1px solid black;
+      }
+    }
+
+    tbody {
+      tr {
+        @apply hover:text-primary ;
+        td {
+          @apply text-center text-black select-none w-auto p-4 items-center h-[52.8px];
+          border-bottom: 1px solid #DDDDDD;
+          vertical-align: middle;
+        }
+      }
+    }
   }
 }
 
-.table {
-  @apply mt-[6px] mb-[6px] w-[1000px] lg:w-full;
 
-  tr th {
-    @apply h-[68px] w-auto mt-[50px] pb-2 text-black select-none;
-    border-bottom: 1px solid black;
-  }
-
-  tr td {
-    @apply text-black select-none w-auto items-center h-[68px];
-    border-bottom: 1px solid #DDDDDD;
-  }
-}
-
-.action > .ls-action {
-  display: none;
-}
-
-.action:focus + .ls-action {
-  display: block;
-}
-
-.btn-action:focus + .ls-action {
-  display: block;
-}
+//.action > .ls-action {
+//  display: none;
+//}
+//
+//.action:focus + .ls-action {
+//  display: block;
+//}
+//
+//.btn-action:focus + .ls-action {
+//  display: block;
+//}
