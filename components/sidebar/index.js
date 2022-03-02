@@ -2,28 +2,17 @@ import {useState} from 'react';
 import {useRouter} from "next/router";
 import Link from "next/link";
 
-import {MENU} from "../../constants";
+import {MENU} from "@constants";
 
 const SubMenu = ({open, items}) => {
   const router = useRouter();
   return (
     <ul className={`${!open ? 'hidden' : ''} sidebar-submenu`}>
       {items?.map((item) => (
-        <li key={item.title} className={router.pathname == item.link ? 'active' : ''}>
+        <li key={item.title} className={router.pathname == item.link ? 'submenu-active' : ''}>
           <Link passHref href={item.link}>
             <a>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6 inline mr-[10px]"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1V8a1 1 0 00-1-1H8z"
-                  clipRule="evenodd"
-                />
-              </svg>
+              <i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>
               {item.title}
             </a>
           </Link>
@@ -38,7 +27,7 @@ const ArrowDropdown = ({open, stateSidebar}) => {
     <div className={`${stateSidebar && 'md:hidden'}`}>
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        className={open ? 'hidden' : 'sidebar-dropdown'}
+        className={open ? 'hidden' : 'sidebar-dropdown right-2'}
         fill="none" viewBox="0 0 24 24"
         stroke="currentColor"
       >
@@ -46,7 +35,7 @@ const ArrowDropdown = ({open, stateSidebar}) => {
       </svg>
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        className={open ? 'sidebar-dropdown' : 'hidden'}
+        className={open ? 'sidebar-dropdown right-2' : 'hidden'}
         fill="none" viewBox="0 0 24 24" stroke="currentColor"
       >
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7"/>
@@ -59,16 +48,12 @@ const Item = ({item, stateSidebar}) => {
   const [active, setActive] = useState(false)
   const router = useRouter();
   return (
-    <li className={router.pathname == item.link ? 'active' : ''}>
+    <li className={router.pathname == item.link ? 'submenu-active' : ''}>
       <Link href={item.link ? item.link : '#'}>
-        <div  onClick={() => setActive(!active)}>
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 inline mr-4" fill="none" viewBox="0 0 24 24"
-               stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                  d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"/>
-          </svg>
+        <div onClick={() => setActive(!active)}>
+          <i className={"text-gray-400 " + item.icon}><span className="path1"></span><span className="path2"></span></i>
           <a>
-            <span className={`${stateSidebar ? 'md:hidden' : ''} sidebar-menu-title`}>{item.title}</span>
+            <span className={stateSidebar ? 'md:hidden' : ''}>{item.title}</span>
           </a>
           {item.subNav && <ArrowDropdown stateSidebar={stateSidebar} open={active}/>}
           {stateSidebar ? <SubMenu items={item.subNav} open={active}/> : <SubMenu items={item.subNav} open={active}/>}
@@ -80,7 +65,7 @@ const Item = ({item, stateSidebar}) => {
 
 const Sidebar = ({stateSidebar}) => {
   return (
-    <aside className={`sidebar ${stateSidebar ? 'sidebar-open w-75 md:w-16' : 'sidebar-open w-0 md:w-[16.8rem] '}`}>
+    <aside className={`sidebar ${stateSidebar ? 'sidebar-open w-75 md:w-16' : 'sidebar-open w-0 md:w-75 '}`}>
       <div>
         <ul className='sidebar-menu' data-widget='tree'>
           {MENU.staff_agent.map(item => (
