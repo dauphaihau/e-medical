@@ -2,7 +2,7 @@ import {useState} from 'react';
 import {useRouter} from "next/router";
 import Link from "next/link";
 
-import {MENU} from "../../constants";
+import {MENU} from "@constants";
 
 const SubMenu = ({open, items}) => {
   const router = useRouter();
@@ -12,18 +12,7 @@ const SubMenu = ({open, items}) => {
         <li key={item.title} className={router.pathname == item.link ? 'submenu-active' : ''}>
           <Link passHref href={item.link}>
             <a>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6 inline mr-4"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1V8a1 1 0 00-1-1H8z"
-                  clipRule="evenodd"
-                />
-              </svg>
+              <i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>
               {item.title}
             </a>
           </Link>
@@ -62,11 +51,7 @@ const Item = ({item, stateSidebar}) => {
     <li className={router.pathname == item.link ? 'submenu-active' : ''}>
       <Link href={item.link ? item.link : '#'}>
         <div onClick={() => setActive(!active)}>
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 inline mr-4" fill="none" viewBox="0 0 24 24"
-               stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                  d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"/>
-          </svg>
+          <i className={"text-gray-400 " + item.icon}><span className="path1"></span><span className="path2"></span></i>
           <a>
             <span className={stateSidebar ? 'md:hidden' : ''}>{item.title}</span>
           </a>

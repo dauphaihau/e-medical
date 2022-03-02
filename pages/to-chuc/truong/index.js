@@ -1,12 +1,11 @@
 import Link from "next/link";
 import {useEffect, useState} from "react";
 
-import Table from "../../../components/table";
-import Layout from "../../../components/layout";
-import Input from "../../../components/form/input";
-import Button from "../../../components/button";
-import {editIcon, deleteIcon} from "../../../utils/icons";
-import schoolService from "../../../services/organize/school";
+import Table from "@components/table";
+import Layout from "@components/layout";
+import Input from "@components/form/input";
+import Button from "@components/button";
+import schoolService from "@services/organize/school";
 
 const theadData = [
   'STT',
@@ -21,11 +20,11 @@ const theadData = [
 const tbodyData = [
   {
     id: "1",
-    items: ['1', "Harvard", "2000-2001", "A1", '10', '10/20/1990', '10/20/1991', editIcon, deleteIcon],
+    items: ['1', "Harvard", "2000-2001", "A1", '10', '10/20/1990', '10/20/1991', '', ''],
   },
   {
     id: "2",
-    items: ["2", "Harvard", "2000-2001", "A1", '10', '10/20/1990', '10/20/1991', editIcon, deleteIcon],
+    items: ["2", "Harvard", "2000-2001", "A1", '10', '10/20/1990', '10/20/1991', '', ''],
   },
 ];
 

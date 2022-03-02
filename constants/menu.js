@@ -4,7 +4,7 @@ export const MENU = {
       title: "Trang chính",
       link: "/",
       roles: ["agent", "manager", "admin"],
-      icon: "icon-Layout-4-blocks",
+      icon: 'icon-Layout-4-blocks',
     },
     {
       title: "Danh sách CBQL",
@@ -109,7 +109,7 @@ export const MENU = {
       title: "Tổ chức",
       // link: "/to-chuc",
       roles: ["manager", "admin"],
-      icon: "mdi mdi-account-circle",
+      icon: "icon-Library",
       subNav: [
         {
           id: 2.1,
@@ -146,14 +146,14 @@ export const MENU = {
       title: "Quản lý hồ sơ học sinh",
       link: "/hoc-sinh",
       roles: ["agent", "manager", "admin"],
-      icon: "mdi mdi-clipboard-account",
+      icon: "icon-User",
     },
     {
       id: 4,
       title: "Quản lý nhân sự trường",
       // link: "/nhan-su",
       roles: ["manager", "admin"],
-      icon: "mdi mdi-account-box",
+      icon: "icon-File-plus",
       subNav: [
         {
           id: 4.1,
