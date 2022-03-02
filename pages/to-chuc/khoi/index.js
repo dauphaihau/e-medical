@@ -1,8 +1,11 @@
+import Link from "next/link";
+
 import Input from "../../../components/form/input";
 import Table from "../../../components/table";
 import Layout from "../../../components/layout";
 import Select from "../../../components/form/select";
 import {editIcon} from "../../../utils/icons";
+import Button from "../../../components/button";
 
 const theadData = [
   'STT',
@@ -20,20 +23,12 @@ const tbodyData = [
     items: ["1", "A", "A1", '100', 'Nguyen Van A', editIcon],
   },
   {
-    id: "1",
-    items: ["1", "A", "A1", '100', 'Nguyen Van A', editIcon],
+    id: "2",
+    items: ["2", "A", "A1", '100', 'Nguyen Van A', editIcon],
   },
   {
-    id: "1",
-    items: ["1", "A", "A1", '100', 'Nguyen Van A', editIcon],
-  },
-  {
-    id: "1",
-    items: ["1", "A", "A1", '100', 'Nguyen Van A', editIcon],
-  },
-  {
-    id: "1",
-    items: ["1", "A", "A1", '100', 'Nguyen Van A', editIcon],
+    id: "3",
+    items: ["3", "A", "A1", '100', 'Nguyen Van A', editIcon],
   },
 ];
 
@@ -49,17 +44,20 @@ const UnitList = () => {
     <>
       <h4>Tổ chức</h4>
       <div className='grid-container'>
-        <Input name='search' placeholder='Tìm kiếm ..'/>
+        <Input placeholder='Tìm kiếm ..'/>
         <Select
-          name='nienKhoa'
+
           options={options}
-          defaultValue='Chọn niên khoá'
           placeholder='Chọn niên khoá'
         />
       </div>
-      <div className="mt-8 drop-shadow-2xl overflow-x-auto lg:overflow-x-visible">
+      <Link href='/to-chuc/khoi/them-khoi'>
+        <a>
+          <Button>Thêm mới</Button>
+        </a>
+      </Link>
+      <div className="mt-8 overflow-x-auto lg:overflow-x-visible">
         <Table
-          pathLinkBtnAdd='/to-chuc/khoi/them-khoi'
           titleTable='Khối'
           theadData={theadData} tbodyData={tbodyData}
         />

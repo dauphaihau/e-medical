@@ -22,19 +22,19 @@
     @apply text-black text-base text-black;
   }
 
-  select {
-    line-height: 1;
-    background: url(http://cdn1.iconfinder.com/data/icons/cc_mono_icon_set/blacks/16x16/br_down.png) no-repeat right #ddd;
-    -webkit-appearance: none;
-    background-position-x: right 20px;
+  h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-weight: 400;
+    line-height: 1.2;
   }
 
   .content {
     @apply pb-24 mt-24 px-4;
     h4 {
       @apply text-[1.2857142857142858rem] mb-4;
+      line-height: 1.2;
+      font-weight: 400;
       padding: 0 1.5rem 0 0;
-      font-family: 'Rubik', sans-serif;
     }
   }
 
@@ -44,6 +44,6 @@
   }
 
   .grid-container {
-    @apply grid md:grid-cols-2 lg:grid-cols-4 gap-4;
+    @apply grid md:grid-cols-2 lg:grid-cols-4 gap-0 md:gap-x-4;
   }
 }

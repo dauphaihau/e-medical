@@ -1,32 +1,28 @@
 import Pagination from "./pagination";
-import Link from "next/link";
-import Button from "../button";
 
 const TableHeadItem = ({item}) => {
   return (
-    <td className='font-bold' title={item}>{item}</td>
+    <td title={item} className={item === 'STT' ? 'text-center' : 'text-left'}>{item}</td>
   );
 };
 
 const TableRow = ({data}) => {
   return (
     <tr>
-      {data.map((item) => (<td key={Math.random()}>{item}</td>))}
+      {data.map(item => (
+        <td
+          // className={item[0] ? 'text-center' : 'text-left'}
+          key={Math.random()}>{item}
+        </td>
+      ))}
     </tr>
   );
 };
 
-const Table = ({theadData, tbodyData, titleTable = '', pathLinkBtnAdd = ''}) => {
+const Table = ({theadData, tbodyData, titleTable = ''}) => {
   return (
     <div className='container-table'>
-      <div>
-        <h4>{titleTable}</h4>
-        <Link href={pathLinkBtnAdd}>
-          <a>
-            <Button>Thêm mới</Button>
-          </a>
-        </Link>
-      </div>
+      <h4>{titleTable}</h4>
       <table className='table'>
         <thead>
         <tr>

@@ -43,7 +43,8 @@ const AddUnit = () => {
           <h3>Thiết lập khối</h3>
           <div className='grid-container'>
             <Input
-              name='tenKhoi' label='Tên khối'
+              name='tenKhoi'
+              label='Tên khối'
               onChange={handleChange}
             />
             <Select
@@ -60,7 +61,7 @@ const AddUnit = () => {
             />
           </div>
           <div className='flex'>
-            <Button type='submit' className='mr-4'>Lưu</Button>
+            <Button type='submit' className='mr-[0.5rem]'>Lưu</Button>
             <Button>Huỷ</Button>
           </div>
         </Form>

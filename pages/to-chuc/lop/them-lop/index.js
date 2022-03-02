@@ -33,8 +33,7 @@ const AddClass = () => {
 
   return (
     <>
-      <h2>Thêm mới lớp học</h2>
-      <div className='mb-4 flex flex-col md:flex-row gap-4 w-1/2'>
+      <div className='mb-4 flex flex-col md:flex-row gap-4 w-1/2 md:w-full'>
         <Button variant='danger'>
           Tổng quan
         </Button>
@@ -62,6 +61,7 @@ const AddClass = () => {
             setFieldValue
           }) => (
           <Form className='form'>
+            <h3>Thêm mới lớp học</h3>
             <div className='grid-container'>
               <Input
                 label='Mã trường'

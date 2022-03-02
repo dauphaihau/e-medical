@@ -18,20 +18,32 @@
   }
 
   .navbar-right {
-    @apply flex;
     div {
-      @apply mr-3 text-right;
-      p:nth-child(1) {
-        @apply font-black text-primary;
+      @apply flex;
+      div {
+        @apply mr-3 text-right flex flex-col;
+        p:nth-child(1) {
+          @apply font-black text-primary;
+        }
+
+        p:nth-child(2) {
+          @apply text-black text-[0.7rem];
+        }
       }
 
-      p:nth-child(2) {
-        @apply text-black text-[0.7rem];
+      img {
+        @apply h-10 rounded-lg;
       }
     }
 
-    img {
-      @apply h-10 rounded-lg;
+    &-profile {
+      //@apply absolute ;
+      //display: none;
+      background-color: #f1f1f1;
+      min-width: 160px;
+      overflow: auto;
+      box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+      z-index: 1;
     }
   }
 }

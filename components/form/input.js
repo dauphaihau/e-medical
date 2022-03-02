@@ -22,9 +22,11 @@ const Input = (props) => {
         className={`form-control-input ${className}`}
         {...others}
       />
-      <div className='text-danger mt-[5px]'>
-        {/*<ErrorMessage name={name}/>*/}
-      </div>
+      {name && (
+        <div className='text-danger mt-[5px]'>
+          <ErrorMessage name={name}/>
+        </div>
+      )}
     </div>
   )
 };

@@ -5,7 +5,6 @@ import _ from "lodash";
 import Header from "../header";
 import Sidebar from "../sidebar";
 import Content from "./content";
-import Modal from "../modal";
 
 import {useAuth} from "../../context/auth";
 

@@ -47,7 +47,8 @@ const AddSchoolYear = () => {
           setFieldValue
         }) => (
         <Form className='form'>
-          <div className='grid-container gap-8'>
+          <h3>Thêm niên khoá</h3>
+          <div className='flex flex-wrap gap-x-4 lg:grid-container'>
             <Input
               name='schoolYearName' label='Tên niên khoá trường *'
               onChange={handleChange}
@@ -64,13 +65,13 @@ const AddSchoolYear = () => {
                 options={options}
                 placeholder='Chọn niên khoá kế thừa'
               />
-              <p>Dữ liệu được kế thừa bao gồm các thông: </p>
-              <p>- Thông tin và hồ sơ sức khoẻ học sinh </p>
-              <p>- Danh sách học sinh </p>
+              <p className='text-[0.8rem]'>Dữ liệu được kế thừa bao gồm các thông: </p>
+              <p className='text-[0.8rem]'>- Thông tin và hồ sơ sức khoẻ học sinh </p>
+              <p className='text-[0.8rem]'>- Danh sách học sinh </p>
             </div>
           </div>
           <h3 className='mt-8'>Thời gian</h3>
-          <div className='grid-container gap-8'>
+          <div className='grid-container'>
             <Input
               name='thoiGianBatDau' label='Thời gian bắt đầu'
               onChange={handleChange}
@@ -81,7 +82,7 @@ const AddSchoolYear = () => {
             />
           </div>
           <div className='my-4'>
-            <Button className='mr-4'>Lưu</Button>
+            <Button className='mr-4' type='submit'>Lưu</Button>
             <Button>Huỷ</Button>
           </div>
         </Form>

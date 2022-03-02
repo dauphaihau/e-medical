@@ -28,15 +28,10 @@ const options = [
 const StaffList = () => {
   return (
     <>
-      <h2>Nhân viên</h2>
+      <h4>Nhân viên</h4>
       <div className='grid-container'>
-        <Input
-          name='search' placeholder='Tìm kiếm...'/>
-        <Select
-          name='thoiGian'
-          options={options}
-          placeholder='Thời gian'
-        />
+        <Input placeholder='Tìm kiếm...'/>
+        <Select options={options} placeholder='Thời gian'/>
       </div>
       <div className="mt-8 drop-shadow-2xl overflow-x-auto lg:overflow-x-visible">
         <Table

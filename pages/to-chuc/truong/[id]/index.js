@@ -25,8 +25,8 @@ const DetailSchool = () => {
 
   const getDetailSchool = async (idSchool) => {
     try {
-      const {request, ...response} = await schoolService.getAllSchool(idSchool);
-      console.log(response);
+      const {...response} = await schoolService.getDetailSchool(idSchool);
+      console.log(response.data);
     } catch (error) {
       console.log(error);
     }

@@ -1,9 +1,11 @@
 import {useEffect, useState} from "react";
+import Link from "next/link";
 
 import schoolService from "../../../services/organize/school";
 import Input from "../../../components/form/input";
 import Table from "../../../components/table";
 import Layout from "../../../components/layout";
+import Button from "../../../components/button";
 
 const theadData = [
   'STT',
@@ -42,11 +44,15 @@ const SchoolList = () => {
   return (
     <>
       <h4>Tổ chức</h4>
-      <Input className='md:w-1/2 lg:w-1/4' name='search' placeholder='Tìm kiếm...'/>
-      <div className="mt-8 drop-shadow-2xl overflow-x-auto lg:overflow-x-visible">
+      <Input className='md:w-1/2 lg:w-1/4' placeholder='Tìm kiếm...'/>
+      <Link href='/to-chuc/truong/them-truong'>
+        <a>
+          <Button>Thêm mới</Button>
+        </a>
+      </Link>
+      <div className="mt-8 overflow-x-auto lg:overflow-x-visible">
         <Table
-          pathLinkBtnAdd='/to-chuc/truong/them-truong'
-          titleTable='Niên khoá'
+          titleTable='Danh sách trường'
           theadData={theadData} tbodyData={tbodyData}
         />
       </div>
