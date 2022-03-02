@@ -1,7 +1,7 @@
 import apiRequest from './request';
 
 const api = apiRequest.init("anhquoc");
-const accountService = {
+export const accountService = {
   requestPhonePin: async (phoneNumber) => {
     const { request, ...response } = await api.get(
       "/account/requestPhonePin",
@@ -21,4 +21,3 @@ const accountService = {
     return await api.get("/account/me");
   }
 }
-export default accountService;

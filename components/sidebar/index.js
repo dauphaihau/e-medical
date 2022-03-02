@@ -50,13 +50,13 @@ const Item = ({item, stateSidebar}) => {
   return (
     <li className={router.pathname == item.link ? 'active' : ''}>
       <Link href={item.link ? item.link : '#'}>
-        <div  onClick={() => setActive(!active)}>
+        <div onClick={() => setActive(!active)}>
           <i className={"text-gray-400 " + item.icon}><span className="path1"></span><span className="path2"></span></i>
           <a>
             <span className={`${stateSidebar ? 'md:hidden' : ''} sidebar-menu-title`}>{item.title}</span>
           </a>
           {item.subNav && <ArrowDropdown stateSidebar={stateSidebar} open={active}/>}
-          {stateSidebar ? <SubMenu items={item.subNav} open={active}/> : <SubMenu items={item.subNav} open={active}/>}
+          <SubMenu items={item.subNav} open={active}/>
         </div>
       </Link>
     </li>
@@ -68,8 +68,8 @@ const Sidebar = ({stateSidebar}) => {
     <aside className={`sidebar ${stateSidebar ? 'sidebar-open w-75 md:w-16' : 'sidebar-open w-0 md:w-[16.8rem] '}`}>
       <div>
         <ul className='sidebar-menu' data-widget='tree'>
-          {MENU.staff_agent.map(item => (
-            <Item key={item.id} item={item} stateSidebar={stateSidebar}/>
+          {MENU.staff_agent.map( (item, idz) => (
+            <Item key={idz} item={item} stateSidebar={stateSidebar}/>
           ))}
         </ul>
         <div className={stateSidebar ? 'sidebar-copyright md:hidden' : 'sidebar-copyright hidden md:block'}>

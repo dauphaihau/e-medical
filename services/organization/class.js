@@ -1,11 +1,15 @@
 import apiRequest from "../request";
 
 const api = apiRequest.init("eschool");
-const classService = {
-  getAllClass: async (idClass='') => {
-    const {...response} = await api.get(
-      `organization/classroom/${idClass}`,
-    );
+export const classService = {
+  list: async (params) => {
+    try{
+      const {...response} = await api.get('/organization/classroom/', {params});
+      return response.data;
+    }
+    catch(e){
+      return false
+    }
   },
   createClass: async (dataClass) => {
     return await api.post(
@@ -24,4 +28,3 @@ const classService = {
     );
   },
 }
-export default classService;

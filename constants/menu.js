@@ -149,28 +149,24 @@ export const MENU = {
       icon: "icon-User",
     },
     {
-      id: 4,
       title: "Quản lý nhân sự trường",
       // link: "/nhan-su",
       roles: ["manager", "admin"],
       icon: "icon-File-plus",
       subNav: [
         {
-          id: 4.1,
           title: "Giáo viên",
           link: "/nhan-su/giao-vien",
           roles: ["agent", "manager", "admin"],
           icon: "mdi mdi-medical-bag",
         },
         {
-          id: 4.2,
           title: "Cán bộ quản lý",
           link: "/nhan-su/cbql",
           roles: ["agent", "manager", "admin"],
           icon: "mdi mdi-needle",
         },
         {
-          id: 4.3,
           title: "Nhân Viên",
           link: "/nhan-su/nhan-vien",
           roles: ["agent", "manager", "admin"],
@@ -179,21 +175,18 @@ export const MENU = {
       ],
     },
     {
-      id: 5,
       title: "Phòng chống Covid-19",
       // link: "/protection",
       roles: ["manager", "admin"],
       icon: "mdi mdi-account-card-details",
     },
     {
-      id: 6,
       title: "Thông tin lan truyền",
       link: "/thong-tin",
       roles: ["manager", "admin"],
       icon: "mdi mdi-account-card-details",
     },
-    {
-      id: 7,
+    { 
       title: "Người dùng",
       link: "/nguoi-dung",
       roles: ["manager", "admin"],
