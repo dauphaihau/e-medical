@@ -14,11 +14,11 @@ const Layout = ({children}) => {
   const { user, setUser } = useAuth();
   return (
     <>
-      {/*<Head>*/}
-      {/*  <title>Y Tế Học Đường - eDoctor</title>*/}
-      {/*  <meta name="viewport" content="initial-scale=1.0, width=device-width" />*/}
-      {/*</Head>*/}
-      {/*{user && !_.isEmpty(user)? (*/}
+      <Head>
+        <title>Y Tế Học Đường - eDoctor</title>
+        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+      </Head>
+      {user && !_.isEmpty(user)? (
         <>
           <Sidebar stateSidebar={stateSideBar}/>
           <Header stateSidebar={stateSideBar} setStateSidebar={setStateSideBar}/>
@@ -26,10 +26,10 @@ const Layout = ({children}) => {
             {children}
           </Content>
         </>
-       {/*)*/}
-       {/*: (*/}
-       {/*  <>{children}</>*/}
-       {/*)}*/}
+       )
+       : (
+         <>{children}</>
+       )}
     </>
   );
 }

@@ -15,7 +15,7 @@ const schoolService = {
   },
   deleteSchool: async (idSchool) => {
     return await api.delete(
-      `organization/school/${idSchool}`,
+      `organization/school/`,
     );
   },
   updateSchool: async (idSchool, dataUpdateSchool) => {
