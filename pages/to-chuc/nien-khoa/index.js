@@ -1,10 +1,8 @@
-import Link from "next/link";
 import {useEffect} from "react";
 
 import Input from "../../../components/form/input";
 import Table from "../../../components/table";
 import Layout from "../../../components/layout";
-import Button from "../../../components/button";
 import {editIcon} from "../../../utils/icons";
 import schoolYearService from "../../../services/organize/school-year";
 
@@ -46,15 +44,14 @@ const SchoolYearList = () => {
 
   return (
     <>
-      <h2>Niên khoá</h2>
+      <h4>Tổ chức</h4>
       <Input className='md:w-1/2 lg:w-1/4' name='search' placeholder='Tìm kiếm...'/>
-      <Link href='/to-chuc/nien-khoa/them-nien-khoa'>
-        <a>
-          <Button>Thêm niên khoá</Button>
-        </a>
-      </Link>
       <div className="mt-8 drop-shadow-2xl overflow-x-auto lg:overflow-x-visible">
-        <Table theadData={theadData} tbodyData={tbodyData}/>
+        <Table
+          pathLinkBtnAdd='/to-chuc/nien-khoa/them-nien-khoa'
+          titleTable='Niên khoá'
+          theadData={theadData} tbodyData={tbodyData}
+        />
       </div>
     </>
   );

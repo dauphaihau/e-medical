@@ -1,11 +1,10 @@
 .navbar {
-  @apply flex flex-wrap w-full items-center justify-between ml-75 px-6;
-  min-height: 80px;
+  @apply flex flex-wrap w-full items-center justify-between ml-75 px-6 min-h-[80px];
   border-bottom: 1px solid #efeffd;
+  transition: margin-left 0.3s ease-in-out;
   -moz-transition: margin-left 0.3s ease-in-out;
   -o-transition: margin-left 0.3s ease-in-out;
   -webkit-transition: margin-left 0.3s ease-in-out;
-  transition: margin-left 0.3s ease-in-out;
 
   .navbar-left {
     @apply flex;
@@ -25,10 +24,12 @@
       p:nth-child(1) {
         @apply font-black text-primary;
       }
+
       p:nth-child(2) {
         @apply text-black text-[0.7rem];
       }
     }
+
     img {
       @apply h-10 rounded-lg;
     }
@@ -42,6 +43,7 @@
     input {
       @apply h-[45px] w-64 pr-8 pl-5 rounded z-0 focus:shadow focus:outline-none bg-secondary-light;
     }
+
     div {
       @apply absolute top-4 right-3;
     }

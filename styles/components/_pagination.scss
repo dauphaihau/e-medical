@@ -1,20 +1,23 @@
 .pagination {
-  p {
-    @apply ml-[24px] mt-[12px]
+  @apply my-4;
+
+  .pagination__entries {
+    @apply mt-[12px]
   }
 
-  .num_pagination {
-    @apply flex justify-end mb-4;
+  .pagination__num {
+    @apply flex items-center justify-end mb-4;
 
-    .item_pagination {
-      @apply inline-block mb-[6px] mb-8 flex flex-row;
+    &__item {
+      @apply inline-block mb-[6px] mb-8 flex flex-row items-center;
 
       p {
-        @apply mb-[12px] text-black cursor-pointer mr-[4px];
+        @apply text-black cursor-pointer hover:bg-primary hover:text-white duration-300 transition ease-in-out rounded;
+        padding: 12px 16px;
       }
 
       a {
-        @apply cursor-pointer text-center rounded-sm ml-[10px] text-white bg-primary;
+        @apply cursor-pointer mx-2 text-center rounded-sm text-white bg-primary;
         padding: 12px 16px;
       }
     }

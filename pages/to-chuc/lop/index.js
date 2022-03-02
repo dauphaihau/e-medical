@@ -1,5 +1,4 @@
 import {useEffect} from "react";
-import Link from "next/link";
 
 import Input from "../../../components/form/input";
 import Table from "../../../components/table";
@@ -7,7 +6,6 @@ import Select from "../../../components/form/select";
 import Layout from "../../../components/layout";
 import {editIcon} from "../../../utils/icons";
 import classService from "../../../services/organize/class";
-import Button from "../../../components/button";
 
 const theadData = [
   'STT',
@@ -48,7 +46,7 @@ const ClassList = () => {
 
   return (
     <>
-      <h2>Danh sách lớp học</h2>
+      <h4>Tổ chức</h4>
       <div className='grid-container'>
         <Input name='search' placeholder='Tìm kiếm...'/>
         <Select
@@ -62,13 +60,12 @@ const ClassList = () => {
           placeholder='Khối'
         />
       </div>
-      <Link href='/to-chuc/lop/them-lop'>
-        <a>
-          <Button>Tạo lớp</Button>
-        </a>
-      </Link>
       <div className="mt-8 drop-shadow-2xl overflow-x-auto lg:overflow-x-visible">
-        <Table theadData={theadData} tbodyData={tbodyData}/>
+        <Table
+          pathLinkBtnAdd='/to-chuc/lop/them-lop'
+          titleTable='Lớp'
+          theadData={theadData} tbodyData={tbodyData}
+        />
       </div>
     </>
   );

@@ -14,13 +14,13 @@ export default function Pagination({data}) {
   const numberPagination = handleCountPage(data);
 
   return (
-    <div className="pagination rounded-xl">
-      <p>Showing 1 to {data.length} of entries</p>
-      <div className="num_pagination">
-        <div className="item_pagination">
-          <p>Previous</p>
+    <div className="pagination">
+      <p className='pagination__entries'>Hiển thị 1 đến {data.length} của danh sách</p>
+      <div className="pagination__num">
+        <div className="pagination__num__item">
+          <p>Trước</p>
           <a>1</a>
-          <p>Next</p>
+          <p>Tiếp</p>
         </div>
       </div>
     </div>

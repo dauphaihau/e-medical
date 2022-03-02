@@ -1,7 +1,6 @@
 .sidebar {
-  @apply fixed top-0 left-0 min-h-full grid-cols-2 bg-primary-light pt-20 lg:px-4;
+  @apply w-[270px] fixed top-0 left-0 min-h-full grid-cols-2 bg-primary-light pt-20 lg:px-4;
   transition: all 0.5s ease;
-  //z-index: 100;
   border-right: 0 solid rgba(72, 94, 144, .16);
 
   div {
@@ -15,24 +14,17 @@
   border-right: 0 solid rgba(72, 94, 144, .16);
 }
 
-.sidebar-mobile {
-  @apply fixed top-0 left-0 min-h-full w-16;
-  padding-top: 80px;
-  z-index: 100;
-  transition: all 0.5s ease;
-  border-right: 0 solid rgba(72, 94, 144, .16);
-  background-color: #fbfaff;
-  @screen md {
-    @apply flex;
-  }
+.sidebar-menu-title {
+  @apply text-[#5C607B]
 }
 
 .sidebar-menu {
   @apply overflow-hidden whitespace-nowrap list-none pb-7;
   li {
-    @apply relative my-[5px] mx-1.5 cursor-pointer  hover:text-primary transition duration-500 ;
+    @apply relative my-[5px] mx-1.5 cursor-pointer hover:text-primary transition duration-500 ;
+
     > div {
-      @apply text-black opacity-90 whitespace-nowrap items-center font-medium py-2.5 px-1.5 leading-6 pl-[0.8005rem];
+      @apply text-black opacity-90 whitespace-nowrap items-center font-medium py-2.5 px-[10px] leading-6 pl-[0.8005rem];
 
       > i {
         @apply w-8.5 leading-7 text-xl inline-block align-middle text-center rounded-xl mr-2.5;
@@ -43,20 +35,26 @@
       }
     }
   }
+
+  li.active {
+    //@apply text-primary;
+    color: rebeccapurple;
+  }
 }
 
 .sidebar-submenu {
   li {
-    @apply p-2.5 pl-8
+    @apply h-[35px];
+    padding: 5px 5px 5px 25px;
+  }
+
+  li.active {
+    @apply text-primary;
   }
 }
 
-.icon-item {
-  @apply h-6 w-6 inline mr-4;
-}
-
 .sidebar-dropdown {
-  @apply h-4 w-4 inline absolute top-[-1.3rem] right-0
+  @apply h-4 w-4 inline absolute top-[-1.3rem] right-[-0.6rem]
   hover:text-primary transition duration-500 ;
 }
 
@@ -64,8 +62,4 @@
   div {
     @apply text-center;
   }
-}
-
-.submenu-active {
-  @apply bg-primary-light rounded-xl;
 }

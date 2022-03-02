@@ -1,5 +1,6 @@
 @tailwind base;
 @tailwind components;
+
 //custom components
 @import './components/header';
 @import './components/navbar';
@@ -14,9 +15,11 @@
 @import './pages/login';
 @import './icomoon/style.css';
 @tailwind utilities;
+
 @layer base {
+
   body {
-    @apply text-black text-sm text-black;
+    @apply text-black text-base text-black;
   }
 
   select {
@@ -28,9 +31,16 @@
 
   .content {
     @apply pb-24 mt-24 px-4;
-    h2 {
-      @apply py-4 pr-4 text-2xl
+    h4 {
+      @apply text-[1.2857142857142858rem] mb-4;
+      padding: 0 1.5rem 0 0;
+      font-family: 'Rubik', sans-serif;
     }
+  }
+
+  .title-content {
+    @apply text-[1.2857142857142858rem];
+    padding: 0 1.5rem 0 0;
   }
 
   .grid-container {

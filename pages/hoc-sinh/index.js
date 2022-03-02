@@ -23,7 +23,7 @@ const tbodyData = [
 const Student = () => {
   return (
     <>
-      <h2>Niên khoá</h2>
+      <h4>Hồ sơ học sinh</h4>
       <div className="grid-container">
         <Input name="name" placeholder="Tìm kiếm"/>
         <Select options={['one', 'two', 'three']}/>
@@ -31,7 +31,10 @@ const Student = () => {
         <Select options={['one', 'two', 'three']}/>
       </div>
       <div className="mt-8 drop-shadow-2xl overflow-x-auto lg:overflow-x-visible">
-        <Table theadData={theadData} tbodyData={tbodyData} title={"Danh sách hồ sơ học sinh"}/>
+        <Table
+          theadData={theadData} tbodyData={tbodyData}
+          titleTable="Danh sách hồ sơ học sinh"
+        />
       </div>
     </>
   )

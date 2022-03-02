@@ -1,10 +1,10 @@
 import Pagination from "./pagination";
+import Link from "next/link";
+import Button from "../button";
 
 const TableHeadItem = ({item}) => {
   return (
-    <td title={item}>
-      {item}
-    </td>
+    <td className='font-bold' title={item}>{item}</td>
   );
 };
 
@@ -16,9 +16,17 @@ const TableRow = ({data}) => {
   );
 };
 
-const Table = ({theadData, tbodyData}) => {
+const Table = ({theadData, tbodyData, titleTable = '', pathLinkBtnAdd = ''}) => {
   return (
     <div className='container-table'>
+      <div>
+        <h4>{titleTable}</h4>
+        <Link href={pathLinkBtnAdd}>
+          <a>
+            <Button>Thêm mới</Button>
+          </a>
+        </Link>
+      </div>
       <table className='table'>
         <thead>
         <tr>
