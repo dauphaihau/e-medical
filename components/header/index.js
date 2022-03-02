@@ -1,18 +1,19 @@
+import {useState} from "react";
+import Image from 'next/image'
+import Link from 'next/link'
+
 import logo from "../../assets/images/logo.svg";
 import onlyLogo from "../../assets/images/onlylogo.png";
 
-import Image from 'next/image'
-import {useState} from "react";
-
-
 const navigation = [
-  {name: 'Trang cá nhân', href: '/', current: false},
-  {name: 'Cài đặt', href: '/', current: false},
-  {name: 'Đăng xuất', href: '/', current: false},
+  {name: 'Trang cá nhân', href: '/'},
+  {name: 'Cài đặt', href: '/'},
+  {name: 'Đăng xuất', href: '/'},
 ]
 
 const Header = ({stateSidebar, setStateSidebar}) => {
   const [dropdown, setDropdown] = useState(false)
+
   return (
     <div className="header">
       {stateSidebar ? (
@@ -43,34 +44,20 @@ const Header = ({stateSidebar, setStateSidebar}) => {
           </button>
         </div>
         <div className='navbar-right'>
-          <div>
+          <div className='navbar-right__info'>
             <div>
               <p>Tran Vo Cong Hau</p>
               <p>CBQL</p>
             </div>
-            <img src="https://i.pravatar.cc/300" alt='avatar' onClick={() => setDropdown(!dropdown)}/>
+            <img src="https://i.pravatar.cc/300" className='cursor-pointer' alt='avatar' onClick={() => setDropdown(!dropdown)}/>
           </div>
-          {/*<div className={`navbar-right-profile ${dropdown ? 'block' : 'hidden'}`}>*/}
-          {/*  <ul>*/}
-          {/*    <li><a href="#home">Home</a></li>*/}
-          {/*    <li><a href="#about">About</a></li>*/}
-          {/*    <li><a href="#contact">Contact</a></li>*/}
-          {/*  </ul>*/}
-          {/*</div>*/}
-          <div className="ml-3 relative z-[9999999]">
-            <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg">
-              <div
-                className="py-1 rounded-md bg-white shadow-xs"
-                role="menu"
-                aria-orientation="vertical"
-                aria-labelledby="user-menu"
-              >
-                {navigation.map((item, index) => (
-                  <a
-                    href={item.href}
-                    className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
-                    role="menuitem"
-                  >{item.name}</a>
+          <div className={`navbar-right__profile ${dropdown ? 'block' : 'hidden'}`}>
+            <div>
+              <div role="menu" aria-orientation="vertical" aria-labelledby="user-menu">
+                {navigation.map(item => (
+                  <Link href={item.href} key={item.name}>
+                    <a>{item.name}</a>
+                  </Link>
                 ))}
               </div>
             </div>
