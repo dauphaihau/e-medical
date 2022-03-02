@@ -16,7 +16,7 @@ const TableRow = ({data}) => {
         </td>
       ))}
     </tr>
-  );
+  )
 };
 
 const Table = ({theadData, tbodyData, titleTable = ''}) => {
