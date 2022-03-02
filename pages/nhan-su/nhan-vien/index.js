@@ -1,16 +1,13 @@
-import Link from "next/link";
-
 import Input from "../../../components/form/input";
 import Table from "../../../components/table";
 import Layout from "../../../components/layout";
 import Select from "../../../components/form/select";
-import Button from "../../../components/button";
 import {editIcon, deleteIcon} from "../../../utils/icons";
 
 const theadData = [
   'STT',
   'Mã nhân viên',
-  'Thông  nhân viên',
+  'Thông tin nhân viên',
   , '', ' '
 ];
 
@@ -37,19 +34,16 @@ const StaffList = () => {
           name='search' placeholder='Tìm kiếm...'/>
         <Select
           name='thoiGian'
-          // onChange={e => setFieldValue('thoiGian', e.value)}
           options={options}
           placeholder='Thời gian'
-          // error={errors.thoiGian && touched.thoiGian ? errors.thoiGian : null}
         />
       </div>
-      <Link href='/nhan-su/nhan-vien/them-nhan-vien'>
-        <a>
-          <Button>Tạo nhân viên</Button>
-        </a>
-      </Link>
       <div className="mt-8 drop-shadow-2xl overflow-x-auto lg:overflow-x-visible">
-        <Table theadData={theadData} tbodyData={tbodyData}/>
+        <Table
+          pathLinkBtnAdd='/nhan-su/nhan-vien/them-nhan-vien'
+          titleTable='Nhân viên y tế'
+          theadData={theadData} tbodyData={tbodyData}
+        />
       </div>
     </>
   );
