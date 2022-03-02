@@ -18,17 +18,17 @@ const Layout = ({children}) => {
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
       {user && !_.isEmpty(user)? (
-        <>
-          <Header stateSidebar={stateSideBar} setStateSidebar={setStateSideBar}/>
-          <Sidebar/>
-          <Content stateSidebar={stateSideBar}>
-            {children}
-          </Content>
-        </>
-       )
-       : (
-         <>{children}</>
-       )}
+          <>
+            <Sidebar stateSidebar={stateSideBar}/>
+            <Header stateSidebar={stateSideBar} setStateSidebar={setStateSideBar}/>
+            <Content stateSidebar={stateSideBar}>
+              {children}
+            </Content>
+          </>
+        )
+        : (
+          <>{children}</>
+        )}
     </>
   );
 }
