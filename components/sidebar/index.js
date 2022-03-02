@@ -9,12 +9,12 @@ const SubMenu = ({open, items}) => {
   return (
     <ul className={`${!open ? 'hidden' : ''} sidebar-submenu`}>
       {items?.map((item) => (
-        <li key={item.title} className={router.pathname == item.link ? 'submenu-active' : ''}>
+        <li key={item.title} className={router.pathname == item.link ? 'active' : ''}>
           <Link passHref href={item.link}>
             <a>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6 inline mr-4"
+                className="h-6 w-6 inline mr-[10px]"
                 viewBox="0 0 20 20"
                 fill="currentColor"
               >
@@ -38,7 +38,7 @@ const ArrowDropdown = ({open, stateSidebar}) => {
     <div className={`${stateSidebar && 'md:hidden'}`}>
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        className={open ? 'hidden' : 'sidebar-dropdown right-2'}
+        className={open ? 'hidden' : 'sidebar-dropdown'}
         fill="none" viewBox="0 0 24 24"
         stroke="currentColor"
       >
@@ -46,7 +46,7 @@ const ArrowDropdown = ({open, stateSidebar}) => {
       </svg>
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        className={open ? 'sidebar-dropdown right-2' : 'hidden'}
+        className={open ? 'sidebar-dropdown' : 'hidden'}
         fill="none" viewBox="0 0 24 24" stroke="currentColor"
       >
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7"/>
@@ -59,16 +59,16 @@ const Item = ({item, stateSidebar}) => {
   const [active, setActive] = useState(false)
   const router = useRouter();
   return (
-    <li className={router.pathname == item.link ? 'submenu-active' : ''}>
+    <li className={router.pathname == item.link ? 'active' : ''}>
       <Link href={item.link ? item.link : '#'}>
-        <div onClick={() => setActive(!active)}>
+        <div  onClick={() => setActive(!active)}>
           <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 inline mr-4" fill="none" viewBox="0 0 24 24"
                stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                   d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"/>
           </svg>
           <a>
-            <span className={stateSidebar ? 'md:hidden' : ''}>{item.title}</span>
+            <span className={`${stateSidebar ? 'md:hidden' : ''} sidebar-menu-title`}>{item.title}</span>
           </a>
           {item.subNav && <ArrowDropdown stateSidebar={stateSidebar} open={active}/>}
           {stateSidebar ? <SubMenu items={item.subNav} open={active}/> : <SubMenu items={item.subNav} open={active}/>}
@@ -80,7 +80,7 @@ const Item = ({item, stateSidebar}) => {
 
 const Sidebar = ({stateSidebar}) => {
   return (
-    <aside className={`sidebar ${stateSidebar ? 'sidebar-open w-75 md:w-16' : 'sidebar-open w-0 md:w-75 '}`}>
+    <aside className={`sidebar ${stateSidebar ? 'sidebar-open w-75 md:w-16' : 'sidebar-open w-0 md:w-[16.8rem] '}`}>
       <div>
         <ul className='sidebar-menu' data-widget='tree'>
           {MENU.staff_agent.map(item => (

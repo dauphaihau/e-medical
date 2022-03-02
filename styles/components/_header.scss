@@ -1,7 +1,5 @@
-.main-header {
-  @apply fixed inset-x-0 top-0 bg-white;
-  max-height: 125px;
-  z-index: 200;
+.header {
+  @apply fixed flex inset-x-0 top-0 bg-white max-h-[125px] z-[200];
 }
 
 .logo-mini {
@@ -9,7 +7,8 @@
 }
 
 .logo-box {
-  @apply flex items-center justify-center float-left lg:w-[22.6%] md:w-[70%];
+  @apply flex items-center justify-center float-left
+  md:w-[26.8rem] lg:w-[20.1rem] ;
   border-bottom: 1px solid #fbfaff;
   border-right: 1px solid rgba(72, 94, 144, 0);
   background: #fbfaff;

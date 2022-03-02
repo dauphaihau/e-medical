@@ -23,14 +23,14 @@ const Summary = () => {
   return (
     <div>
       <div className='lg:flex justify-between'>
-        <h2 className='font-black'>TỔNG QUAN</h2>
+        <h4 className='text-[1.28rem]'>Tổng quan</h4>
         <div className='lg:flex'>
-          <p className='leading-[3.5rem] mr-4 text-xl'>Niên khoá</p>
+          <p className='leading-[3.5rem] mr-4 text-base'>Niên khoá</p>
           <Select
             width='w-[250px]'
             name='nienKhoa'
             options={options}
-            defaultValue='Chọn niên khoá'
+            placeholder='Chọn niên khoá'
           />
         </div>
       </div>

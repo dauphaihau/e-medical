@@ -3,6 +3,7 @@ import apiRequest from '../request';
 const api = apiRequest.init("eschool");
 const schoolService = {
   getAllSchool: async (idSchool = '') => {
+    // const {request, ...response} = await api.get(
     const {request, ...response} = await api.get(
       `organization/school/${idSchool}`,
     );

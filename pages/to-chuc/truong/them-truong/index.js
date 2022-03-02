@@ -45,7 +45,7 @@ const AddSchool = () => {
         }) => (
         <Form className='form'>
           <h3>Thêm trường</h3>
-          <div className='grid lg:grid-cols-2 gap-4 lg:w-1/2'>
+          <div className='grid lg:grid-cols-2 gap-6 lg:w-1/2'>
             <Input
               label='Tên trường'
               name='schoolname'

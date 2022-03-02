@@ -5,7 +5,7 @@ import Image from 'next/image'
 
 const Header = ({stateSidebar, setStateSidebar}) => {
   return (
-    <div className="main-header fixed flex">
+    <div className="header">
       {stateSidebar ? (
           <div className='logo-mini'>
             <Image src={onlyLogo} alt="logomini"/>
