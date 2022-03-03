@@ -9,6 +9,7 @@ const Input = (props) => {
     placeholder = '',
     className = '',
     useFormik = false,
+    disable = false,
     ...others
   } = props;
 
@@ -16,6 +17,7 @@ const Input = (props) => {
     <div className={`form-group ${direction}`}>
       <label>{label}</label>
       <input
+        disabled={disable}
         placeholder={placeholder}
         name={name}
         type="text"

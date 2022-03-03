@@ -6,8 +6,9 @@ import {useRouter} from "next/router";
 
 import Button from "@components/button";
 import Input from "@components/form/input";
-import { memberService, locationService, schoolService, classService } from "@services";
+import { memberService, locationService, schoolService } from "@services";
 import Select from "@components/form/select";
+import {classroomService} from "../../services";
 
 const phoneRegExp = /(([03+[2-9]|05+[6|8|9]|07+[0|6|7|8|9]|08+[1-9]|09+[1-4|6-9]]){3})+[0-9]{7}\b/
 const validationSchema = Yup.object().shape({
@@ -18,7 +19,7 @@ const validationSchema = Yup.object().shape({
     .max(50, 'Tên trường tối đa là 50 ký tự')
     .required('Tên người dùng không được để trống'),
   phoneNumber: Yup.string()
-    .required('Vui logn2 nhập số điện thoại')
+    .required('Vui lòng nhập số điện thoại')
     .matches(phoneRegExp, 'Số điện thoại không hợp lệ'),
   // address: Yup.string().required('Địa chỉ không được để trống'),
   // province: Yup.string().required('Tỉnh không được để trống'),
@@ -53,6 +54,7 @@ const AddStaff = () => {
 
   const loadInit = async () => {
     const provinces = await locationService.listProvince();
+    console.log(provinces);
     setListProvince(provinces);
     const schools = await schoolService.list({limit:20});
     if(schools.total){
@@ -84,7 +86,7 @@ const AddStaff = () => {
   }
 
   const onChangeSchool = async (schoolId) => {
-    const classes = await classService.list({schoolId});
+    const classes = await classroomService.list({schoolId});
     if(classes.total){
       setListClass(classes.data.map((data) => ({
         value: data._id,
@@ -185,7 +187,6 @@ const AddStaff = () => {
               // value={values.ward}
             />
           </div>
-          
           <Button type='submit' className='mr-4'>Thêm</Button>
         </Form>
       )}

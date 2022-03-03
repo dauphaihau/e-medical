@@ -42,7 +42,11 @@
   border border-[#8d8d8d]
   text-black text-base
   rounded-[5px]
-  block w-full leading-6 ;
+  block w-full leading-6
+
+  disabled:bg-gray-100 disabled:text-gray-400 disabled:border-gray-200 disabled:shadow-none
+
+  ;
   padding: 0.375rem 0.75rem;
   font-weight: 400;
   background-clip: padding-box;

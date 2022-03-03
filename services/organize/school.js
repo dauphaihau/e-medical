@@ -11,9 +11,9 @@ export const schoolService = {
       return false;
     }
   },
-  detail: async (idSchool) => {
+  detail: async (id) => {
     try{
-      const {...response} = await api.get(`/organization/school/${idSchool}`);
+      const {...response} = await api.get(`/organization/school/${id}`);
       return response.data;
     }
     catch(e){

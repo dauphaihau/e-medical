@@ -14,11 +14,11 @@
 
     thead {
       tr {
-        td:nth-child(1) {
+        th:nth-child(1) {
           @apply text-center
         }
 
-        td {
+        th {
           @apply text-left font-bold w-auto mt-[50px] h-[50px] p-4 text-black select-none ;
           height: 50px !important;
           border-bottom: 1px solid black;
@@ -42,16 +42,3 @@
     }
   }
 }
-
-
-//.action > .ls-action {
-//  display: none;
-//}
-//
-//.action:focus + .ls-action {
-//  display: block;
-//}
-//
-//.btn-action:focus + .ls-action {
-//  display: block;
-//}

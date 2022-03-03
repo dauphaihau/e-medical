@@ -1,16 +1,12 @@
-// http://localhost:3000/nhan-su/nhan-vien/1
-
 import {Formik, Form} from "formik";
 import * as Yup from "yup";
+import {useEffect, useState} from "react";
+import {useRouter} from "next/router";
+import swal from "sweetalert";
 
 import Button from "../../../../components/button";
 import Input from "../../../../components/form/input";
 import Layout from "../../../../components/layout";
-import {useEffect, useState} from "react";
-import {useRouter} from "next/router";
-import staffService from "../../../../services/personnel/staff";
-import schoolYearService from "../../../../services/organize/school-year";
-import swal from "sweetalert";
 
 const phoneRegExp = /(([03+[2-9]|05+[6|8|9]|07+[0|6|7|8|9]|08+[1-9]|09+[1-4|6-9]]){3})+[0-9]{7}\b/
 const pinRegExp = /^\d{4}$/
@@ -30,19 +26,6 @@ const loginSchema = Yup.object().shape({
     .matches(pinRegExp, "Vui lòng nhập 4 số mã PIN")
     .required('Pin không được để trống')
 });
-
-const staff = {
-  username: 'Hau',
-  password: '111111',
-  pin: '1111',
-  // status: "new",
-  phoneNumber: '0901111921',
-  email: 'hau@gmail.com',
-  source: 'benh vien Hoan My',
-  medium: 'ngheo',
-  campaign: 'unknown',
-  content: 'Hi'
-};
 
 const DetailStaff = () => {
 
@@ -93,8 +76,6 @@ const DetailStaff = () => {
       {({
           handleSubmit,
           handleChange,
-          touched,
-          errors,
           values,
         }) => (
         <Form className='form' onSubmit={handleSubmit}>
@@ -103,50 +84,50 @@ const DetailStaff = () => {
             <Input
               label='Tên nhân viên'
               name='username'
-              error={errors.username && touched.username ? errors.username : null}
+              useFormik='true'
               onChange={handleChange}
               value={values.username}
             />
             <Input
               label='Mã Pin' name='pin'
-              error={errors.pin && touched.pin ? errors.pin : null}
+              useFormik='true'
               onChange={handleChange}
               value={values.pin}
             />
             <Input
               label='Số điện thoại'
               name='phoneNumber'
-              error={errors.phoneNumber && touched.phoneNumber ? errors.phoneNumber : null}
+              useFormik='true'
               onChange={handleChange}
               value={values.phoneNumber}
             />
             <Input
               label='Email' name='email'
-              error={errors.email && touched.email ? errors.email : null}
+              useFormik='true'
               onChange={handleChange}
               value={values.email}
             />
             <Input
               label='Nguồn' name='source'
-              error={errors.source && touched.source ? errors.source : null}
+              useFormik='true'
               onChange={handleChange}
               value={values.source}
             />
             <Input
               label='Hoàn cảnh' name='medium'
-              error={errors.medium && touched.medium ? errors.medium : null}
+              useFormik='true'
               onChange={handleChange}
               value={values.medium}
             />
             <Input
               label='Chiến dịch' name='campaign'
-              error={errors.campaign && touched.campaign ? errors.campaign : null}
+              useFormik='true'
               onChange={handleChange}
               value={values.campaign}
             />
             <Input
               label='Nội dung' name='content'
-              error={errors.content && touched.content ? errors.content : null}
+              useFormik='true'
               onChange={handleChange}
               value={values.content}
             />

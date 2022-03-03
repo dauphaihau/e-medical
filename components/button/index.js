@@ -13,7 +13,8 @@ const Button = (props) => {
       type={type}
       className={`
       ${className}
-        btn bg-primary-light hover:bg-primary text-primary hover:text-white
+        btn bg-primary hover:bg-[#3c40a0] text-white 
+        
       `}
       {...others}
     >
