@@ -1,42 +1,50 @@
 import {Formik, Form} from "formik";
-import swal from "sweetalert";
 import {useRouter} from "next/router";
 import {useEffect, useState} from "react";
+import swal from "sweetalert";
 import * as Yup from "yup";
 
 import Button from "../../../../components/button";
 import Input from "../../../../components/form/input";
 import Layout from "../../../../components/layout";
-import schoolYearService from "../../../../services/organize/school-year";
 import Select from "../../../../components/form/select";
+import schoolYearService from "../../../../services/organize/school-year";
 
 const validationSchema = Yup.object().shape({
   schoolYearName: Yup.string().required('Tên niên khoá trường không được để trống'),
 });
+
+const options = [
+  {value: true, label: 'Có'},
+  {value: false, label: 'Không'},
+]
 
 const DetailSchoolYear = () => {
 
   const router = useRouter();
   const [schoolYear, setSchoolYear] = useState([]);
 
-  const getSchoolYear = async (idSchoolYear) => {
+  const getDetailSchoolYear = async (id) => {
     try {
-      const {request, ...response} = await schoolYearService.getAllSchoolYear(idSchoolYear);
-      console.log(response);
+      const {...response} = await schoolYearService.detail(id);
+      setSchoolYear(response)
     } catch (error) {
-      console.log(error);
+      console.log({error});
     }
   };
 
   useEffect(async () => {
-    await getSchoolYear(router.query.id)
+    await getDetailSchoolYear(router.query.id)
   }, []);
 
-  const handleSubmitForm = async (dataUpdateSchoolYear) => {
-    console.log(dataUpdateSchoolYear);
+  const handleSubmitForm = async (data) => {
     try {
-      await schoolYearService.updateSchoolYear(router.query.id, dataUpdateSchoolYear);
-      await swal('Cap nhat thanh cong')
+      await schoolYearService.update(router.query.id, data);
+      swal({
+        text: "Cập nhật thành công",
+        icon: "success",
+      });
+      router.back();
     } catch (error) {
       console.log(error);
     }
@@ -53,17 +61,21 @@ const DetailSchoolYear = () => {
         keThuaDuLieu: schoolYear,
         thoiGianBatDau: schoolYear,
         thoiGianKetThuc: schoolYear,
-        status: 1,
+        status: '1',
       }}
     >
       {({
           handleChange,
-          setFieldValue
+          setFieldValue,
+          values
         }) => (
         <Form className='form'>
+          <h3>Thông tin niên khoá</h3>
           <div className='grid-container gap-8'>
             <Input
               name='schoolYearName' label='Niên khoá *'
+              value={values.schoolYearName}
+              useFormik='true'
               onChange={handleChange}
             />
             <div>
@@ -90,9 +102,9 @@ const DetailSchoolYear = () => {
               onChange={handleChange}
             />
           </div>
-          <div className='ml-2' style={{transform: `translate(-30px, 90px)`}}>
-            <Button className='mr-4'>Lưu</Button>
-            <Button>Huỷ</Button>
+          <div className='mt-4'>
+            <Button className='mr-4' type='submit'>Cập nhật</Button>
+            <Button type='text' onClick={() => router.back()}>Huỷ</Button>
           </div>
         </Form>
       )}

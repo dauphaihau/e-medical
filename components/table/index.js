@@ -2,14 +2,16 @@ import Pagination from "./pagination";
 
 const TableHeadItem = ({item}) => {
   return (
-    <td title={item} className={item === 'STT' ? 'text-center' : 'text-left'}>{item}</td>
+    <>
+      <td title={item} className={item === 'STT' ? 'text-center' : 'text-left'}>{item}</td>
+    </>
   );
 };
 
 const TableRow = ({data}) => {
   return (
     <tr>
-      {data.map(item => (
+      {data?.map(item => (
         <td
           // className={item[0] ? 'text-center' : 'text-left'}
           key={Math.random()}>{item}
@@ -27,6 +29,7 @@ const Table = ({theadData, tbodyData, titleTable = ''}) => {
         <thead>
         <tr>
           {theadData.map((h) => (<TableHeadItem key={h} item={h}/>))}
+          <td/>
         </tr>
         </thead>
         <tbody>

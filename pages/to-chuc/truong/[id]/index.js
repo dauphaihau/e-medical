@@ -7,12 +7,12 @@ import {useRouter} from "next/router";
 import Button from "../../../../components/button";
 import Input from "../../../../components/form/input";
 import Layout from "../../../../components/layout";
-import schoolService from "../../../../services/organize/school";
+import {schoolService} from "../../../../services";
 
 const validationSchema = Yup.object().shape({
-  schoolname: Yup.string().required('Tên người dùng không được để trống').min(5, 'Tên trường ít nhất là 5 ký tự').max(50, 'Tên trường tối đa là 50 ký tự'),
+  schoolname: Yup.string().required('Tên trường không được để trống').min(5, 'Tên trường ít nhất là 5 ký tự').max(50, 'Tên trường tối đa là 50 ký tự'),
   address: Yup.string().required('Địa chỉ không được để trống'),
-  province: Yup.string().required('Tỉnh không được để trống').email('Email không hợp lệ'),
+  province: Yup.string().required('Tỉnh không được để trống'),
   district: Yup.string().required('Quận không được để trống'),
   ward: Yup.string().required('Phường không được để trống'),
   civilGroup: Yup.string().required('Nhóm trường không được để trống'),
@@ -21,28 +21,30 @@ const validationSchema = Yup.object().shape({
 const DetailSchool = () => {
 
   const router = useRouter();
-  const [school, setSchool] = useState([]);
+  const [school, setSchool] = useState({});
 
   const getDetailSchool = async (idSchool) => {
     try {
-      const {...response} = await schoolService.getDetailSchool(idSchool);
-      console.log(response.data);
+      const {...response} = await schoolService.detail(idSchool);
+      setSchool(response)
     } catch (error) {
       console.log(error);
     }
   };
 
   useEffect(async () => {
-    const {id} = router.query;
-    console.log(id);
-    await getDetailSchool(id);
+    await getDetailSchool(router.query.id);
   }, []);
 
   const handleSubmitForm = async (dataUpdateSchool) => {
     console.log(dataUpdateSchool);
     try {
-      await schoolService.updateSchool(router.query.id, dataUpdateSchool);
-      swal('Cap nhat thanh cong')
+      await schoolService.update(router.query.id, dataUpdateSchool);
+      swal({
+        text: "Cập nhật thành công",
+        icon: "success",
+      });
+      router.back();
     } catch (error) {
       console.log(error);
     }
@@ -74,34 +76,42 @@ const DetailSchool = () => {
             <Input
               label='Tên trường'
               name='schoolname'
+              useFormik='true'
               onChange={handleChange}
               value={values.schoolname}
             />
             <Input
               label='Địa chỉ'
+              useFormik='true'
               name='address'
               onChange={handleChange}
               value={values.address}
             />
             <Input
               label='Tỉnh'
+              useFormik='true'
               name='province'
               onChange={handleChange}
               value={values.province}
             />
             <Input
               label='Quận'
+              useFormik='true'
               name='district'
               onChange={handleChange}
               value={values.district}
             />
             <Input
-              label='Phường' name='ward'
+              label='Phường'
+              useFormik='true'
+              name='ward'
               onChange={handleChange}
               value={values.ward}
             />
             <Input
-              label='Nhóm trường' name='civilGroup'
+              label='Nhóm trường'
+              useFormik='true'
+              name='civilGroup'
               onChange={handleChange}
               value={values.civilGroup}
             />

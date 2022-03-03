@@ -1,5 +1,5 @@
 export * from './member';
 export * from './account';
 export * from './location';
-export * from './organization/school';
-export * from './organization/class';
+export * from './organize/school';
+export * from './organize/class';

@@ -1,28 +1,32 @@
 import apiRequest from '../request';
 
 const api = apiRequest.init("eschool");
-const schoolService = {
-  getAllSchool: async () => {
-    const {...response} = await api.get('/organization/school/');
+export const schoolService = {
+  list: async (params) => {
+    try{
+      const {request, ...response} = await api.get('/organization/school/', {params});
+      return response.data;
+    }
+    catch(e){
+      return false;
+    }
   },
-  getDetailSchool: async (idSchool) => {
-    const {...response} = await api.get(`/organization/school/${idSchool}`);
+  detail: async (idSchool) => {
+    try{
+      const {...response} = await api.get(`/organization/school/${idSchool}`);
+      return response.data;
+    }
+    catch(e){
+      return false;
+    }
   },
-  createSchool: async (dataSchool) => {
-    return await api.post(
-      "/organization/school", dataSchool
-    );
+  create: async (dataSchool) => {
+    return await api.post("/organization/school", dataSchool);
   },
-  deleteSchool: async (idSchool) => {
-    return await api.delete(
-      `/organization/school/`,
-    );
+  delete: async (id) => {
+    return await api.delete(`/organization/school/${id}`);
   },
-  updateSchool: async (idSchool, dataUpdateSchool) => {
-    console.log(dataUpdateSchool);
-    return await api.patch(
-      `/organization/school/${idSchool}`, dataUpdateSchool
-    );
+  update: async (id, dataUpdateSchool) => {
+    return await api.patch(`/organization/school/${id}`, dataUpdateSchool);
   },
 }
-export default schoolService;

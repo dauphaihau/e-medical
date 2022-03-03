@@ -11,20 +11,20 @@ export const classService = {
       return false
     }
   },
-  createClass: async (dataClass) => {
+  create: async (data) => {
     return await api.post(
-      "organization/classroom", dataClass
+      "/organization/classroom", data
     );
   },
-  deleteClass: async (idClass) => {
+  delete: async (id) => {
     return await api.delete(
-      `organization/classroom/${idClass}`,
+      `/organization/classroom/${id}`,
     );
   },
-  updateClass: async (idClass, dataUpdateClass) => {
-    console.log(dataUpdateClass);
+  update: async (id, dataUpdate) => {
+    console.log(dataUpdate);
     return await api.patch(
-      `organization/classroom/${idClass}`, dataUpdateClass
+      `/organization/classroom/${id}`, dataUpdate
     );
   },
 }

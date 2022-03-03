@@ -6,8 +6,8 @@ import Table from "../../../components/table";
 import Select from "../../../components/form/select";
 import Layout from "../../../components/layout";
 import {editIcon} from "../../../utils/icons";
-import classService from "../../../services/organize/class";
 import Button from "../../../components/button";
+import {classService} from "../../../services";
 
 const theadData = [
   'STT',
@@ -39,7 +39,7 @@ const ClassList = () => {
 
   useEffect(async () => {
     try {
-      const {...response} = await classService.getAllClass()
+      const {...response} = await classService.list()
       console.log(response);
     } catch (error) {
       console.log({error})
