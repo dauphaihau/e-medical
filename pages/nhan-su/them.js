@@ -115,7 +115,6 @@ const AddStaff = () => {
           handleChange,
           values,
           setFieldValue,
-          form
         }) => (
         <Form className='form py-8'>
           <h3>Thêm {labelAddType[addType]}</h3>
@@ -187,7 +186,7 @@ const AddStaff = () => {
             />
           </div>
           
-          <Button type='submit' className='mr-4'>Cập nhật</Button>
+          <Button type='submit' className='mr-4'>Thêm</Button>
         </Form>
       )}
     </Formik>

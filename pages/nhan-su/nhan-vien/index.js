@@ -2,7 +2,6 @@ import Input from "../../../components/form/input";
 import Table from "../../../components/table";
 import Layout from "../../../components/layout";
 import Select from "../../../components/form/select";
-import {editIcon, deleteIcon} from "../../../utils/icons";
 
 const theadData = [
   'STT',
@@ -15,7 +14,7 @@ const theadData = [
 const tbodyData = [
   {
     id: "1",
-    items: ["1", '12', 'Nguyen B \n Niên khoá: 2021-2022', editIcon, deleteIcon],
+    items: ["1", '12', 'Nguyen B \n Niên khoá: 2021-2022', ],
   },
 ];
 

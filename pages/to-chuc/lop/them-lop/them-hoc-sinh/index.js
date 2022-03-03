@@ -8,7 +8,6 @@ import Layout from "../../../../../components/layout";
 import Table from "../../../../../components/table";
 import Textarea from "../../../../../components/form/textarea";
 import Select from "../../../../../components/form/select";
-import {checkIcon} from "../../../../../utils/icons";
 
 const loginSchema = Yup.object().shape({
   nienKhoa: Yup.string().required('Niên khoá không được để trống'),
@@ -30,6 +29,7 @@ const theadData = [
   'Không nhớ',
 ];
 
+let checkIcon;
 const tbodyData = [
   {
     id: "1",

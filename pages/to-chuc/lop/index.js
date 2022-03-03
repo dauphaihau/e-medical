@@ -5,9 +5,8 @@ import Input from "../../../components/form/input";
 import Table from "../../../components/table";
 import Select from "../../../components/form/select";
 import Layout from "../../../components/layout";
-import {editIcon} from "../../../utils/icons";
-import classService from "../../../services/organize/class";
 import Button from "../../../components/button";
+import {classroomService} from "../../../services";
 
 const theadData = [
   'STT',
@@ -20,11 +19,11 @@ const theadData = [
 const tbodyData = [
   {
     id: "1",
-    items: ["1", "A1", '10', 'Hau', editIcon],
+    items: ["1", "A1", '10', 'Hau'],
   },
   {
     id: "2",
-    items: ["2", "A1", '10', 'Hau', editIcon],
+    items: ["2", "A1", '10', 'Hau'],
   },
 ];
 
@@ -35,11 +34,11 @@ const options = [
   {value: 'vanilla', label: 'Vanilla'}
 ]
 
-const ClassList = () => {
+const ClassroomList = () => {
 
   useEffect(async () => {
     try {
-      const {...response} = await classService.getAllClass()
+      const {...response} = await classroomService.list()
       console.log(response);
     } catch (error) {
       console.log({error})
@@ -75,6 +74,6 @@ const ClassList = () => {
   );
 }
 
-export default ClassList;
+export default ClassroomList;
 
-ClassList.getLayout = (page) => <Layout>{page}</Layout>;
+ClassroomList.getLayout = (page) => <Layout>{page}</Layout>;

@@ -1,45 +1,40 @@
 import {useEffect, useState} from "react";
 import Link from "next/link";
+import {useRouter} from "next/router";
 
-import schoolService from "../../../services/organize/school";
 import Input from "../../../components/form/input";
-import Table from "../../../components/table";
 import Layout from "../../../components/layout";
 import Button from "../../../components/button";
-
-const theadData = [
-  'STT',
-  'Tên trường', 'Niên khoá',
-  'Số lớp',
-  'Số học sinh',
-  'Thời gian bắt đầu',
-  'Thời gian kết thúc'
-  , '', ' '
-];
-
-const tbodyData = [
-  {
-    id: "1",
-    items: ['1', "Harvard", "2000-2001", "A1", '10', '10/20/1990', '10/20/1991', '', ''],
-  },
-  {
-    id: "2",
-    items: ["2", "Harvard", "2000-2001", "A1", '10', '10/20/1990', '10/20/1991', '', ''],
-  },
-];
+import {schoolService} from "../../../services";
+import Pagination from "../../../components/table/pagination";
+import {PencilIcon, TrashIcon} from "@heroicons/react/outline";
 
 const SchoolList = () => {
 
   const [schools, setSchools] = useState([])
+  const router = useRouter();
 
   useEffect(async () => {
     try {
-      const {...response} = await schoolService.getAllSchool()
+      const {...response} = await schoolService.list()
       console.log(response.data);
+      setSchools(response.data)
     } catch (error) {
       console.log({error})
     }
   }, []);
+
+  let skip = 0;
+
+  const handleDelete = async (id) => {
+    try {
+      await schoolService.delete(id)
+      await swal('Xoá thành công');
+      router.reload();
+    } catch (error) {
+      console.log({error})
+    }
+  };
 
   return (
     <>
@@ -51,10 +46,46 @@ const SchoolList = () => {
         </a>
       </Link>
       <div className="mt-8 overflow-x-auto lg:overflow-x-visible">
-        <Table
-          titleTable='Danh sách trường'
-          theadData={theadData} tbodyData={tbodyData}
-        />
+        <div className='container-table'>
+          <h4>Danh sách trường</h4>
+          <table className='table'>
+            <thead>
+              <tr>
+                <td className='text-center'>STT</td>
+                <td>Tên trường</td>
+                <td>Địa chỉ</td>
+                <td>Tỉnh</td>
+                <td>Quận</td>
+                <td>Phường</td>
+                <td>Nhóm trường</td>
+                <td/>
+              </tr>
+            </thead>
+            <tbody>
+              {schools?.map((school, index) => (
+                <tr key={index}>
+                  <td>{parseInt(skip) + index + 1}</td>
+                  <td>{school.schoolname}</td>
+                  <td>{school.address}</td>
+                  <td>{school.province}</td>
+                  <td>{school.district}</td>
+                  <td>{school.ward}</td>
+                  <td>{school.civilGroup}</td>
+                  <td>
+                     <Link href={`/to-chuc/truong/${school._id}`}>
+                       <a><PencilIcon className='h-5 w-5 inline'/></a>
+                     </Link>
+                     <TrashIcon
+                       className='h-5 w-5 inline ml-4 cursor-pointer'
+                       onClick={() => handleDelete(school._id)}
+                     />
+                  </td>
+              </tr>
+              ))}
+            </tbody>
+          </table>
+          <Pagination data={schools}/>
+        </div>
       </div>
     </>
   );

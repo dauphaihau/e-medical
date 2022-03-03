@@ -1,31 +1,35 @@
 import {Formik, Form} from "formik";
 import * as Yup from "yup";
+import swal from "sweetalert";
 
 import Select from "../../../../components/form/select";
 import Input from "../../../../components/form/input";
 import Button from "../../../../components/button";
 import Layout from "../../../../components/layout";
-import classService from "../../../../services/organize/class";
+import {classService} from "../../../../services";
 
 const validationSchema = Yup.object().shape({
   className: Yup.string().required('Tên lớp không được để trống').min(5, 'Tên lớp ít nhất là 5 ký tự').max(50, 'Tên lớp tối đa là 50 ký tự'),
-  schoolYearId: Yup.string().required('Mã niên khoá trường không được để trống'),
-  schoolId: Yup.string().required('Mã trường không được để trống'),
+  schoolYearId: Yup.string().required('niên khoá trường không được để trống'),
+  schoolId: Yup.string().required('trường không được để trống'),
 });
 
-const AddClass = () => {
+const AddClassroom = () => {
 
   const options = [
-    {value: '2009-2010', label: '2009-2010'},
-    {value: '2019-2012', label: '2009-2010'},
-    {value: '2009-2012', label: '2009-2010'},
+    {value: 'A', label: 'A'},
+    {value: 'B', label: 'B'},
+    {value: 'C', label: 'C'},
   ]
 
-  const handleSubmitForm = async (dataClass) => {
-    console.log(dataClass);
+  const handleSubmitForm = async (data) => {
+    console.log(data);
     try {
-      await classService.createClass(dataClass)
-      swal('Tạo lớp thành công')
+      await classService.create(data)
+      swal({
+        text: "Tạo lớp thành công",
+        icon: "success",
+      });
     } catch ({response}) {
       console.log(response);
     }
@@ -60,13 +64,14 @@ const AddClass = () => {
             handleChange,
             setFieldValue
           }) => (
-          <Form className='form'>
+          <Form className='form lg:w-1/4'>
             <h3>Thêm mới lớp học</h3>
-            <div className='grid-container'>
+            <div className=''>
               <Input
-                label='Mã trường'
+                label='Mã trường *'
                 name='schoolId'
                 onChange={handleChange}
+                useFormik='true'
               />
               <Select
                 label='Nhóm lớp'
@@ -75,22 +80,24 @@ const AddClass = () => {
                 options={options}
               />
               <Input
-                label='Mã niên khoá trường'
+                label='Mã niên khoá trường *'
                 name='schoolYearId'
                 onChange={handleChange}
+                useFormik='true'
               />
               <Input
-                label='Tên lớp'
+                label='Tên lớp *'
                 name='className'
                 onChange={handleChange}
+                useFormik='true'
               />
-              {/*<Select*/}
-              {/*  label='Người thân'*/}
-              {/*  name='giaoVienChuNhiem'*/}
-              {/*  onChange={e => setFieldValue('giaoVienChuNhiem', e.value)}*/}
-              {/*  options={options}*/}
-              {/*  placeholder='Chọn Giáo viên chủ nhiệm'*/}
-              {/*/>*/}
+              <Select
+                label='Giáo viên'
+                name='giaoVienChuNhiem'
+                onChange={e => setFieldValue('giaoVienChuNhiem', e.value)}
+                options={options}
+                placeholder='Chọn Giáo viên chủ nhiệm'
+              />
             </div>
             <div className='py-4'>
               <Button type='submit' className='mr-4'>Thêm</Button>
@@ -103,6 +110,6 @@ const AddClass = () => {
   );
 }
 
-export default AddClass;
+export default AddClassroom;
 
-AddClass.getLayout = (page) => <Layout>{page}</Layout>;
+AddClassroom.getLayout = (page) => <Layout>{page}</Layout>;
