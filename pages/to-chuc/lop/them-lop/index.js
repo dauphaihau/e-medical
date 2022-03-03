@@ -14,7 +14,7 @@ const validationSchema = Yup.object().shape({
   schoolId: Yup.string().required('trường không được để trống'),
 });
 
-const AddClass = () => {
+const AddClassroom = () => {
 
   const options = [
     {value: 'A', label: 'A'},
@@ -110,6 +110,6 @@ const AddClass = () => {
   );
 }
 
-export default AddClass;
+export default AddClassroom;
 
-AddClass.getLayout = (page) => <Layout>{page}</Layout>;
+AddClassroom.getLayout = (page) => <Layout>{page}</Layout>;

@@ -1,7 +1,7 @@
 import apiRequest from "../request";
 
 const api = apiRequest.init("eschool");
-export const classService = {
+export const classroomService = {
   list: async (params) => {
     try{
       const {...response} = await api.get('/organization/classroom/', {params});

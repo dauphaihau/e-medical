@@ -4,7 +4,6 @@ import Input from "../../../components/form/input";
 import Table from "../../../components/table";
 import Layout from "../../../components/layout";
 import Select from "../../../components/form/select";
-import {editIcon} from "../../../utils/icons";
 import Button from "../../../components/button";
 
 const theadData = [
