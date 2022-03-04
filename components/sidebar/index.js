@@ -76,8 +76,8 @@ const Sidebar = ({stateSidebar}) => {
   return (
     <aside className={`sidebar ${stateSidebar ? 'sidebar-open w-75 md:w-16' : 'sidebar-open'}`}>
       <ul className='sidebar-menu'>
-        {MENU.staff_agent.map(item => (
-          <Item key={item.id} item={item} stateSidebar={stateSidebar}/>
+        {MENU.staff_agent.map((item, idz) => (
+          <Item key={idz} item={item} stateSidebar={stateSidebar}/>
         ))}
       </ul>
       <div className={stateSidebar ? 'sidebar-copyright md:hidden' : 'sidebar-copyright hidden md:block'}>

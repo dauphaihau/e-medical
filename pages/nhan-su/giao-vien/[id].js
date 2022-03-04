@@ -2,7 +2,7 @@ import {Formik, Form} from "formik";
 import {useEffect, useState} from "react";
 import * as Yup from "yup";
 import swal from "sweetalert";
-import {useRouter} from "next/router";
+import Router, {useRouter} from "next/router";
 
 import Button from "@components/button";
 import Input from "@components/form/input";
@@ -32,14 +32,24 @@ const labelAddType = {
   'nhan-vien': 'Nhân viên',
 };
 
-const AddStaff = () => {
+const UpdateStaff = () => {
   const router = useRouter();
-  const [listSchool, setListSchool] = useState();
-  const [listClass, setListClass] = useState();
-  const [listProvince, setListProvince] = useState();
-  const [listDistrict, setListDistrict] = useState();
-  const [listWard, setListWard] = useState();
+  const [member, setMember] = useState();
+  const [listSchool, setListSchool] = useState([]);
+  const [listClass, setListClass] = useState([]);
+  const [listProvince, setListProvince] = useState([]);
+  const [listDistrict, setListDistrict] = useState([]);
+  const [listWard, setListWard] = useState([]);
   const [addType, setAddType] = useState();
+  const [initData, setInitData] = useState({
+    school: {},
+    class: {},
+    province: {},
+    district: {},
+    ward: {},
+  });
+  const [schoolSelected, setSchoolSelected] = useState();
+  const [classSelected, setSelected] = useState();
 
   useEffect( () => {
     if (!router.isReady) return;
@@ -52,25 +62,60 @@ const AddStaff = () => {
     return () => abortController.abort(); 
   }, [router.isReady]);
 
+  useEffect( () => {
+  }, [listSchool])
+
   const loadInit = async () => {
-    const provinces = await locationService.listProvince();
-    setListProvince(provinces);
-    const schools = await schoolService.list({limit:20});
-    if(schools.total){
-      setListSchool(schools.data.map((data) => ({
-        value: data._id,
-        label: data.schoolname,
-      })));
+    const { id } = router.query;
+    if( id ){
+      const memberRes = await memberService.detail(id);
+      if(memberRes && !_.isEmpty(memberRes)){
+        setMember(memberRes);
+      }
+      else{
+        swal("Thành viên này không tồn tại!", "", "error")
+          .then(() => Router.push('/nhan-su/giao-vien/'));
+      }
+
+      const provinces = await locationService.listProvince();
+      setListProvince(provinces);
+
+      const schools = await schoolService.list({limit:20});
+      if(schools.total){
+        const schoolSelect = schools.data.map((data) => ({
+          value: data._id,
+          label: data.schoolname,
+        }));
+        setListSchool(schoolSelect);
+        const initSchool = _.find(schoolSelect, {value: memberRes.schoolWorking[0]?.schoolId});
+        setSchoolSelected(initSchool);
+        let initDataSelected = {
+          school: initSchool
+        }
+        // initData.school = initSchool;
+
+        if(initSchool && !_.isEmpty(initSchool)){
+          const classSelect = await onChangeSchool(initSchool.value);
+          if(classSelect){
+            initDataSelected.class = _.find(classSelect, {value: memberRes.schoolWorking[0]?.classId});
+          }
+        }
+        setInitData(initDataSelected);
+      }
+    }
+    else{
+      Router.push('/nhan-su/giao-vien/');
     }
   }
 
   const handleSubmitForm = async (data) => {
-    try {
-      await memberService.create(data);
-      swal('Cập nhật thành công', '', 'success');
-    } catch (error) {
-      swal('Cập nhật không thành công', '', 'error');
-    }
+    console.log(data);
+    // try {
+    //   await memberService.create(data);
+    //   swal('Cap nhat thanh cong')
+    // } catch (error) {
+    //   console.log(error);
+    // }
   };
 
   const onChangeProvince = async (e) => {
@@ -86,10 +131,16 @@ const AddStaff = () => {
   const onChangeSchool = async (schoolId) => {
     const classes = await classroomService.list({schoolId});
     if(classes.total){
-      setListClass(classes.data.map((data) => ({
+      const classSelected = classes.data.map((data) => ({
         value: data._id,
         label: data.className,
-      })));
+      }));
+      setListClass(classSelected);
+      return classSelected;
+    }
+    else {
+      setListClass({});
+      return null;
     }
   }
 
@@ -100,14 +151,14 @@ const AddStaff = () => {
       onSubmit={handleSubmitForm}
       enableReinitialize
       initialValues={{
-        schoolId: '',
-        classId: '',
-        fullName: '',
-        address: '',
-        phoneNumber: '',
-        province: '',
-        district: '',
-        ward: '',
+        schoolId: initData.school.value ?? '',
+        classId: initData.class.value ?? '',
+        fullName: member?.fullName ?? '',
+        address: member?.address ?? '',
+        phoneNumber: member?.phoneNumber ?? '',
+        province: member?.province ?? '',
+        district: member?.district?? '',
+        ward: member?.ward ?? '',
       }}
     >
       {({
@@ -116,12 +167,13 @@ const AddStaff = () => {
           setFieldValue,
         }) => (
         <Form className='form py-8'>
-          <h3>Thêm {labelAddType[addType]}</h3>
+          <h3>Cập nhật {labelAddType[addType]}</h3>
           <div className='grid lg:grid-cols-2 gap-x-4'>
             <Select
               label='Tên trường'
               name='schoolId'
               options={listSchool}
+              value={!_.isEmpty(initData.school)?initData.school: ''}
               onChange={(e) => {
                 onChangeSchool(e.value);
                 setFieldValue('schoolId', e.value);
@@ -131,6 +183,7 @@ const AddStaff = () => {
               label='Lớp chủ nhiệm'
               name='classId'
               options={listClass}
+              value={!_.isEmpty(initData.class)?initData.class:''}
               onChange={(e) => setFieldValue('classId', e.value)}
             />
           </div>
@@ -191,4 +244,4 @@ const AddStaff = () => {
     </Formik>
   )
 }
-export default AddStaff
+export default UpdateStaff;
