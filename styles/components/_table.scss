@@ -3,6 +3,10 @@
 //   // template: https://medical-admin-template.multipurposethemes.com/main/patients.html
 // }
 
+.overflow-table {
+  @apply mt-8 overflow-x-auto lg:overflow-x-visible;
+}
+
 .container-table {
   @apply w-fit lg:w-full relative h-auto bg-white flex flex-col mr-[20px] rounded-xl
   pt-[20px] p-6;
@@ -11,6 +15,7 @@
 
   .table {
     border-collapse: separate !important;
+
     thead {
       tr {
         th:nth-child(1) {

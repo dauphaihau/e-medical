@@ -13,7 +13,6 @@ const TableRow = ({data}) => {
     <tr>
       {data?.map(item => (
         <td
-          // className={item[0] ? 'text-center' : 'text-left'}
           key={Math.random()}>{item}
         </td>
       ))}
@@ -21,9 +20,9 @@ const TableRow = ({data}) => {
   )
 };
 
-const Table = ({theadData, tbodyData, titleTable = ''}) => {
+const Table = ({theadData, tbodyData, titleTable = '', widthContainer = ''}) => {
   return (
-    <div className='container-table'>
+    <div className={`container-table ${widthContainer}`}>
       <h4>{titleTable}</h4>
       <table className='table'>
         <thead>
@@ -33,7 +32,7 @@ const Table = ({theadData, tbodyData, titleTable = ''}) => {
         </tr>
         </thead>
         <tbody>
-        {tbodyData?.map((item) => (<TableRow key={item.id} data={item.items}/>))}
+          {tbodyData?.map((item) => (<TableRow key={item.id} data={item.items}/>))}
         </tbody>
       </table>
       <Pagination data={tbodyData}/>

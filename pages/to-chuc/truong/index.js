@@ -40,9 +40,7 @@ const SchoolList = () => {
       <h4>Tổ chức</h4>
       <Input className='md:w-1/2 lg:w-1/4' placeholder='Tìm kiếm...'/>
       <Link href='/to-chuc/truong/them-truong'>
-        <a>
-          <Button>Thêm mới</Button>
-        </a>
+        <a><Button>Thêm mới</Button></a>
       </Link>
       <div className="mt-8 overflow-x-auto lg:overflow-x-visible">
         <div className='container-table'>
@@ -86,6 +84,7 @@ const SchoolList = () => {
           <Pagination data={schools}/>
         </div>
       </div>
+
     </>
   );
 }

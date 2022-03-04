@@ -1,10 +1,10 @@
 import React, {useState} from "react";
 
-import Layout from "../../components/layout";
-import Input from "../../components/form/input";
-import Button from "../../components/button";
-import Radio from "../../components/form/radio";
-import Textarea from "../../components/form/textarea";
+import Layout from "../../../components/layout";
+import Input from "../../../components/form/input";
+import Button from "../../../components/button";
+import Radio from "../../../components/form/radio";
+import Textarea from "../../../components/form/textarea";
 
 const KhamSucKhoeForm = () => {
 
@@ -133,6 +133,7 @@ const KhamSucKhoeForm = () => {
             value='Hình chữ C'
           />
         </div>
+
         <Textarea
           classNameLabel='font-medium'
           className='w-full mt-4' label='Các bệnh về Cơ xương khớp (nếu có)'
