@@ -12,14 +12,14 @@
       @apply md:block btn-hamburger bg-primary-light hover:bg-primary hover:text-white transition duration-300;
     }
 
-    button:nth-child(2) {
-      @apply md:hidden btn-hamburger bg-primary-light hover:bg-primary hover:text-white transition duration-300;
-    }
+    //button:nth-child(2) {
+    //  @apply md:hidden btn-hamburger bg-primary-light hover:bg-primary hover:text-white transition duration-300;
+    //}
   }
 
   .navbar-right {
     &__info {
-      @apply flex;
+      @apply flex cursor-pointer;
       div {
         @apply mr-3 text-right flex flex-col;
         p:nth-child(1) {

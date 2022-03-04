@@ -2,6 +2,7 @@ import {Formik, Form} from "formik";
 import {useEffect, useState} from "react";
 import {useRouter} from "next/router";
 import * as Yup from "yup";
+import swal from "sweetalert";
 
 import Select from "../../../../components/form/select";
 import Input from "../../../../components/form/input";
@@ -15,17 +16,12 @@ const validationSchema = Yup.object().shape({
   schoolId: Yup.string().required('Mã trường không được để trống'),
 });
 
-const optionsKeThuaDuLieu = [
-  {value: 'Không', label: 'Không'},
-  {value: 'Có', label: 'Có'},
-]
-
 const AddSchoolYear = () => {
 
   const [listSchool, setListSchool] = useState();
   const router = useRouter();
 
-  useEffect( () => {
+  useEffect(() => {
     if (!router.isReady) return;
     let abortController = new AbortController();
 
@@ -34,8 +30,8 @@ const AddSchoolYear = () => {
   }, [router.isReady, router.asPath]);
 
   const loadInit = async () => {
-    const schools = await schoolService.list({limit:20});
-    if(schools.total){
+    const schools = await schoolService.list({limit: 20});
+    if (schools.total) {
       setListSchool(schools.data.map((data) => ({
         value: data._id,
         label: data.schoolname,
@@ -47,9 +43,19 @@ const AddSchoolYear = () => {
     console.log(dataSchoolYear);
     try {
       await schoolYearService.create(dataSchoolYear)
-      swal('Tạo Niên Khoá thành công')
+      swal({
+        text: "Tạo Niên Khoá thành công",
+        icon: "success"
+      })
+      router.back();
     } catch ({response}) {
       console.log(response);
+      if (response.data.message === 'account existed') {
+        swal({
+          text: "Trường này đã có niên khoá",
+          icon: "error"
+        })
+      }
     }
   };
 
@@ -61,9 +67,9 @@ const AddSchoolYear = () => {
       initialValues={{
         schoolYearName: '',
         schoolId: '',
-        keThuaDuLieu: '',
-        thoiGianBatDau: '',
-        thoiGianKetThuc: '',
+        // keThuaDuLieu: '',
+        // thoiGianBatDau: '',
+        // thoiGianKetThuc: '',
         status: 1,
       }}
     >
@@ -71,48 +77,26 @@ const AddSchoolYear = () => {
           handleChange,
           setFieldValue
         }) => (
-        <Form className='form'>
+        <Form className='form lg:w-2/5'>
           <h3>Thêm niên khoá</h3>
-          <div className='flex flex-wrap gap-x-4 lg:grid-container'>
-            <Input
-              name='schoolYearName' label='Tên niên khoá trường *'
-              useFormik='true'
-              onChange={handleChange}
-            />
+          {/*<div className='flex flex-wrap gap-x-4 lg:grid-container'>*/}
+          <div className=''>
             <Select
-              label='Mã trường'
+              label='Tên trường'
               name='schoolId'
               onChange={e => setFieldValue('schoolId', e.value)}
               options={listSchool}
               placeholder='Chọn trường'
             />
-            <div>
-              <Select
-                label='Kế thừa dữ liệu ( nếu có )'
-                name='keThuaDuLieu'
-                onChange={e => setFieldValue('keThuaDuLieu', e.value)}
-                options={optionsKeThuaDuLieu}
-                placeholder='Chọn niên khoá kế thừa'
-              />
-              <p className='text-[0.8rem]'>Dữ liệu được kế thừa bao gồm các thông: </p>
-              <p className='text-[0.8rem]'>- Thông tin và hồ sơ sức khoẻ học sinh </p>
-              <p className='text-[0.8rem]'>- Danh sách học sinh </p>
-            </div>
-          </div>
-          <h3 className='mt-8'>Thời gian</h3>
-          <div className='grid-container'>
             <Input
-              name='thoiGianBatDau' label='Thời gian bắt đầu'
-              onChange={handleChange}
-            />
-            <Input
-              name='thoiGianKetThuc' label='Thời gian kết thúc'
+              name='schoolYearName' label='Niên khoá trường *'
+              useFormik='true'
               onChange={handleChange}
             />
           </div>
           <div className='my-4'>
             <Button className='mr-4' type='submit'>Thêm</Button>
-            <Button>Huỷ</Button>
+            <Button onClick={() => router.back()}>Huỷ</Button>
           </div>
         </Form>
       )}

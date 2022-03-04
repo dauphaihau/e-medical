@@ -1,11 +1,13 @@
 import {Formik, Form} from "formik";
 import * as Yup from "yup";
 import {useRouter} from "next/router";
+import swal from "sweetalert";
 
 import Button from "../../../../components/button";
 import Input from "../../../../components/form/input";
 import Layout from "../../../../components/layout";
 import {schoolService} from "../../../../services";
+import Link from "next/link";
 
 const validationSchema = Yup.object().shape({
   schoolname: Yup.string().required('Tên trường không được để trống').min(5, 'Tên trường ít nhất là 5 ký tự').max(50, 'Tên trường tối đa là 50 ký tự'),
@@ -18,7 +20,11 @@ const AddSchool = () => {
     console.log('data School', dataSchool);
     try {
       await schoolService.create(dataSchool)
-      await router.reload();
+      await router.back();
+      swal({
+        text: "Tạo trường thành công",
+        icon: "success"
+      })
     } catch (error) {
       console.log({error})
     }
@@ -81,7 +87,12 @@ const AddSchool = () => {
               onBlur={handleBlur}
             />
           </div>
-          <Button type='submit'>Tạo</Button>
+          <Button type='submit' className='mr-2'>Tạo</Button>
+          <Link href='/to-chuc/truong'>
+            <a>
+              <Button type='text'>Huỷ</Button>
+            </a>
+          </Link>
         </Form>
       )}
     </Formik>

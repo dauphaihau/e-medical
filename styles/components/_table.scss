@@ -11,20 +11,30 @@
 
   .table {
     @apply mt-[6px] mb-[6px] w-[1000px] lg:w-full;
-    border-collapse: separate !important;
 
     thead {
-      tr th {
-        @apply font-bold p-3 text-black select-none ;
-        border-bottom: 1px solid #212529;
+      tr {
+        th:nth-child(1) {
+          @apply text-center
+        }
+
+        th {
+          @apply text-left font-bold w-auto mt-[50px] h-[50px] p-4 text-black select-none ;
+          height: 50px !important;
+          border-bottom: 1px solid black;
+        }
       }
     }
 
     tbody {
       tr {
         @apply hover:text-primary ;
+        td:nth-child(1) {
+          @apply text-center
+        }
+
         td {
-          @apply text-black select-none p-3;
+          @apply text-left text-black select-none w-auto p-4 items-center h-[52.8px];
           border-bottom: 1px solid #DDDDDD;
           vertical-align: middle;
         }
@@ -32,16 +42,3 @@
     }
   }
 }
-
-
-//.action > .ls-action {
-//  display: none;
-//}
-//
-//.action:focus + .ls-action {
-//  display: block;
-//}
-//
-//.btn-action:focus + .ls-action {
-//  display: block;
-//}

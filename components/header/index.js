@@ -1,9 +1,10 @@
-import {useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import Image from 'next/image'
 import Link from 'next/link'
 
 import logo from "../../assets/images/logo.svg";
 import onlyLogo from "../../assets/images/onlylogo.png";
+import Button from "../button";
 
 const navigation = [
   {name: 'Trang cá nhân', href: '/'},
@@ -11,8 +12,38 @@ const navigation = [
   {name: 'Đăng xuất', href: '/'},
 ]
 
+function useOuterClick(callback) {
+  const innerRef = useRef();
+  const callbackRef = useRef();
+
+  useEffect(() => {
+    callbackRef.current = callback;
+  });
+
+  useEffect(() => {
+    document.addEventListener("click", handleClick);
+    return () => document.removeEventListener("click", handleClick);
+
+    function handleClick(e) {
+      if (
+        innerRef.current &&
+        callbackRef.current &&
+        !innerRef.current.contains(e.target)
+      ) {
+        callbackRef.current(e);
+      }
+    }
+  }, []);
+
+  return innerRef;
+}
+
+
 const Header = ({stateSidebar, setStateSidebar}) => {
   const [dropdown, setDropdown] = useState(false)
+  const innerRef = useOuterClick(() => {
+    setDropdown(false)
+  });
 
   return (
     <div className="header">
@@ -42,15 +73,17 @@ const Header = ({stateSidebar, setStateSidebar}) => {
               />
             </svg>
           </button>
+          <Button className='ml-4 rounded-[11px] hidden lg:block'>Thêm mới</Button>
         </div>
         <div className='navbar-right'>
-          <div className='navbar-right__info'>
+          <div className='navbar-right__info' ref={innerRef} onClick={() => setDropdown(!dropdown)}>
             <div>
               <p>Tran Vo Cong Hau</p>
               <p>CBQL</p>
             </div>
-            <img src="https://i.pravatar.cc/300" className='cursor-pointer' alt='avatar' onClick={() => setDropdown(!dropdown)}/>
+            <img src="https://i.pravatar.cc/300" alt='avatar'/>
           </div>
+          {/*Dropdown profile*/}
           <div className={`navbar-right__profile ${dropdown ? 'block' : 'hidden'}`}>
             <div>
               <div role="menu" aria-orientation="vertical" aria-labelledby="user-menu">
@@ -62,6 +95,7 @@ const Header = ({stateSidebar, setStateSidebar}) => {
               </div>
             </div>
           </div>
+          {/*Dropdown profile*/}
         </div>
       </div>
     </div>

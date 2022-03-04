@@ -1,13 +1,13 @@
 import {useEffect, useState} from "react";
 import Link from "next/link";
 import {useRouter} from "next/router";
+import {PencilIcon, TrashIcon} from "@heroicons/react/outline";
 
 import Input from "../../../components/form/input";
 import Layout from "../../../components/layout";
 import Button from "../../../components/button";
 import {schoolService} from "../../../services";
 import Pagination from "../../../components/table/pagination";
-import {PencilIcon, TrashIcon} from "@heroicons/react/outline";
 
 const SchoolList = () => {
 
@@ -17,7 +17,6 @@ const SchoolList = () => {
   useEffect(async () => {
     try {
       const {...response} = await schoolService.list()
-      console.log(response.data);
       setSchools(response.data)
     } catch (error) {
       console.log({error})
@@ -51,14 +50,14 @@ const SchoolList = () => {
           <table className='table'>
             <thead>
               <tr>
-                <td className='text-center'>STT</td>
-                <td>Tên trường</td>
-                <td>Địa chỉ</td>
-                <td>Tỉnh</td>
-                <td>Quận</td>
-                <td>Phường</td>
-                <td>Nhóm trường</td>
-                <td/>
+                <th className='text-center'>STT</th>
+                <th>Tên trường</th>
+                <th>Địa chỉ</th>
+                <th>Tỉnh</th>
+                <th>Quận</th>
+                <th>Phường</th>
+                <th>Nhóm trường</th>
+                <th/>
               </tr>
             </thead>
             <tbody>

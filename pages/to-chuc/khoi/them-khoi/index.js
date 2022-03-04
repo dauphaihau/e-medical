@@ -1,27 +1,78 @@
 import {Formik, Form} from "formik";
 import * as Yup from "yup";
+import {useEffect, useState} from "react";
+import {useRouter} from "next/router";
+import swal from "sweetalert";
+import Link from "next/link";
 
 import Input from "../../../../components/form/input";
 import Button from "../../../../components/button";
 import Select from "../../../../components/form/select";
 import Layout from "../../../../components/layout";
+import {classroomService, schoolService} from "../../../../services";
+import schoolYearService from "../../../../services/organize/school-year";
 
 const validationSchema = Yup.object().shape({
-  tenKhoi: Yup.string().required('Tên khối không được để trống'),
-  nienKhoa: Yup.string().required('Niên khoá không được để trống'),
-  khoiTruong: Yup.string().required('Khối trưởng không được để trống'),
+  className: Yup.string().required('Tên khối không được để trống').max(50, 'Tên khối tối đa là 50 ký tự').min(5, 'Tên khối phải ít nhất 5 ký tự'),
+  schoolYearId: Yup.string().required('Niên khoá không được để trống'),
+  schoolId: Yup.string().required('Tên trường không được để trống'),
 });
 
-const AddUnit = () => {
+const AddGroup = () => {
 
-  const options = [
-    {value: '2009-2010', label: '2009-2010'},
-    {value: '2019-2012', label: '2009-2010'},
-    {value: '2009-2012', label: '2009-2010'},
-  ]
+  const router = useRouter();
+  const [listSchool, setListSchool] = useState();
+  const [schoolYear, setSchoolYear] = useState([])
 
-  const handleSubmitForm = (values) => {
-    console.log(values);
+  useEffect(() => {
+    if (!router.isReady) return;
+    let abortController = new AbortController();
+
+    loadInit();
+    return () => abortController.abort();
+  }, [router.isReady, router.asPath]);
+
+  const loadInit = async () => {
+    const schools = await schoolService.list({limit: 20});
+    if (schools.total) {
+      setListSchool(schools.data.map((data) => ({
+        value: data._id,
+        label: data.schoolname,
+      })));
+    }
+  }
+
+  const handleSubmitForm = async (values) => {
+    console.log('values', values);
+    try {
+      await classroomService.create(values)
+      swal({
+        text: "Tạo khối thành công",
+        icon: "success"
+      })
+      router.back()
+    } catch ({response}) {
+      console.log(response);
+      if (response.data.message) {
+        swal({
+          text: "Niên khoá này đã có khối, vui lòng tạo khối niên khoá khác",
+          icon: "error"
+        })
+      }
+    }
+  };
+
+  const onChangeSchool = async (idSchool) => {
+    console.log(idSchool);
+
+    const {...response} = await schoolYearService.list()
+    console.log('all-School-year', response.data);
+
+    const classroom = await classroomService.list({idSchool});
+    console.log('classroom', classroom);
+
+    // const schoolYear = await schoolYearService.detail(idSchool);
+    // console.log('school-year', schoolYear);
   };
 
   return (
@@ -30,39 +81,48 @@ const AddUnit = () => {
       onSubmit={handleSubmitForm}
       enableReinitialize
       initialValues={{
-        tenKhoi: '',
-        nienKhoa: '',
-        khoiTruong: ''
+        className: '',
+        schoolId: '',
+        schoolYearId: '',
+        parentId: null,
+        status: '1'
       }}
     >
       {({
           handleChange,
           setFieldValue
         }) => (
-        <Form className='form'>
+        <Form className='form lg:w-1/4'>
           <h3>Thiết lập khối</h3>
-          <div className='grid-container'>
-            <Input
-              name='tenKhoi'
-              label='Tên khối'
-              onChange={handleChange}
+          <div>
+            <Select
+              label='Tên trường'
+              name='schoolId'
+              onChange={e => {
+                onChangeSchool(e.value);
+                setFieldValue('schoolId', e.value);
+              }}
+              options={listSchool}
+              placeholder='Chọn trường'
             />
             <Select
               label='Niên khoá'
-              name='nienKhoa'
-              onChange={e => setFieldValue('nienKhoa', e.value)}
-              options={options}
+              name='schoolYearId'
+              onChange={e => setFieldValue('schoolYearId', e.value)}
+              options={schoolYear}
               placeholder='Chọn niên khoá'
             />
             <Input
-              name='khoiTruong'
-              label='Khối trưởng'
+              name='className'
+              label='Tên khối'
               onChange={handleChange}
             />
           </div>
-          <div className='flex'>
-            <Button type='submit' className='mr-[0.5rem]'>Lưu</Button>
-            <Button>Huỷ</Button>
+          <div className='py-4'>
+            <Button type='submit' className='mr-4'>Thêm</Button>
+            <Link href='/to-chuc/khoi'>
+              <a><Button type='text'>Huỷ</Button></a>
+            </Link>
           </div>
         </Form>
       )}
@@ -70,6 +130,6 @@ const AddUnit = () => {
   );
 }
 
-export default AddUnit;
+export default AddGroup;
 
-AddUnit.getLayout = (page) => <Layout>{page}</Layout>;
+AddGroup.getLayout = (page) => <Layout>{page}</Layout>;

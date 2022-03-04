@@ -33,7 +33,7 @@ const Table = ({theadData, tbodyData, titleTable = ''}) => {
         </tr>
         </thead>
         <tbody>
-        {tbodyData.map((item) => (<TableRow key={item.id} data={item.items}/>))}
+        {tbodyData?.map((item) => (<TableRow key={item.id} data={item.items}/>))}
         </tbody>
       </table>
       <Pagination data={tbodyData}/>

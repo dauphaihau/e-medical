@@ -1,4 +1,4 @@
-export default function Pagination({data}) {
+export default function Pagination({data = []}) {
 
   const handleCountPage = data => {
     if (!data) return;

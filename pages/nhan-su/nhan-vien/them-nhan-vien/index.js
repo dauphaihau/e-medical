@@ -4,7 +4,6 @@ import * as Yup from "yup";
 import Button from "../../../../components/button";
 import Input from "../../../../components/form/input";
 import Layout from "../../../../components/layout";
-import staffService from "../../../../services/personnel/staff";
 
 const phoneRegExp = /(([03+[2-9]|05+[6|8|9]|07+[0|6|7|8|9]|08+[1-9]|09+[1-4|6-9]]){3})+[0-9]{7}\b/
 const pinRegExp = /^\d{4}$/
@@ -30,7 +29,7 @@ const AddStaff = () => {
   const handleSubmitForm = async (dataStaff) => {
     console.log(dataStaff);
     try {
-      await staffService.createStaff(dataStaff)
+      await staffServices.createStaff(dataStaff)
       alert('Tạo nhân viên thành công')
     } catch ({response}) {
       console.log(response);
@@ -66,47 +65,47 @@ const AddStaff = () => {
           <div className='grid lg:grid-cols-2 gap-4 lg:w-1/2'>
             <Input
               label='Tên nhân viên' name='username'
-              // error={errors.username && touched.username ? errors.username : null}
+              useFormik='true'
               onChange={handleChange}
             />
             <Input
               label='Mật khẩu' name='password'
-              // error={errors.password && touched.password ? errors.password : null}
+              useFormik='true'
               onChange={handleChange}
             />
             <Input
               label='Mã Pin' name='pin'
-              // error={errors.pin && touched.pin ? errors.pin : null}
+              useFormik='true'
               onChange={handleChange}
             />
             <Input
               label='Số điện thoại' name='phoneNumber'
-              // error={errors.phoneNumber && touched.phoneNumber ? errors.phoneNumber : null}
+              useFormik='true'
               onChange={handleChange}
             />
             <Input
               label='Email' name='email'
-              // error={errors.email && touched.email ? errors.email : null}
+              useFormik='true'
               onChange={handleChange}
             />
             <Input
               label='Nguồn' name='source'
-              // error={errors.source && touched.source ? errors.source : null}
+              useFormik='true'
               onChange={handleChange}
             />
             <Input
               label='Hoàn cảnh' name='medium'
-              // error={errors.medium && touched.medium ? errors.medium : null}
+              useFormik='true'
               onChange={handleChange}
             />
             <Input
               label='Chiến dịch' name='campaign'
-              // error={errors.campaign && touched.campaign ? errors.campaign : null}
+              useFormik='true'
               onChange={handleChange}
             />
             <Input
               label='Nội dung' name='content'
-              // error={errors.content && touched.content ? errors.content : null}
+              useFormik='true'
               onChange={handleChange}
             />
           </div>
