@@ -9,7 +9,6 @@ import {classroomService} from "../../../services";
 import {PencilIcon, TrashIcon} from "@heroicons/react/outline";
 import Pagination from "../../../components/table/pagination";
 
-
 let skip = 0;
 
 const GroupList = () => {
@@ -18,8 +17,13 @@ const GroupList = () => {
 
   useEffect(async () => {
     try {
-      const {...res} = await classroomService.list({type: 'class'});
-      console.log(res);
+      // get class
+      const {...res} = await classroomService.list();
+
+      // get group
+      // const {...res} = await classroomService.list({type: 'group'});
+
+      console.log('res', res);
       setListGroup(res.data)
       // setListClassroom(response.data)
     } catch (error) {
@@ -32,10 +36,11 @@ const GroupList = () => {
       <h4>Tổ chức</h4>
       <div className='grid-container'>
         <Input placeholder='Tìm kiếm ..'/>
-        <Select
-          options={[]}
-          placeholder='Chọn niên khoá'
-        />
+        {/*<Select*/}
+        {/*  name='schoolYear'*/}
+        {/*  options={[]}*/}
+        {/*  placeholder='Chọn niên khoá'*/}
+        {/*/>*/}
       </div>
       <Link href='/to-chuc/khoi/them-khoi'>
         <a><Button>Thêm mới</Button></a>

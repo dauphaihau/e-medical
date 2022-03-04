@@ -18,7 +18,7 @@ const validationSchema = Yup.object().shape({
   schoolId: Yup.string().required('trường không được để trống'),
 });
 
-const AddClassroom = () => {
+const DetailClassroom = () => {
 
   const router = useRouter();
   const [listSchool, setListSchool] = useState();
@@ -62,7 +62,7 @@ const AddClassroom = () => {
   const handleSubmitForm = async (values) => {
     console.log('values', values);
     try {
-      await classroomService.create(values)
+      await classroomService.update(values)
       swal({
         text: "Tạo khối thành công",
         icon: "success"
@@ -102,17 +102,6 @@ const AddClassroom = () => {
 
   return (
     <>
-      {/*<div className='mb-4 flex flex-col md:flex-row gap-4 w-1/2 md:w-full'>*/}
-      {/*  <Button variant='danger'>*/}
-      {/*    Tổng quan*/}
-      {/*  </Button>*/}
-      {/*  <Button variant='danger'>*/}
-      {/*    Danh sách học sinh*/}
-      {/*  </Button>*/}
-      {/*  <Button variant='danger'>*/}
-      {/*    Gửi thông tin*/}
-      {/*  </Button>*/}
-      {/*</div>*/}
       <Formik
         validationSchema={validationSchema}
         onSubmit={handleSubmitForm}
@@ -165,7 +154,7 @@ const AddClassroom = () => {
               />
             </div>
             <div className='py-4'>
-              <Button type='submit' className='mr-4'>Thêm</Button>
+              <Button type='submit' className='mr-4'>Cập nhật</Button>
               <Link href='/to-chuc/lop'>
                 <a><Button type='text'>Huỷ</Button></a>
               </Link>
@@ -177,6 +166,6 @@ const AddClassroom = () => {
   );
 }
 
-export default AddClassroom;
+export default DetailClassroom;
 
-AddClassroom.getLayout = (page) => <Layout>{page}</Layout>;
+DetailClassroom.getLayout = (page) => <Layout>{page}</Layout>;

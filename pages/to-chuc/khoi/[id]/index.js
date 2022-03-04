@@ -18,7 +18,7 @@ const validationSchema = Yup.object().shape({
   schoolId: Yup.string().required('Tên trường không được để trống'),
 });
 
-const AddGroup = () => {
+const DetailGroup = () => {
 
   const router = useRouter();
   const [listSchool, setListSchool] = useState();
@@ -46,9 +46,9 @@ const AddGroup = () => {
   const handleSubmitForm = async (values) => {
     console.log('values', values);
     try {
-      await classroomService.create(values)
+      await classroomService.update(router.query.id, values)
       swal({
-        text: "Tạo khối thành công",
+        text: "Cập nhật khối thành công",
         icon: "success"
       })
       router.back()
@@ -88,7 +88,8 @@ const AddGroup = () => {
     >
       {({
           handleChange,
-          setFieldValue
+          setFieldValue,
+          values
         }) => (
         <Form className='form lg:w-1/4'>
           <h3>Thiết lập khối</h3>
@@ -117,10 +118,11 @@ const AddGroup = () => {
               label='Tên khối'
               onChange={handleChange}
               useFokmik='true'
+              value={values.className}
             />
           </div>
           <div className='py-4'>
-            <Button type='submit' className='mr-4'>Thêm</Button>
+            <Button type='submit' className='mr-4'>Cập nhật</Button>
             <Link href='/to-chuc/khoi'>
               <a><Button type='text'>Huỷ</Button></a>
             </Link>
@@ -131,6 +133,6 @@ const AddGroup = () => {
   );
 }
 
-export default AddGroup;
+export default DetailGroup;
 
-AddGroup.getLayout = (page) => <Layout>{page}</Layout>;
+DetailGroup.getLayout = (page) => <Layout>{page}</Layout>;

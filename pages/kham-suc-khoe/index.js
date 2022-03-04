@@ -180,9 +180,11 @@ const KhamSucKhoeForm = () => {
   const [currentTab, setCurrentTab] = useState(tabContent[0]);
 
   const renderButton = () => {
-    return <div className='flex justify-end'>
-      <Button onClick={() => setActiveTab(activeTab + 1)}>Tiếp tục</Button>
-    </div>
+    return (
+      <div className='flex justify-end'>
+        <Button onClick={() => setActiveTab(activeTab + 1)}>Lưu</Button>
+      </div>
+    )
   };
 
   const handleTabClick = (currentTab) => {
