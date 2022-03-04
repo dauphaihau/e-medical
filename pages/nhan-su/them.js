@@ -6,8 +6,9 @@ import {useRouter} from "next/router";
 
 import Button from "@components/button";
 import Input from "@components/form/input";
-import { memberService, locationService, schoolService, classService } from "@services";
+import { memberService, locationService, schoolService, classroomService } from "@services";
 import Select from "@components/form/select";
+import _ from "lodash";
 
 const phoneRegExp = /(([03+[2-9]|05+[6|8|9]|07+[0|6|7|8|9]|08+[1-9]|09+[1-4|6-9]]){3})+[0-9]{7}\b/
 const validationSchema = Yup.object().shape({
@@ -49,7 +50,7 @@ const AddStaff = () => {
     }
     loadInit();
     return () => abortController.abort(); 
-  }, [router.isReady, router.asPath]);
+  }, [router.isReady]);
 
   const loadInit = async () => {
     const provinces = await locationService.listProvince();
@@ -64,12 +65,11 @@ const AddStaff = () => {
   }
 
   const handleSubmitForm = async (data) => {
-    console.log(data);
     try {
       await memberService.create(data);
-      swal('Cap nhat thanh cong')
+      swal('Cập nhật thành công', '', 'success');
     } catch (error) {
-      console.log(error);
+      swal('Cập nhật không thành công', '', 'error');
     }
   };
 
@@ -84,15 +84,14 @@ const AddStaff = () => {
   }
 
   const onChangeSchool = async (schoolId) => {
-    const classes = await classService.list({schoolId});
+    const classes = await classroomService.list({schoolId});
     if(classes.total){
       setListClass(classes.data.map((data) => ({
         value: data._id,
         label: data.className,
       })));
     }
-    // setListDistrict(districts);
-  } 
+  }
 
   return (
     <Formik
