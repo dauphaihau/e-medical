@@ -10,6 +10,7 @@ import Button from "../../../../components/button";
 import Layout from "../../../../components/layout";
 import {classroomService, schoolService} from "../../../../services";
 import schoolYearService from "../../../../services/organize/school-year";
+import Link from "next/link";
 
 const validationSchema = Yup.object().shape({
   className: Yup.string().required('Tên lớp không được để trống').min(5, 'Tên lớp ít nhất là 5 ký tự').max(50, 'Tên lớp tối đa là 50 ký tự'),
@@ -17,29 +18,22 @@ const validationSchema = Yup.object().shape({
   schoolId: Yup.string().required('trường không được để trống'),
 });
 
-const options = [
-  {value: 'A', label: 'A'},
-  {value: 'B', label: 'B'},
-  {value: 'C', label: 'C'},
-]
-
 const AddClassroom = () => {
 
   const router = useRouter();
   const [listSchool, setListSchool] = useState();
   const [listSchoolYear, setListSchoolYear] = useState()
-
-  console.log('list-school', listSchool);
+  const [listGroup, setListGroup] = useState()
+  // console.log('list-group', listGroup);
 
   useEffect(() => {
     if (!router.isReady) return;
     loadInit();
   }, [router.isReady, router.asPath])
 
-
   const loadInit = async () => {
-
     const schools = await schoolService.list({limit: 20});
+    console.log(schools);
     if (schools.total) {
       setListSchool(schools.data.map((data) => ({
         value: data._id,
@@ -47,20 +41,27 @@ const AddClassroom = () => {
       })));
     }
 
+    const schoolYear = await schoolYearService.list({limit: 20});
+    if (schoolYear.total) {
+      setListSchoolYear(schoolYear.data.map((data) => ({
+        value: data._id,
+        label: data.schoolYearName,
+      })));
+    }
 
-    const {...response} = await schoolYearService.detail(id);
+    const group = await classroomService.list({type: 'class'});
+    console.log('group', group);
 
-    // setListSchoolYear(schoolsYear);
-    // if (schoolsYear.total) {
-    //   setListSchoolYear(schoolsYear.data.map((data) => ({
-    //     value: data._id,
-    //     label: data.schoolYearName,
-    //   })));
-    // }
+    if (group.total) {
+      setListGroup(group.data.map((data) => ({
+        value: data._id,
+        label: data.className,
+      })));
+    }
   }
 
   const handleSubmitForm = async (data) => {
-    console.log(data);
+    console.log('data', data);
     try {
       await classroomService.create(data)
       swal({
@@ -72,27 +73,27 @@ const AddClassroom = () => {
     }
   };
 
-  const onChangeSchool = async (value) => {
-    console.log(value);
-    // const classroom = await classroomService.list(value);
-    const schoolYear = await schoolYearService.detail(value);
-    console.log('school-year', schoolYear);
-    // console.log('classroom', classroom);
-  };
+  // const onChangeSchool = async (value) => {
+  //   console.log(value);
+  //   // const classroom = await classroomService.list(value);
+  //   const schoolYear = await schoolYearService.detail(value);
+  //   console.log('school-year', schoolYear);
+  //   // console.log('classroom', classroom);
+  // };
 
   return (
     <>
-      <div className='mb-4 flex flex-col md:flex-row gap-4 w-1/2 md:w-full'>
-        <Button variant='danger'>
-          Tổng quan
-        </Button>
-        <Button variant='danger'>
-          Danh sách học sinh
-        </Button>
-        <Button variant='danger'>
-          Gửi thông tin
-        </Button>
-      </div>
+      {/*<div className='mb-4 flex flex-col md:flex-row gap-4 w-1/2 md:w-full'>*/}
+      {/*  <Button variant='danger'>*/}
+      {/*    Tổng quan*/}
+      {/*  </Button>*/}
+      {/*  <Button variant='danger'>*/}
+      {/*    Danh sách học sinh*/}
+      {/*  </Button>*/}
+      {/*  <Button variant='danger'>*/}
+      {/*    Gửi thông tin*/}
+      {/*  </Button>*/}
+      {/*</div>*/}
       <Formik
         validationSchema={validationSchema}
         onSubmit={handleSubmitForm}
@@ -117,7 +118,7 @@ const AddClassroom = () => {
                 name='schoolId'
                 useFormik='true'
                 onChange={e => {
-                  onChangeSchool(e.value);
+                  // onChangeSchool(e.value);
                   setFieldValue('schoolId', e.value)}}
                 options={listSchool}
               />
@@ -133,7 +134,7 @@ const AddClassroom = () => {
                 name='parentId'
                 useFormik='true'
                 onChange={e => setFieldValue('parentId', e.value)}
-                options={options}
+                options={listGroup}
               />
               <Input
                 label='Tên lớp *'
@@ -144,7 +145,9 @@ const AddClassroom = () => {
             </div>
             <div className='py-4'>
               <Button type='submit' className='mr-4'>Thêm</Button>
-              <Button>Huỷ</Button>
+              <Link href='/to-chuc/lop'>
+                <a><Button type='text'>Huỷ</Button></a>
+              </Link>
             </div>
           </Form>
         )}

@@ -1,34 +1,29 @@
 import {Formik, Form} from "formik";
 import * as Yup from "yup";
 import {useEffect, useState} from "react";
+import {useRouter} from "next/router";
+import swal from "sweetalert";
+import Link from "next/link";
 
 import Input from "../../../../components/form/input";
 import Button from "../../../../components/button";
 import Select from "../../../../components/form/select";
 import Layout from "../../../../components/layout";
 import {classroomService, schoolService} from "../../../../services";
-import {useRouter} from "next/router";
 import schoolYearService from "../../../../services/organize/school-year";
-import swal from "sweetalert";
 
 const validationSchema = Yup.object().shape({
-  className: Yup.string().required('Tên khối không được để trống'),
+  className: Yup.string().required('Tên khối không được để trống').max(50, 'Tên khối tối đa là 50 ký tự').min(5, 'Tên khối phải ít nhất 5 ký tự'),
   schoolYearId: Yup.string().required('Niên khoá không được để trống'),
   schoolId: Yup.string().required('Tên trường không được để trống'),
 });
-
-const options = [
-  {value: '2009-2010', label: '2009-2010'},
-  {value: '2019-2012', label: '2009-2010'},
-  {value: '2009-2012', label: '2009-2010'},
-]
 
 const AddGroup = () => {
 
   const router = useRouter();
   const [listSchool, setListSchool] = useState();
-  const [schoolYear, setSchoolYear] = useState()
-  
+  const [schoolYear, setSchoolYear] = useState([])
+
   useEffect(() => {
     if (!router.isReady) return;
     let abortController = new AbortController();
@@ -55,17 +50,29 @@ const AddGroup = () => {
         text: "Tạo khối thành công",
         icon: "success"
       })
+      router.back()
     } catch ({response}) {
       console.log(response);
+      if (response.data.message) {
+        swal({
+          text: "Niên khoá này đã có khối, vui lòng tạo khối niên khoá khác",
+          icon: "error"
+        })
+      }
     }
   };
-  
-  const onChangeSchool = async (value) => {
-    console.log(value);
-    // const classroom = await classroomService.list(value);
-    const schoolYear = await schoolYearService.detail(value);
-    console.log('school-year', schoolYear);
-    // console.log('classroom', classroom);
+
+  const onChangeSchool = async (idSchool) => {
+    console.log(idSchool);
+
+    const {...response} = await schoolYearService.list()
+    console.log('all-School-year', response.data);
+
+    const classroom = await classroomService.list({idSchool});
+    console.log('classroom', classroom);
+
+    // const schoolYear = await schoolYearService.detail(idSchool);
+    // console.log('school-year', schoolYear);
   };
 
   return (
@@ -77,7 +84,8 @@ const AddGroup = () => {
         className: '',
         schoolId: '',
         schoolYearId: '',
-        parentId: null
+        parentId: null,
+        status: '1'
       }}
     >
       {({
@@ -101,7 +109,7 @@ const AddGroup = () => {
               label='Niên khoá'
               name='schoolYearId'
               onChange={e => setFieldValue('schoolYearId', e.value)}
-              options={options}
+              options={schoolYear}
               placeholder='Chọn niên khoá'
             />
             <Input
@@ -112,7 +120,9 @@ const AddGroup = () => {
           </div>
           <div className='py-4'>
             <Button type='submit' className='mr-4'>Thêm</Button>
-            <Button>Huỷ</Button>
+            <Link href='/to-chuc/khoi'>
+              <a><Button type='text'>Huỷ</Button></a>
+            </Link>
           </div>
         </Form>
       )}

@@ -21,7 +21,6 @@ const schoolYearService = {
     }
   },
   create: async (data) => {
-    console.log(data);
     return await api.post(
       "/organization/schoolyear", data
     );

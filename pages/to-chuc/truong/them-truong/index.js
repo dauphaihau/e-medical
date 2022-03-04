@@ -21,7 +21,10 @@ const AddSchool = () => {
     try {
       await schoolService.create(dataSchool)
       await router.back();
-      swal('Tạo trường thành công');
+      swal({
+        text: "Tạo trường thành công",
+        icon: "success"
+      })
     } catch (error) {
       console.log({error})
     }

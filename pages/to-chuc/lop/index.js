@@ -10,12 +10,6 @@ import Button from "../../../components/button";
 import {classroomService} from "../../../services";
 import Pagination from "../../../components/table/pagination";
 
-const options = [
-  {value: 'chocolate', label: 'Chocolate'},
-  {value: 'strawberry', label: 'Strawberry'},
-  {value: 'vanilla', label: 'Vanilla'}
-]
-
 let skip = 0;
 
 const ClassroomList = () => {
@@ -50,11 +44,11 @@ const ClassroomList = () => {
       <div className='grid-container'>
         <Input placeholder='Tìm kiếm...'/>
         <Select
-          options={options}
+          options={[]}
           placeholder='Chọn niên khoá'
         />
         <Select
-          options={options}
+          options={[]}
           placeholder='Khối'
         />
       </div>

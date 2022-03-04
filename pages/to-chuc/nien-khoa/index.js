@@ -20,6 +20,7 @@ const SchoolYearList = () => {
     try {
       const {...response} = await schoolYearService.list()
       setListSchoolYear(response.data)
+      console.log('response-data', response.data);
     } catch (error) {
       console.log({error})
     }

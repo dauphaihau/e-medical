@@ -73,7 +73,7 @@ const Header = ({stateSidebar, setStateSidebar}) => {
               />
             </svg>
           </button>
-          <Button className='ml-4 rounded-[11px]'>Thêm mới</Button>
+          <Button className='ml-4 rounded-[11px] hidden lg:block'>Thêm mới</Button>
         </div>
         <div className='navbar-right'>
           <div className='navbar-right__info' ref={innerRef} onClick={() => setDropdown(!dropdown)}>
@@ -95,6 +95,7 @@ const Header = ({stateSidebar, setStateSidebar}) => {
               </div>
             </div>
           </div>
+          {/*Dropdown profile*/}
         </div>
       </div>
     </div>

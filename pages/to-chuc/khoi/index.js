@@ -1,61 +1,31 @@
 import Link from "next/link";
+import {useEffect, useState} from "react";
 
 import Input from "../../../components/form/input";
-import Table from "../../../components/table";
 import Layout from "../../../components/layout";
 import Select from "../../../components/form/select";
 import Button from "../../../components/button";
-import {useEffect} from "react";
-import schoolYearService from "../../../services/organize/school-year";
-import {classroomService, schoolService} from "../../../services";
+import {classroomService} from "../../../services";
+import {PencilIcon, TrashIcon} from "@heroicons/react/outline";
+import Pagination from "../../../components/table/pagination";
 
-const theadData = [
-  'STT',
-  'Tên khối',
-  'Số lớp',
-  'Số học sinh',
-  'Khối trưởng'
-  , 'Chỉnh sửa'
-];
 
-const options = [
-  {value: 'chocolate', label: 'Chocolate'},
-  {value: 'strawberry', label: 'Strawberry'},
-  {value: 'vanilla', label: 'Vanilla'}
-]
+let skip = 0;
 
 const GroupList = () => {
-  // let tbodyData = [];
+
+  const [listGroup, setListGroup] = useState()
 
   useEffect(async () => {
     try {
-      const {...res} = await classroomService.list({type: 'group'});
+      const {...res} = await classroomService.list({type: 'class'});
       console.log(res);
+      setListGroup(res.data)
       // setListClassroom(response.data)
     } catch (error) {
       console.log({error})
     }
   }, [])
-
-
-  const loadInit = async () => {
-    const group = await classroomService.list({type: 'group'});
-    console.log(schoolsYear);
-    setListSchoolYear(schoolsYear);
-    if (schoolsYear.total) {
-      setListSchoolYear(schoolsYear.data.map((data) => ({
-        value: data._id,
-        label: data.schoolYearName,
-      })));
-    }
-    const schools = await schoolService.list({limit: 20});
-    if (schools.total) {
-      setListSchool(schools.data.map((data) => ({
-        value: data._id,
-        label: data.schoolname,
-      })));
-    }
-  }
 
   return (
     <>
@@ -63,7 +33,7 @@ const GroupList = () => {
       <div className='grid-container'>
         <Input placeholder='Tìm kiếm ..'/>
         <Select
-          options={options}
+          options={[]}
           placeholder='Chọn niên khoá'
         />
       </div>
@@ -71,16 +41,46 @@ const GroupList = () => {
         <a><Button>Thêm mới</Button></a>
       </Link>
       <div className="mt-8 overflow-x-auto lg:overflow-x-visible">
-        {/*<Table*/}
-        {/*  titleTable='Khối'*/}
-        {/*  theadData={theadData} tbodyData={tbodyData}*/}
-        {/*/>*/}
+        <div className='container-table'>
+          <h4>Khối</h4>
+          <table className='table'>
+            <thead>
+              <tr>
+                <th className='text-center'>STT</th>
+                <th>Tên khối</th>
+                <th>Số học sinh</th>
+                {/*<th>Giáo viên chủ nhiệm</th>*/}
+                <th/>
+                <th/>
+              </tr>
+            </thead>
+            <tbody>
+              {listGroup?.map((group, index) => (
+                <tr key={index}>
+                  <td>{parseInt(skip) + index + 1}</td>
+                  <td>{group.className}</td>
+                  <td></td>
+                  <td></td>
+                  <td>
+                     <Link href={`/to-chuc/khoi/${group._id}`}>
+                       <a><PencilIcon className='h-5 w-5 inline'/></a>
+                     </Link>
+                     <TrashIcon
+                       className='h-5 w-5 inline ml-4 cursor-pointer'
+                       // onClick={() => handleDelete(group._id)}
+                     />
+                  </td>
+              </tr>
+              ))}
+            </tbody>
+          </table>
+          {/*<Pagination data={listClassroom}/>*/}
+      </div>
       </div>
     </>
   );
 }
 
 export default GroupList;
-
 
 GroupList.getLayout = (page) => <Layout>{page}</Layout>;

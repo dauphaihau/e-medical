@@ -26,6 +26,7 @@ const DetailSchoolYear = () => {
   const router = useRouter();
   const [schoolYear, setSchoolYear] = useState();
   const [schoolName, setSchoolName] = useState()
+  console.log('school-year', schoolYear);
 
   useEffect(async () => {
     if (!router.isReady) return;
@@ -140,9 +141,7 @@ const DetailSchoolYear = () => {
           <div className='mt-4'>
             <Button className='mr-4' type='submit'>Cập nhật</Button>
             <Link href='/to-chuc/nien-khoa'>
-              <a>
-                <Button type='text'>Huỷ</Button>
-              </a>
+              <a><Button type='text'>Huỷ</Button></a>
             </Link>
           </div>
         </Form>
