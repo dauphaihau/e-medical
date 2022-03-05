@@ -22,9 +22,9 @@ const validationSchema = Yup.object().shape({
     .required('Vui logn2 nhập số điện thoại')
     .matches(phoneRegExp, 'Số điện thoại không hợp lệ'),
   // address: Yup.string().required('Địa chỉ không được để trống'),
-  // province: Yup.string().required('Tỉnh không được để trống'),
-  // district: Yup.string().required('Quận không được để trống'),
-  // ward: Yup.string().required('Phường không được để trống'),
+  province: Yup.object().shape({}),
+  district: Yup.object().shape({}),
+  ward: Yup.object().shape({}),
 });
 
 const labelAddType = {
@@ -77,8 +77,23 @@ const UpdateStaff = () => {
           .then(() => Router.push('/nhan-su/giao-vien/'));
       }
 
+      let initDataSelected = {};
       const provinces = await locationService.listProvince();
       setListProvince(provinces);
+      initDataSelected.province = _.find(provinces, {code: memberRes?.province?.code})
+      //set init province
+      if(initDataSelected.province && initDataSelected.province.code){
+        const districts = await locationService.listDistrict(initDataSelected.province.code);
+        setListDistrict(districts);
+        initDataSelected.district = _.find(districts, {code: memberRes?.district?.code});
+      }
+      //set init district
+      if(initDataSelected.district && initDataSelected.district.code){
+        const wards = await locationService.listWard(initDataSelected.district.code);
+        setListWard(wards);
+        initDataSelected.ward = _.find(wards, {code: memberRes?.ward?.code});
+      }
+      console.log(initDataSelected);
 
       const schools = await schoolService.list({limit:20});
       if(schools.total){
@@ -87,17 +102,15 @@ const UpdateStaff = () => {
           label: data.schoolname,
         }));
         setListSchool(schoolSelect);
-        const initSchool = _.find(schoolSelect, {value: memberRes.schoolWorking[0]?.schoolId});
+        const initSchool = _.find(schoolSelect, {value: memberRes.schoolWorking?.schoolId});
         setSchoolSelected(initSchool);
-        let initDataSelected = {
-          school: initSchool
-        }
+        initDataSelected.school = initSchool;
         // initData.school = initSchool;
 
         if(initSchool && !_.isEmpty(initSchool)){
           const classSelect = await onChangeSchool(initSchool.value);
           if(classSelect){
-            initDataSelected.class = _.find(classSelect, {value: memberRes.schoolWorking[0]?.classId});
+            initDataSelected.class = _.find(classSelect, {value: memberRes.schoolWorking?.classId});
           }
         }
         setInitData(initDataSelected);
@@ -109,39 +122,46 @@ const UpdateStaff = () => {
   }
 
   const handleSubmitForm = async (data) => {
-    console.log(data);
-    // try {
-    //   await memberService.create(data);
-    //   swal('Cap nhat thanh cong')
-    // } catch (error) {
-    //   console.log(error);
-    // }
+    const { id } = router.query;
+    try {
+      await memberService.update(id, data);
+      swal('Cập nhật thành công', '', 'success')
+        .then(() => Router.push('/nhan-su/giao-vien/'));
+    } catch (error) {
+      swal('Cập nhật không thành công.', 'Vui lòng thử lại.', 'error');
+    }
   };
 
   const onChangeProvince = async (e) => {
     const districts = await locationService.listDistrict(e.code);
     setListDistrict(districts);
+    setInitData({...initData, ...{
+      province: e,
+      district: {},
+      ward: {},
+    }});
   }
 
   const onChangeDistrict = async (e) => {
     const wards = await locationService.listWard(e.code);
     setListWard(wards);
+    setInitData({...initData, ...{
+      district: e,
+      ward: {},
+    }});
   }
 
   const onChangeSchool = async (schoolId) => {
     const classes = await classroomService.list({schoolId});
+    let classSelected = [];
     if(classes.total){
-      const classSelected = classes.data.map((data) => ({
+      classSelected = classes.data.map((data) => ({
         value: data._id,
         label: data.className,
       }));
-      setListClass(classSelected);
-      return classSelected;
     }
-    else {
-      setListClass({});
-      return null;
-    }
+    setListClass(classSelected);
+    return classSelected;
   }
 
   return (
@@ -151,14 +171,14 @@ const UpdateStaff = () => {
       onSubmit={handleSubmitForm}
       enableReinitialize
       initialValues={{
-        schoolId: initData.school.value ?? '',
-        classId: initData.class.value ?? '',
+        schoolId: initData.school?.value ?? '',
+        classId: initData.class?.value ?? '',
         fullName: member?.fullName ?? '',
         address: member?.address ?? '',
         phoneNumber: member?.phoneNumber ?? '',
-        province: member?.province ?? '',
-        district: member?.district?? '',
-        ward: member?.ward ?? '',
+        province: member?.province ?? {},
+        district: member?.district?? {},
+        ward: member?.ward ?? {},
       }}
     >
       {({
@@ -173,18 +193,27 @@ const UpdateStaff = () => {
               label='Tên trường'
               name='schoolId'
               options={listSchool}
-              value={!_.isEmpty(initData.school)?initData.school: ''}
+              value={initData.school && !_.isEmpty(initData.school)?initData.school: ''}
               onChange={(e) => {
                 onChangeSchool(e.value);
                 setFieldValue('schoolId', e.value);
+                setInitData({...initData, ...{
+                  school: e,
+                  class: {},
+                }});
               }}
             />
             <Select
               label='Lớp chủ nhiệm'
               name='classId'
               options={listClass}
-              value={!_.isEmpty(initData.class)?initData.class:''}
-              onChange={(e) => setFieldValue('classId', e.value)}
+              value={initData.class && !_.isEmpty(initData.class)?initData.class:''}
+              onChange={(e) => {
+                setFieldValue('classId', e.value)
+                setInitData({...initData, ...{
+                  class: e,
+                }});
+              }}
             />
           </div>
           <Input
@@ -210,35 +239,37 @@ const UpdateStaff = () => {
               label='Tỉnh/thành'
               name='province'
               options={listProvince}
+              value={initData.province && !_.isEmpty(initData.province)?initData.province:''}
               onChange={(e) => {
                 onChangeProvince(e);
-                setFieldValue('province', e.code);
+                setFieldValue('province', e);
               }}
-              // value={values.province}
             />
             <Select
               label='Quận/huyện'
               name='district'
               options={listDistrict}
+              value={initData.district && !_.isEmpty(initData.district)?initData.district:''}
               onChange={(e) => {
                 onChangeDistrict(e);
-                setFieldValue('district', e.code);
+                setFieldValue('district', e);
               }}
-              // value={values.district}
             />
             <Select
               label='Phường/Xã' 
               name='ward'
               options={listWard}
+              value={initData.ward && !_.isEmpty(initData.ward)?initData.ward:''}
               onChange={(e) => {
                 handleChange(e.code)
-                setFieldValue('ward', e.code);
+                setFieldValue('ward', e);
+                setInitData({...initData, ...{
+                  ward: e,
+                }});
               }}
-              // value={values.ward}
             />
           </div>
-          
-          <Button type='submit' className='mr-4'>Thêm</Button>
+          <Button type='submit' className='mr-4'>Cập nhật</Button>
         </Form>
       )}
     </Formik>
