@@ -32,7 +32,7 @@ const Teacher = () => {
               <th className="text-left">Nhân viên</th>
               <th className="text-left">Phone</th>
               <th className="text-left">Lớp CN</th>
-              <th className="w-2"></th>
+              <th className="w-2"/>
             </tr>
             </thead>
             <tbody>

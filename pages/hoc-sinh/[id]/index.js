@@ -1,15 +1,15 @@
 import {Formik, Form} from "formik";
 import Link from "next/link";
-import {PencilIcon, TrashIcon, CheckIcon} from "@heroicons/react/outline";
+import {useRouter} from "next/router";
 
+import {CheckIcon, EyeIcon} from "@heroicons/react/outline";
 import Input from "@components/form/input";
 import Radio, {RadioGroup} from "@components/form/radio";
 import Layout from "@components/layout";
 import Button from "@components/button";
 import Textarea from "@components/form/textarea";
 import Select from "@components/form/select";
-import Pagination from "@components/table/pagination";
-import {useRouter} from "next/router";
+import Table from "@components/table";
 
 const arrData = [
   {type: 'BCG (Lao)', icon: <CheckIcon/>, icon2: <CheckIcon/>,},
@@ -27,6 +27,41 @@ const DetailStudent = () => {
   const handleSubmitForm = async (values) => {
     console.log(values);
   };
+
+
+  const columns = [
+    {
+      id: 'time',
+      title: 'Thời gian',
+    },
+    {
+      id: 'type',
+      title: 'Loại theo dõi',
+    },
+    {
+      id: 'note',
+      title: 'Ghi chú',
+    },
+    {
+      id: 'action',
+      title: 'Xem chi tiết',
+      render: (element) => (
+        <>
+          <Link href={`/hoc-sinh/them-hoc-sinh/${element._id}`}>
+            <a><EyeIcon className='h-5 w-5 inline'/></a>
+          </Link>
+        </>
+      )
+    }
+  ]
+
+  const rows = [
+    {
+      time: "08:00 - 12/04/2021",
+      type: 'Theo dõi thể lực, huyết áp, Nhịp tim & Thị lực',
+      note: 'Bình thường',
+    },
+  ];
 
   return (
     <>
@@ -132,43 +167,7 @@ const DetailStudent = () => {
               <Select placeholder='Thời gian' options={[]}/>
               <Select placeholder='Loại theo dõi' options={[]}/>
             </div>
-            <div className="mt-8 overflow-x-auto lg:overflow-x-visible">
-              <div className='container-table w-[800px] lg:w-[47%]'>
-                <table className='table'>
-                  <thead>
-              <tr>
-                <th>Thời gian</th>
-                <th>Loại theo dõi</th>
-                <th>Ghi chú</th>
-                <th>Xem chi tiết</th>
-              </tr>
-                  </thead>
-                  <tbody>
-                    {[].map((item, index) => (
-                      <tr key={index}>
-                  <td>{parseInt(skip) + index + 1}</td>
-                  <td>{item.itemname}</td>
-                  <td>{item.address}</td>
-                  <td>{item.province}</td>
-                  <td>{item.district}</td>
-                  <td>{item.ward}</td>
-                  <td>{item.civilGroup}</td>
-                  <td>
-                     <Link href={`/to-chuc/truong/${item._id}`}>
-                       <a><PencilIcon className='h-5 w-5 inline'/></a>
-                     </Link>
-                     <TrashIcon
-                       className='h-5 w-5 inline ml-4 cursor-pointer'
-                       // onClick={() => handleDelete(item._id)}
-                     />
-                  </td>
-              </tr>
-                    ))}
-                  </tbody>
-                </table>
-                <Pagination data={[]}/>
-              </div>
-            </div>
+            <Table columns={columns} rows={rows} widthContainer='w-[800px]'/>
             <div className='flex justify-end gap-x-4 mt-8'>
               <Button>Huỷ</Button>
               <Button type='submit'>Cập nhật thông tin</Button>
