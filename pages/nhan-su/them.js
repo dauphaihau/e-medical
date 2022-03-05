@@ -2,7 +2,7 @@ import {Formik, Form} from "formik";
 import {useEffect, useState} from "react";
 import * as Yup from "yup";
 import swal from "sweetalert";
-import {useRouter} from "next/router";
+import Router, {useRouter} from "next/router";
 
 import Button from "@components/button";
 import Input from "@components/form/input";
@@ -22,9 +22,9 @@ const validationSchema = Yup.object().shape({
     .required('Vui logn2 nhập số điện thoại')
     .matches(phoneRegExp, 'Số điện thoại không hợp lệ'),
   // address: Yup.string().required('Địa chỉ không được để trống'),
-  // province: Yup.string().required('Tỉnh không được để trống'),
-  // district: Yup.string().required('Quận không được để trống'),
-  // ward: Yup.string().required('Phường không được để trống'),
+  province: Yup.object().shape({}),
+  district: Yup.object().shape({}),
+  ward: Yup.object().shape({}),
 });
 
 const labelAddType = {
@@ -64,10 +64,24 @@ const AddStaff = () => {
     }
   }
 
-  const handleSubmitForm = async (data) => {
+  const handleSubmitForm = async (data, {resetForm}) => {
+    //format data
+    let bodyData = {};
+    if(data.province && !_.isEmpty(data.province)){
+      bodyData.province = {code: data.province.code, provinceName: data.province.label}
+    }
+    if(data.district && !_.isEmpty(data.district)){
+      bodyData.district = {code: data.district.code, districtName: data.district.label}
+    }
+    if(data.ward && !_.isEmpty(data.ward)){
+      bodyData.ward = {code: data.ward.code, wardName: data.ward.label}
+    }
+    bodyData = {...data, ...bodyData};
+
     try {
-      await memberService.create(data);
-      swal('Cập nhật thành công', '', 'success');
+      await memberService.create(bodyData);
+      swal('Cập nhật thành công', '', 'success')
+        .then(() => Router.push('/nhan-su/giao-vien/'));
     } catch (error) {
       swal('Cập nhật không thành công', '', 'error');
     }
@@ -105,15 +119,16 @@ const AddStaff = () => {
         fullName: '',
         address: '',
         phoneNumber: '',
-        province: '',
-        district: '',
-        ward: '',
+        province: {},
+        district: {},
+        ward: {},
       }}
     >
       {({
           handleChange,
           values,
           setFieldValue,
+          resetForm,
         }) => (
         <Form className='form py-8'>
           <h3>Thêm {labelAddType[addType]}</h3>
@@ -159,7 +174,7 @@ const AddStaff = () => {
               options={listProvince}
               onChange={(e) => {
                 onChangeProvince(e);
-                setFieldValue('province', e.code);
+                setFieldValue('province', e);
               }}
               // value={values.province}
             />
@@ -169,7 +184,7 @@ const AddStaff = () => {
               options={listDistrict}
               onChange={(e) => {
                 onChangeDistrict(e);
-                setFieldValue('district', e.code);
+                setFieldValue('district', e);
               }}
               // value={values.district}
             />
@@ -179,7 +194,7 @@ const AddStaff = () => {
               options={listWard}
               onChange={(e) => {
                 handleChange(e.code)
-                setFieldValue('ward', e.code);
+                setFieldValue('ward', e);
               }}
               // value={values.ward}
             />
