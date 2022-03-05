@@ -5,12 +5,12 @@ import * as Yup from "yup";
 import swal from "sweetalert";
 import Link from "next/link";
 
-import Input from "../../../../components/form/input";
-import Button from "../../../../components/button";
-import Select from "../../../../components/form/select";
-import Layout from "../../../../components/layout";
-import schoolYearService from "../../../../services/organize/school-year";
-import {classroomService, schoolService} from "../../../../services";
+import Input from "@components/form/input";
+import Button from "@components/button";
+import Select from "@components/form/select";
+import Layout from "@components/layout";
+import schoolYearService from "@services/organize/school-year";
+import {classroomService, schoolService} from "@services";
 
 const validationSchema = Yup.object().shape({
   className: Yup.string().required('Tên khối không được để trống').max(50, 'Tên khối tối đa là 50 ký tự').min(5, 'Tên khối phải ít nhất 5 ký tự'),

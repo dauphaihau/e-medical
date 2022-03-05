@@ -4,13 +4,14 @@ const Textarea = (props) => {
     label,
     className = '',
     classNameLabel = '',
+    placeholder='',
     ...others
   } = props;
 
   return (
     <div className={`form-textarea-input ${className}`}>
       <label className={classNameLabel}>{label}</label>
-      <textarea {...others} rows="3"/>
+      <textarea {...others} placeholder={placeholder} rows="3"/>
     </div>
   );
 }

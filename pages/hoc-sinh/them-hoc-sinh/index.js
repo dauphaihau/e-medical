@@ -17,7 +17,21 @@ const arrData = [
   {type: 'Viêm gan B', icon: <CheckIcon/>, icon2: '', icon3: <CheckIcon/>},
   {type: 'Sởi', icon: <CheckIcon/>, icon2: '', icon3: <CheckIcon/>},
   {type: 'Viêm não Nhật bản B', icon: <CheckIcon/>, icon2: '', icon3: <CheckIcon/>},
+];
 
+const tbodyData = [
+  {
+    id: "1",
+    items: [" 08:00 - 12/04/2021", "Theo dõi thể lực, huyết áp, Nhịp tim & Thị lực", "Bình thường", "Chi tiết"],
+  },
+  {
+    id: "2",
+    items: [" 08:00 - 12/04/2021", "Theo dõi thể lực, huyết áp, Nhịp tim & Thị lực", "Bình thường", "Chi tiết"],
+  },
+  {
+    id: "3",
+    items: [" 08:00 - 12/04/2021", "Theo dõi thể lực, huyết áp, Nhịp tim & Thị lực", "Bình thường", "Chi tiết"],
+  },
 ];
 
 const AddStudent = () => {
@@ -41,14 +55,8 @@ const AddStudent = () => {
             <Input label='Ngày sinh'/>
           </div>
           <RadioGroup label='Giới Tính'>
-            <Radio
-              name='hoTen'
-              value='Hình chữ S'
-            />
-            <Radio
-              name='hoTen'
-              value='Hình chữ C'
-            />
+            <Radio name='sex' value='Nam'/>
+            <Radio name='sex' value='Nữ'/>
           </RadioGroup>
           <Input label='Địa chỉ'/>
           <h3 className='mt-16'>Thông tin liên hệ</h3>
@@ -115,7 +123,7 @@ const AddStudent = () => {
             <Select placeholder='Loại theo dõi' options={[]}/>
           </div>
           <div className="mt-8 overflow-x-auto lg:overflow-x-visible">
-            <div className='container-table w-[800px] lg:w-[47%]'>
+            <div className='container-table w-[800px] lg:w-full'>
               <table className='table'>
                 <thead>
               <tr>
@@ -126,25 +134,12 @@ const AddStudent = () => {
               </tr>
                 </thead>
                 <tbody>
-                  {[].map((item, index) => (
+                  {tbodyData.map((e, index) => (
                     <tr key={index}>
-                  <td>{parseInt(skip) + index + 1}</td>
-                  <td>{item.itemname}</td>
-                  <td>{item.address}</td>
-                  <td>{item.province}</td>
-                  <td>{item.district}</td>
-                  <td>{item.ward}</td>
-                  <td>{item.civilGroup}</td>
-                  <td>
-                     <Link href={`/to-chuc/truong/${item._id}`}>
-                       <a><PencilIcon className='h-5 w-5 inline'/></a>
-                     </Link>
-                     <TrashIcon
-                       className='h-5 w-5 inline ml-4 cursor-pointer'
-                       // onClick={() => handleDelete(item._id)}
-                     />
-                  </td>
-              </tr>
+                      {e.items.map(item => (
+                        <td key={Math.random()}>{item}</td>
+                      ))}
+                    </tr>
                   ))}
                 </tbody>
               </table>
@@ -153,7 +148,9 @@ const AddStudent = () => {
           </div>
 
           <div className='flex justify-end gap-x-4 mt-8'>
-            <Button>Huỷ</Button>
+            <Link href='/hoc-sinh'>
+              <a><Button>Huỷ</Button></a>
+            </Link>
             <Button type='submit'>Cập nhật thông tin</Button>
           </div>
         </Form>

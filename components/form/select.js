@@ -10,7 +10,8 @@ const Select = (props) => {
     width = '',
     name = '',
     error = '',
-    placeholder ='',
+    useFormik = false,
+    placeholder = '',
     ...others
   } = props;
 
@@ -24,9 +25,11 @@ const Select = (props) => {
         {...others}
         options={options}
       />
-      <div className='text-danger mt-[5px]'>
-        {(name) && <ErrorMessage name={name}/>}      
-      </div>
+      {useFormik && (
+        <div className='text-danger mt-[5px]'>
+          {(name) && <ErrorMessage name={name}/>}
+        </div>
+      )}
     </div>
   );
 }

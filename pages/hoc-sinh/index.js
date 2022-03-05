@@ -1,9 +1,10 @@
-import Input from "../../components/form/input";
-import Select from "../../components/form/select";
-import Table from "../../components/table";
-import Layout from "../../components/layout";
 import Link from "next/link";
-import Button from "../../components/button";
+
+import Input from "@components/form/input";
+import Select from "@components/form/select";
+import Table from "@components/table";
+import Layout from "@components/layout";
+import Button from "@components/button";
 
 const theadData = ['STT', 'Họ và tên', 'Tên lớp', 'Xem chi tiết'];
 
@@ -28,9 +29,9 @@ const Student = () => {
       <h4>Hồ sơ học sinh</h4>
       <div className="grid-container">
         <Input placeholder="Tìm kiếm"/>
-        <Select options={['one', 'two', 'three']}/>
-        <Select options={['one', 'two', 'three']}/>
-        <Select options={['one', 'two', 'three']}/>
+        <Select name='ohshit' options={[]}/>
+        <Select name='ohshit2' options={[]}/>
+        <Select name='ohshit3' options={[]}/>
       </div>
 
       <Link href='/hoc-sinh/them-hoc-sinh'>

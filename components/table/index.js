@@ -12,9 +12,7 @@ const TableRow = ({data}) => {
   return (
     <tr>
       {data?.map(item => (
-        <td
-          key={Math.random()}>{item}
-        </td>
+        <td key={Math.random()}>{item}</td>
       ))}
     </tr>
   )
