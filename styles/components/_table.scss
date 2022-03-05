@@ -18,7 +18,7 @@
         }
 
         th {
-          @apply text-left font-bold w-auto mt-[50px] h-[50px] p-4 text-black select-none ;
+          @apply text-left font-bold p-4 text-black select-none ;
           // height: 50px !important;
           border-bottom: 1px solid black;
         }
@@ -33,7 +33,7 @@
         }
 
         td {
-          @apply text-left text-black select-none w-auto p-4 items-center h-[52.8px];
+          @apply text-left text-black select-none w-auto p-4 items-center;
           border-bottom: 1px solid #DDDDDD;
           vertical-align: middle;
         }
