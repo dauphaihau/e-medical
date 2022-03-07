@@ -8,6 +8,7 @@ import Layout from "../../../components/layout";
 import Button from "../../../components/button";
 import {schoolService} from "../../../services";
 import Pagination from "../../../components/table/pagination";
+import swal from "sweetalert";
 
 const SchoolList = () => {
 
@@ -26,22 +27,30 @@ const SchoolList = () => {
   let skip = 0;
 
   const handleDelete = async (id) => {
-    try {
-      await schoolService.delete(id)
-      await swal('Xoá thành công');
-      router.reload();
-    } catch (error) {
-      console.log({error})
-    }
+    swal({
+      title: "Bạn chắc chắn muốn xóa?",
+      text: "",
+      icon: "warning",
+      buttons: true,
+      successMode: true,
+    }).then(async (willDelete) => {
+      if (willDelete) {
+        const result = await schoolService.delete(id);
+        if(result){
+          router.reload();
+        }
+        else{
+          swal('Xóa không thành công!!', '', 'error');s
+        }
+      }
+    });
+  
   };
 
   return (
     <>
       <h4>Tổ chức</h4>
-      <Input className='md:w-1/2 lg:w-1/4' placeholder='Tìm kiếm...'/>
-      <Link href='/to-chuc/truong/them-truong'>
-        <a><Button>Thêm mới</Button></a>
-      </Link>
+      <Input className='md:w-1/2 lg:w-1/4' placeholder='Tìm kiếm...' name="s"/>
       <div className="mt-8 overflow-x-auto lg:overflow-x-visible">
         <div className='container-table'>
           <h4>Danh sách trường</h4>
@@ -51,10 +60,9 @@ const SchoolList = () => {
                 <th className='text-center'>STT</th>
                 <th>Tên trường</th>
                 <th>Địa chỉ</th>
-                <th>Tỉnh</th>
-                <th>Quận</th>
-                <th>Phường</th>
-                <th>Nhóm trường</th>
+                <th>Tỉnh/thành</th>
+                <th>Quận/Huyện</th>
+                <th>Phường/Xã</th>
                 <th/>
               </tr>
             </thead>
@@ -64,10 +72,9 @@ const SchoolList = () => {
                   <td>{parseInt(skip) + index + 1}</td>
                   <td>{school.schoolname}</td>
                   <td>{school.address}</td>
-                  <td>{school.province}</td>
-                  <td>{school.district}</td>
-                  <td>{school.ward}</td>
-                  <td>{school.civilGroup}</td>
+                  <td>{school.province?.provinceName}</td>
+                  <td>{school.district?.districtName}</td>
+                  <td>{school.ward?.wardName}</td>
                   <td>
                      <Link href={`/to-chuc/truong/${school._id}`}>
                        <a><PencilIcon className='h-5 w-5 inline'/></a>
@@ -91,4 +98,3 @@ const SchoolList = () => {
 
 export default SchoolList;
 
-SchoolList.getLayout = (page) => <Layout>{page}</Layout>;

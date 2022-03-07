@@ -1,4 +1,5 @@
 import {useEffect, useRef, useState} from "react";
+import Router, {useRouter} from "next/router";
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -38,12 +39,25 @@ function useOuterClick(callback) {
   return innerRef;
 }
 
+function renderButtonAddNew(pathname){
+  let addLink;
+  // console.log(router.pathname);
+  if( pathname.includes('to-chuc/truong') ){
+    addLink = '/to-chuc/truong/them';
+  }
+ 
+};
 
 const Header = ({stateSidebar, setStateSidebar}) => {
+  const router = useRouter();
   const [dropdown, setDropdown] = useState(false)
   const innerRef = useOuterClick(() => {
     setDropdown(false)
   });
+  let addLink='';
+  if( router.pathname.includes('to-chuc/truong') ){
+    addLink = '/to-chuc/truong/them';
+  }
 
   return (
     <div className="header">
@@ -73,7 +87,9 @@ const Header = ({stateSidebar, setStateSidebar}) => {
               />
             </svg>
           </button>
+          
           <Button className='ml-4 rounded-[11px] hidden lg:block'>Thêm mới</Button>
+          
         </div>
         <div className='navbar-right'>
           <div className='navbar-right__info' ref={innerRef} onClick={() => setDropdown(!dropdown)}>

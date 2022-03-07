@@ -1,7 +1,7 @@
 import apiRequest from "../request";
 
 const api = apiRequest.init("eschool");
-const schoolYearService = {
+export const schoolYearService = {
   list: async (params) => {
     try{
       const {request, ...response} = await api.get('/organization/schoolyear/', {params});
@@ -21,9 +21,13 @@ const schoolYearService = {
     }
   },
   create: async (data) => {
-    return await api.post(
-      "/organization/schoolyear", data
-    );
+    try{
+      const result = await api.post("/organization/schoolyear", data);
+      return result;
+    }
+    catch(e){
+      return false;
+    }
   },
   delete: async (id) => {
     return await api.delete(
@@ -31,10 +35,15 @@ const schoolYearService = {
     );
   },
   update: async (id, dataUpdate) => {
-    console.log(dataUpdate);
-    return await api.patch(
-      `/organization/schoolyear/${id}`, dataUpdate
-    );
+    try{
+      const {...response} = await api.patch(
+        `/organization/schoolyear/${id}`, dataUpdate
+      );
+      return true;
+    }
+    catch(e){
+      return false;
+    }
+    
   },
 }
-export default schoolYearService;
