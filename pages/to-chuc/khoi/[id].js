@@ -10,7 +10,7 @@ import Button from "@components/button";
 import Select from "@components/form/select";
 import Layout from "@components/layout";
 import schoolYearService from "@services/organize/school-year";
-import {classroomService, schoolService} from "@services";
+import {classroomService} from "@services";
 
 const validationSchema = Yup.object().shape({
   className: Yup.string().required('Tên khối không được để trống').max(50, 'Tên khối tối đa là 50 ký tự').min(5, 'Tên khối phải ít nhất 5 ký tự'),
@@ -33,7 +33,13 @@ const DetailGroup = () => {
   }, [router.isReady, router.asPath]);
 
   const loadInit = async () => {
-    const schools = await schoolService.list({limit: 20});
+
+    // return []
+    const schools = await classroomService.list({schoolId: router.query.id, type: 'group'});
+
+    // return []
+    // const schools = await classroomService.list({schoolId: router.query.id});
+
     console.log('schools', schools);
     if (schools.total) {
       setListSchool(schools.data.map((data) => ({
@@ -92,7 +98,7 @@ const DetailGroup = () => {
           values
         }) => (
         <Form className='form lg:w-1/4'>
-          <h3>Thiết lập khối</h3>
+          <h3>Thông tin chi tiết khối</h3>
           <div>
             <Select
               label='Tên trường'
@@ -103,7 +109,7 @@ const DetailGroup = () => {
               }}
               options={listSchool}
               placeholder='Chọn trường'
-              useFokmik='true'
+              usefokmik='true'
             />
             <Select
               label='Niên khoá'
@@ -111,7 +117,7 @@ const DetailGroup = () => {
               onChange={e => setFieldValue('schoolYearId', e.value)}
               options={schoolYear}
               placeholder='Chọn niên khoá'
-              useFokmik='true'
+              usefokmik='true'
             />
             <Input
               name='className'

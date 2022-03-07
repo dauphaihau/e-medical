@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import {useRouter} from "next/router";
-import { memberService } from "@services";
 import Link from 'next/link'
+
 import { PencilAltIcon } from '@heroicons/react/solid';
+import { memberService } from "@services";
 import Input from "@components/form/input";
 import Button from "@components/button";
 
@@ -23,6 +24,9 @@ const Teacher = () => {
     <>
       <h4>Danh sách giáo viên</h4>
       <Input className='md:w-1/2 lg:w-1/4' name='search' placeholder='Tìm kiếm...'/>
+      <Link href='/nhan-su/giao-vien/them'>
+        <a><Button>Thêm mới</Button></a>
+      </Link>
       <div className="mt-8 drop-shadow-2xl overflow-x-auto lg:overflow-x-visible">
         <div className='container-table'>
           <table className='table'>

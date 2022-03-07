@@ -15,7 +15,7 @@
 .form-kskdk {
   @apply w-full p-4;
   &__tabs {
-    @apply grid grid-cols-6 gap-x-4;
+    @apply grid lg:grid-cols-6 gap-y-4 gap-x-4;
     div {
       @apply rounded-[5px] cursor-pointer border border-gray-100;
       padding: 0.5rem 0.5rem;

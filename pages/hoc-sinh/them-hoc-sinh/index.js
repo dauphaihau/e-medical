@@ -19,13 +19,11 @@ const arrData = [
   {type: 'Viêm não Nhật bản B', icon: <CheckIcon/>, icon2: '', icon3: <CheckIcon/>},
 ];
 
-
 const AddStudent = () => {
 
   const handleSubmitForm = async (values) => {
     console.log(values);
   };
-
 
   const columns = [
     {
@@ -43,6 +41,7 @@ const AddStudent = () => {
     {
       id: 'action',
       title: 'Xem chi tiết',
+      align: 'center',
       render: (element) => (
         <>
           <Link href={`/hoc-sinh/them-hoc-sinh/${element._id}`}>
@@ -103,36 +102,34 @@ const AddStudent = () => {
               <Input label='Cân nặng (kg)'/>
             </div>
             <RadioGroup label='Sản khoa' direction='flex-col'>
-              <Radio name='status' value='Bình thường'
-              />
-              <Radio name='status' value='Mẹ mắc bệnh khi mang thai'
-              />
+              <Radio name='status' value='Bình thường'/>
+              <Radio name='status' value='Mẹ mắc bệnh khi mang thai'/>
             </RadioGroup>
             <div className="mt-8 overflow-x-auto lg:overflow-x-visible">
               <div className='container-table w-[800px] lg:w-[47%]'>
                 <h4>Tiêm chủng</h4>
                 <table className='table'>
                   <thead className='bg-gray-100'>
-              <tr>
-                <th className='text-center' rowSpan='2'>STT</th>
-                <th rowSpan='2'>Loại Vacxin</th>
-                <th colSpan='3' className=''>Tình trạng tiêm/uống </th>
-              </tr>
                     <tr>
-                <th rowSpan='1'>Có</th>
-                <th colSpan='1'>Không</th>
-                <th colSpan='1'>Không nhớ</th>
-              </tr>
+                      <th className='text-center' rowSpan='2'>STT</th>
+                      <th rowSpan='2'>Loại Vacxin</th>
+                      <th colSpan='3' className=''>Tình trạng tiêm/uống </th>
+                    </tr>
+                          <tr>
+                      <th rowSpan='1'>Có</th>
+                      <th colSpan='1'>Không</th>
+                      <th colSpan='1'>Không nhớ</th>
+                    </tr>
                   </thead>
                   <tbody>
                     {arrData?.map((benh, index) => (
                       <tr key={index}>
-                  <td>{parseInt(0) + index + 1}</td>
-                  <td>{benh.type}</td>
-                  <td><figure className='h-4 w-4'>{benh.icon}</figure></td>
-                  <td><figure className='h-4 w-4'>{benh.icon2}</figure></td>
-                  <td><figure className='h-4 w-4'>{benh.icon3}</figure></td>
-              </tr>
+                          <td>{parseInt(0) + index + 1}</td>
+                          <td>{benh.type}</td>
+                          <td><figure className='h-4 w-4'>{benh.icon}</figure></td>
+                          <td><figure className='h-4 w-4'>{benh.icon2}</figure></td>
+                          <td><figure className='h-4 w-4'>{benh.icon3}</figure></td>
+                      </tr>
                     ))}
                   </tbody>
                 </table>
@@ -144,11 +141,11 @@ const AddStudent = () => {
             />
             <h3 className='mt-16'>Lịch sử theo dõi sức khỏe</h3>
             <div className="grid lg:grid-cols-6 gap-x-6">
-              <Select placeholder='Thời gian' options={[]}/>
-              <Select placeholder='Loại theo dõi' options={[]}/>
+              <Select placeholder='Thời gian' name='unknow2' options={[]}/>
+              <Select placeholder='Loại theo dõi' name='unknow3' options={[]}/>
             </div>
             <Table columns={columns} rows={rows} widthContainer='w-[800px]'/>
-            <div className='flex justify-end gap-x-4 mt-8'>
+            <div className='flex flex-row-reverse lg:justify-end gap-x-4 mt-8'>
               <Link href='/hoc-sinh'>
                 <a><Button>Huỷ</Button></a>
               </Link>

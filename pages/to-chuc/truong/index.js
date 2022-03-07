@@ -1,8 +1,8 @@
 import {useEffect, useState} from "react";
 import Link from "next/link";
 import {useRouter} from "next/router";
-import {PencilIcon, TrashIcon} from "@heroicons/react/outline";
 
+import {PencilIcon, TrashIcon} from "@heroicons/react/outline";
 import Input from "@components/form/input";
 import Layout from "@components/layout";
 import Button from "@components/button";
@@ -13,7 +13,6 @@ const SchoolList = () => {
 
   const [schools, setSchools] = useState([])
   const router = useRouter();
-  console.log('schools', schools);
 
   const columns = [
     {
@@ -50,7 +49,7 @@ const SchoolList = () => {
       title: 'Thao tác',
       render: (element) => (
         <>
-          <Link href={`/to-chuc/truong/${element._id}`}>
+          <Link href={router.pathname + '/' + element._id}>
             <a><PencilIcon className='h-5 w-5 inline'/></a>
           </Link>
           <TrashIcon
@@ -85,7 +84,7 @@ const SchoolList = () => {
     <>
       <h4>Tổ chức</h4>
       <Input className='md:w-1/2 lg:w-1/4' placeholder='Tìm kiếm...'/>
-      <Link href='/to-chuc/truong/them-truong'>
+      <Link href={router.pathname + '/' + 'them'}>
         <a><Button>Thêm mới</Button></a>
       </Link>
       <Table columns={columns} rows={schools} widthContainer='w-[1200px]'/>

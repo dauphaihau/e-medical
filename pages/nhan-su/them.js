@@ -3,28 +3,28 @@ import {useEffect, useState} from "react";
 import * as Yup from "yup";
 import swal from "sweetalert";
 import Router, {useRouter} from "next/router";
+import _ from "lodash";
 
 import Button from "@components/button";
 import Input from "@components/form/input";
 import { memberService, locationService, schoolService, classroomService } from "@services";
 import Select from "@components/form/select";
-import _ from "lodash";
 
 const phoneRegExp = /(([03+[2-9]|05+[6|8|9]|07+[0|6|7|8|9]|08+[1-9]|09+[1-4|6-9]]){3})+[0-9]{7}\b/
 const validationSchema = Yup.object().shape({
-  schoolId: Yup.string().required(),
-  classId: Yup.string().required(),
-  fullName: Yup.string()
-    .min(5, 'Tên trường ít nhất là 5 ký tự')
-    .max(50, 'Tên trường tối đa là 50 ký tự')
-    .required('Tên người dùng không được để trống'),
-  phoneNumber: Yup.string()
-    .required('Vui logn2 nhập số điện thoại')
-    .matches(phoneRegExp, 'Số điện thoại không hợp lệ'),
-  // address: Yup.string().required('Địa chỉ không được để trống'),
-  province: Yup.object().shape({}),
-  district: Yup.object().shape({}),
-  ward: Yup.object().shape({}),
+  // schoolId: Yup.string().required(),
+  // classId: Yup.string().required(),
+  // fullName: Yup.string()
+  //   .min(5, 'Tên trường ít nhất là 5 ký tự')
+  //   .max(50, 'Tên trường tối đa là 50 ký tự')
+  //   .required('Tên người dùng không được để trống'),
+  // phoneNumber: Yup.string()
+  //   .required('Vui logn2 nhập số điện thoại')
+  //   .matches(phoneRegExp, 'Số điện thoại không hợp lệ'),
+  // // address: Yup.string().required('Địa chỉ không được để trống'),
+  // province: Yup.object().shape({}),
+  // district: Yup.object().shape({}),
+  // ward: Yup.object().shape({}),
 });
 
 const labelAddType = {

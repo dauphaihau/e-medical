@@ -4,42 +4,89 @@ import {useRouter} from "next/router";
 import Layout from "@components/layout";
 import Button from "@components/button";
 import Table from "@components/table";
+import {EyeIcon} from "@heroicons/react/outline";
 
-const titleTable1 = ['STT', 'Mũi tiêm', 'Loại Vacccine', 'Ngày tiêm', 'Đơn vị tiêm chủng']
-const titleTable2 = ['STT', 'Ngày khai báo', 'Tình trạng sức khoẻ', 'Xem chi tiết']
-const titleTable3 = ['STT', 'Ngày khỏi', 'Ngày khỏi', 'Xem chi tiết']
-
-const tbodyData1 = [
+const columns1 = [
   {
-    id: "1",
-    items: ["1", "1", "AstraZeneca", '01/01/2022', 'Cơ sở y tế Quận 3'],
+    id: 'id',
+    key: 'id',
+    title: 'STT',
   },
   {
-    id: "2",
-    items: ["1", "1", "AstraZeneca", '01/01/2022', 'Cơ sở y tế Quận 3'],
-  },
-];
-
-const tbodyData2 = [
-  {
-    id: "1",
-    items: ["1", "01/01/2022", "Bình thường", 'Xem chi tiết'],
+    id: 'vaccine',
+    title: 'Mũi tiêm',
   },
   {
-    id: "2",
-    items: ["1", "01/01/2022", "Bình thường", 'Xem chi tiết'],
+    id: 'type',
+    title: 'Loại Vacccine',
   },
-];
-
-const tbodyData3 = [
   {
-    id: "1",
-    items: ["1", "01/01/2022", '01/01/2022', 'Xem chi tiết'],
+    id: 'date',
+    title: 'Ngày tiêm',
   },
-];
+  {
+    id: 'whoinfect',
+    title: 'Đơn vị tiêm chủng',
+  },
+]
+const columns2 = [
+  {
+    id: 'id',
+    key: 'id',
+    title: 'STT',
+  },
+  {
+    id: 'date',
+    title: 'Ngày khai báo',
+  },
+  {
+    id: 'status',
+    title: 'Tình trạng sức khoẻ',
+  },
+  {
+    id: 'action',
+    title: 'Xem chi tiết',
+    render: (element) => (
+      <>
+        <Link
+          // href={`/hoc-sinh/them-hoc-sinh/${element._id}`}
+        >
+          <a><EyeIcon className='h-5 w-5 inline'/></a>
+        </Link>
+      </>
+    )
+  }
+]
+const columns3 = [
+  {
+    id: 'id',
+    key: 'id',
+    title: 'STT',
+  },
+  {
+    id: 'date2',
+    title: 'Ngày phát hiện',
+  },
+  {
+    id: 'date',
+    title: 'Ngày khỏi',
+  },
+  {
+    id: 'action',
+    title: 'Xem chi tiết',
+    render: (element) => (
+      <>
+        <Link
+          // href={`/hoc-sinh/them-hoc-sinh/${element._id}`}
+        >
+          <a><EyeIcon className='h-5 w-5 inline'/></a>
+        </Link>
+      </>
+    )
+  }
+]
 
-
-const CovidStudent = () => {
+const CovidForm = () => {
 
   const router = useRouter();
 
@@ -74,30 +121,21 @@ const CovidStudent = () => {
             <p>Địa chỉ</p>
           </div>
           <div>
-            {['Cong Hau', '0901111921', 'Nam', 'Q1'].map(item => <p>{item}</p>)}
+            {['Cong Hau', '0901111921', 'Nam', 'Q1'].map(item => <p key={item}>{item}</p>)}
           </div>
         </div>
-        <div className="overflow-table my-8">
-          <Table
-            theadData={titleTable1}
-            widthContainer='w-[1000px] lg:w-full'
-            tbodyData={tbodyData1}
-          />
-        </div>
-        <div className="overflow-table my-8">
-          <Table
-            theadData={titleTable2}
-            widthContainer='w-[1000px] lg:w-full'
-            tbodyData={tbodyData2}
-          />
-        </div>
-        <div className="overflow-table my-8">
-          <Table
-            theadData={titleTable3}
-            widthContainer='w-[1000px] lg:w-full'
-            tbodyData={tbodyData3}
-          />
-        </div>
+        <Table
+          columns={columns1}
+          widthContainer='w-[1000px]'
+        />
+        <Table
+          columns={columns2}
+          widthContainer='w-[1000px]'
+        />
+        <Table
+          columns={columns3}
+          widthContainer='w-[1000px]'
+        />
         <div className='flex justify-end gap-x-4 mt-8'>
           <Button>Huỷ</Button>
           <Button type='submit'>Cập nhật thông tin</Button>
@@ -106,6 +144,6 @@ const CovidStudent = () => {
     </>
   );
 }
-export default CovidStudent;
+export default CovidForm;
 
-CovidStudent.getLayout = (page) => <Layout>{page}</Layout>;
+CovidForm.getLayout = (page) => <Layout>{page}</Layout>;

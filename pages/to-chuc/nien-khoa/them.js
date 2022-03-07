@@ -4,12 +4,12 @@ import {useRouter} from "next/router";
 import * as Yup from "yup";
 import swal from "sweetalert";
 
-import Select from "../../../../components/form/select";
-import Input from "../../../../components/form/input";
-import Button from "../../../../components/button";
-import Layout from "../../../../components/layout";
-import schoolYearService from "../../../../services/organize/school-year";
-import {schoolService} from "../../../../services";
+import Select from "@components/form/select";
+import Input from "@components/form/input";
+import Button from "@components/button";
+import Layout from "@components/layout";
+import schoolYearService from "@services/organize/school-year";
+import {schoolService} from "@services";
 
 const validationSchema = Yup.object().shape({
   schoolYearName: Yup.string().required('Tên niên khoá trường không được để trống'),
@@ -40,7 +40,6 @@ const AddSchoolYear = () => {
   }
 
   const handleSubmitForm = async (dataSchoolYear) => {
-    console.log(dataSchoolYear);
     try {
       await schoolYearService.create(dataSchoolYear)
       swal({

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import {useRouter} from "next/router";
 import {useEffect, useState} from "react";
 
 import Input from "@components/form/input";
@@ -12,6 +13,7 @@ import Table from "@components/table";
 const GroupList = () => {
 
   const [listGroup, setListGroup] = useState()
+  const router = useRouter();
 
   useEffect(async () => {
     try {
@@ -32,13 +34,12 @@ const GroupList = () => {
   const handleDelete = async (id) => {
     try {
       await classroomService.delete(id)
-      await swal('Xoá thành công');
+      await swal({text: 'Xoá thành công', icon: 'success'});
       router.reload();
     } catch (error) {
       console.log({error})
     }
   };
-
 
   const columns = [
     {
@@ -61,9 +62,10 @@ const GroupList = () => {
     {
       id: 'action',
       title: 'Thao tác',
-      render: (element) => (
-        <>
-          <Link href={`/to-chuc/khoi/${element._id}`}>
+      render: (element) => {
+        console.log('element', element);
+        return <>
+          <Link href={router.pathname + '/' + element._id}>
             <a><PencilIcon className='h-5 w-5 inline'/></a>
           </Link>
           <TrashIcon
@@ -71,7 +73,7 @@ const GroupList = () => {
             onClick={() => handleDelete(element._id)}
           />
         </>
-      )
+      }
     }
   ]
 
@@ -86,7 +88,7 @@ const GroupList = () => {
           placeholder='Chọn niên khoá'
         />
       </div>
-      <Link href='/to-chuc/khoi/them-khoi'>
+      <Link href={router.pathname + '/' + 'them'}>
         <a><Button>Thêm mới</Button></a>
       </Link>
       <Table
@@ -101,3 +103,4 @@ const GroupList = () => {
 export default GroupList;
 
 GroupList.getLayout = (page) => <Layout>{page}</Layout>;
+

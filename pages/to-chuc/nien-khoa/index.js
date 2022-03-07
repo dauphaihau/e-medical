@@ -67,7 +67,7 @@ const SchoolYearList = () => {
       title: 'Thao tác',
       render: (element) => (
         <>
-          <Link href={`/to-chuc/truong/${element._id}`}>
+          <Link href={router.pathname + '/' + element._id}>
             <a><PencilIcon className='h-5 w-5 inline'/></a>
           </Link>
           <TrashIcon
@@ -83,7 +83,7 @@ const SchoolYearList = () => {
     <>
       <h4>Tổ chức</h4>
       <Input className='md:w-1/2 lg:w-1/4' placeholder='Tìm kiếm...'/>
-      <Link href='/to-chuc/nien-khoa/them-nien-khoa'>
+      <Link href={router.pathname + '/' + 'them'}>
         <a><Button>Thêm mới</Button></a>
       </Link>
       <Table

@@ -12,7 +12,7 @@ const navigation = [
   {name: 'Đăng xuất', href: '/'},
 ]
 
-function useOuterClick(callback) {
+const useOuterClick = (callback) => {
   const innerRef = useRef();
   const callbackRef = useRef();
 
@@ -41,9 +41,7 @@ function useOuterClick(callback) {
 
 const Header = ({stateSidebar, setStateSidebar}) => {
   const [dropdown, setDropdown] = useState(false)
-  const innerRef = useOuterClick(() => {
-    setDropdown(false)
-  });
+  const innerRef = useOuterClick(() => setDropdown(false));
 
   return (
     <div className="header">
@@ -83,7 +81,7 @@ const Header = ({stateSidebar, setStateSidebar}) => {
             </div>
             <img src="https://i.pravatar.cc/300" alt='avatar'/>
           </div>
-          {/*Dropdown profile*/}
+          {/* Dropdown profile */}
           <div className={`navbar-right__profile ${dropdown ? 'block' : 'hidden'}`}>
             <div>
               <div role="menu" aria-orientation="vertical" aria-labelledby="user-menu">
@@ -95,7 +93,7 @@ const Header = ({stateSidebar, setStateSidebar}) => {
               </div>
             </div>
           </div>
-          {/*Dropdown profile*/}
+          {/* end Dropdown profile */}
         </div>
       </div>
     </div>

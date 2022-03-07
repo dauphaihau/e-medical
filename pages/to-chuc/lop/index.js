@@ -1,16 +1,15 @@
 import {useEffect, useState} from "react";
 import {useRouter} from "next/router";
 import Link from "next/link";
+
 import {PencilIcon, TrashIcon} from "@heroicons/react/outline";
+import Input from "@components/form/input";
+import Select from "@components/form/select";
+import Layout from "@components/layout";
+import Button from "@components/button";
+import {classroomService} from "@services";
+import Table from "@components/table";
 
-import Input from "../../../components/form/input";
-import Select from "../../../components/form/select";
-import Layout from "../../../components/layout";
-import Button from "../../../components/button";
-import {classroomService} from "../../../services";
-import Pagination from "../../../components/table/pagination";
-
-let skip = 0;
 
 const ClassroomList = () => {
 
@@ -38,6 +37,41 @@ const ClassroomList = () => {
     }
   };
 
+  const columns = [
+    {
+      id: 'id',
+      title: 'STT',
+      key: 'id'
+    },
+    {
+      id: 'className',
+      title: 'Tên lớp',
+    },
+    {
+      id: 'amountStudent',
+      title: 'Số học sinh',
+    },
+    {
+      id: 'teacher',
+      title: 'Giáo viên chủ nhiệm',
+    },
+    {
+      id: 'action',
+      title: 'Xem chi tiết',
+      render: (element) => (
+        <>
+          <Link href={router.pathname + '/' + element._id}>
+            <a><PencilIcon className='h-5 w-5 inline'/></a>
+          </Link>
+          <TrashIcon
+            className='h-5 w-5 inline ml-4 cursor-pointer'
+            onClick={() => handleDelete(element._id)}
+          />
+        </>
+      )
+    }
+  ]
+
   return (
     <>
       <h4>Tổ chức</h4>
@@ -52,47 +86,10 @@ const ClassroomList = () => {
           placeholder='Khối'
         />
       </div>
-      <Link href='/to-chuc/lop/them-lop'>
-        <a>
-          <Button>Thêm mới</Button>
-        </a>
+      <Link href={router.pathname + '/' + 'them'}>
+        <a><Button>Thêm mới</Button></a>
       </Link>
-      <div className="mt-8 overflow-x-auto lg:overflow-x-visible">
-        <div className='container-table'>
-          <h4>Lớp</h4>
-          <table className='table'>
-            <thead>
-              <tr>
-                <th className='text-center'>STT</th>
-                <th>Tên lớp</th>
-                <th>Số học sinh</th>
-                <th>Giáo viên chủ nhiệm</th>
-                <th/>
-              </tr>
-            </thead>
-            <tbody>
-              {listClassroom?.map((cr, index) => (
-                <tr key={index}>
-                  <td>{parseInt(skip) + index + 1}</td>
-                  <td>{cr.className}</td>
-                  <td></td>
-                  <td></td>
-                  <td>
-                     <Link href={`/to-chuc/lop/${cr._id}`}>
-                       <a><PencilIcon className='h-5 w-5 inline'/></a>
-                     </Link>
-                     <TrashIcon
-                       className='h-5 w-5 inline ml-4 cursor-pointer'
-                       onClick={() => handleDelete(cr._id)}
-                     />
-                  </td>
-              </tr>
-              ))}
-            </tbody>
-          </table>
-          <Pagination data={listClassroom}/>
-        </div>
-      </div>
+      <Table columns={columns} rows={listClassroom} titleTable='Lớp' widthContainer='w-[1200px]'/>
     </>
   );
 }

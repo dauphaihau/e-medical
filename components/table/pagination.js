@@ -20,7 +20,7 @@ const Pagination = (props) => {
       <p className='pagination__entries'>Hiển thị 1 đến {rows.length} của danh sách</p>
       <div className="pagination__num">
         <div className="pagination__num__item">
-          <figure className={currentPage === 1 && 'disabled'}>
+          <figure className={currentPage === 1 ? 'disabled' : ''}>
             <ChevronLeftIcon/>
           </figure>
           {pageNumbers.map(pageNumber => (
@@ -33,7 +33,7 @@ const Pagination = (props) => {
               </a>
             </div>
           ))}
-          <figure className={currentPage === rows.length - 1 && 'disabled'}>
+          <figure className={currentPage === Math.ceil(rows.length / itemsPerPage) ? 'disabled' : '' }>
             <ChevronRightIcon/>
           </figure>
         </div>

@@ -4,10 +4,10 @@ import * as Yup from "yup";
 import swal from "sweetalert";
 import {useRouter} from "next/router";
 
-import Button from "../../../../components/button";
-import Input from "../../../../components/form/input";
-import Layout from "../../../../components/layout";
-import {schoolService} from "../../../../services";
+import Button from "@components/button";
+import Input from "@components/form/input";
+import Layout from "@components/layout";
+import {schoolService} from "@services";
 
 const validationSchema = Yup.object().shape({
   schoolname: Yup.string().required('Tên trường không được để trống').min(5, 'Tên trường ít nhất là 5 ký tự').max(50, 'Tên trường tối đa là 50 ký tự'),
@@ -57,12 +57,12 @@ const DetailSchool = () => {
       onSubmit={handleSubmitForm}
       enableReinitialize
       initialValues={{
-        schoolname: school.schoolname,
-        address: school.address,
-        province: school.province,
-        district: school.district,
-        ward: school.ward,
-        civilGroup: school.civilGroup,
+        schoolname: school.schoolname || '',
+        address: school.address || '',
+        province: school.province || '',
+        district: school.district || '',
+        ward: school.ward || '',
+        civilGroup: school.civilGroup || '',
         status: 0
       }}
     >

@@ -28,7 +28,6 @@ const DetailStudent = () => {
     console.log(values);
   };
 
-
   const columns = [
     {
       id: 'time',
@@ -65,7 +64,7 @@ const DetailStudent = () => {
 
   return (
     <>
-      <div className='flex gap-x-4 mb-4'>
+      <div className='flex flex-col lg:flex-row gap-y-4 lg:gap-x-4 mb-4'>
         <Button>SỔ THEO DÕI SỨC KHỎE HỌC SINH</Button>
         <Link href={`/hoc-sinh/${router.query.id}/covid-19`}>
           <a>
@@ -76,13 +75,14 @@ const DetailStudent = () => {
       <Formik
         onSubmit={handleSubmitForm}
         enableReinitialize
+        initialValues={{}}
       >
         {({
             handleChange,
             values
           }) => (
           <Form className='form'>
-            <div className='flex justify-end gap-x-4'>
+            <div className='flex flex-col lg:flex-row gap-y-4 lg:gap-x-4 mb-4 lg:justify-end'>
               <Button>Thêm thông tin theo dõi sức khỏe</Button>
               <Button>Hồ sơ KSK định kỳ</Button>
             </div>
@@ -133,26 +133,26 @@ const DetailStudent = () => {
                 <h4>Tiêm chủng</h4>
                 <table className='table'>
                   <thead className='bg-gray-100'>
-              <tr>
-                <th className='text-center' rowSpan='2'>STT</th>
-                <th rowSpan='2'>Loại Vacxin</th>
-                <th colSpan='3' className=''>Tình trạng tiêm/uống </th>
-              </tr>
                     <tr>
-                <th rowSpan='1'>Có</th>
-                <th colSpan='1'>Không</th>
-                <th colSpan='1'>Không nhớ</th>
-              </tr>
+                      <th className='text-center' rowSpan='2'>STT</th>
+                      <th rowSpan='2'>Loại Vacxin</th>
+                      <th colSpan='3' className=''>Tình trạng tiêm/uống </th>
+                    </tr>
+                    <tr>
+                      <th rowSpan='1'>Có</th>
+                      <th colSpan='1'>Không</th>
+                      <th colSpan='1'>Không nhớ</th>
+                    </tr>
                   </thead>
                   <tbody>
                     {arrData?.map((benh, index) => (
-                      <tr key={index}>
-                  <td>{parseInt(0) + index + 1}</td>
-                  <td>{benh.type}</td>
-                  <td><figure className='h-4 w-4'>{benh.icon}</figure></td>
-                  <td><figure className='h-4 w-4'>{benh.icon2}</figure></td>
-                  <td><figure className='h-4 w-4'>{benh.icon3}</figure></td>
-              </tr>
+                     <tr key={index}>
+                        <td>{parseInt(0) + index + 1}</td>
+                        <td>{benh.type}</td>
+                        <td><figure className='h-4 w-4'>{benh.icon}</figure></td>
+                        <td><figure className='h-4 w-4'>{benh.icon2}</figure></td>
+                        <td><figure className='h-4 w-4'>{benh.icon3}</figure></td>
+                    </tr>
                     ))}
                   </tbody>
                 </table>

@@ -2,12 +2,12 @@ import {useState} from 'react';
 import {useRouter} from "next/router";
 import Link from "next/link";
 
-import {MENU} from "../../constants";
+import {MENU} from "@constants";
 
-const SubMenu = ({open, items}) => {
+const SubMenu = ({open, items, classDesktop = ''}) => {
   const router = useRouter();
   return (
-    <ul className={`${!open ? 'hidden' : ''} sidebar-submenu`}>
+    <ul className={`${!open ? 'hidden' : ''} sidebar-submenu ${classDesktop}`}>
       {items?.map((item) => (
         <li key={item.title} className={router.pathname == item.link ? 'active' : ''}>
           <Link passHref href={item.link}>
@@ -66,6 +66,7 @@ const Item = ({item, stateSidebar}) => {
           </a>
           {item.subNav && <ArrowDropdown stateSidebar={stateSidebar} open={active}/>}
           {stateSidebar ? '' : <SubMenu items={item.subNav} open={active}/>}
+          {stateSidebar ? <SubMenu classDesktop='lg:hidden' items={item.subNav} open={active}/> : '' }
         </div>
       </Link>
     </li>

@@ -5,21 +5,16 @@ import swal from "sweetalert";
 import Link from "next/link";
 import * as Yup from "yup";
 
-import Button from "../../../../components/button";
-import Input from "../../../../components/form/input";
-import Layout from "../../../../components/layout";
-import Select from "../../../../components/form/select";
-import schoolYearService from "../../../../services/organize/school-year";
-import {schoolService} from "../../../../services";
+import Button from "@components/button";
+import Input from "@components/form/input";
+import Layout from "@components/layout";
+import Select from "@components/form/select";
+import schoolYearService from "@services/organize/school-year";
+import {schoolService} from "@services";
 
 const validationSchema = Yup.object().shape({
   schoolYearName: Yup.string().required('Tên niên khoá trường không được để trống'),
 });
-
-const options = [
-  {value: true, label: 'Có'},
-  {value: false, label: 'Không'},
-]
 
 const DetailSchoolYear = () => {
 
@@ -33,8 +28,6 @@ const DetailSchoolYear = () => {
     let abortController = new AbortController();
     await getDetailSchoolYear(router.query.id);
 
-    // const {...result} = await schoolService.detail(schoolYear?.schoolId);
-    // setSchoolName(result.schoolname)
     return () => abortController.abort();
   }, [router.isReady, router.asPath]);
 
@@ -45,7 +38,7 @@ const DetailSchoolYear = () => {
       await setSchoolYear(response);
 
       const {...result} = await schoolService.detail(schoolYear?.schoolId);
-      setSchoolName(result.schoolname)
+      await setSchoolName(result.schoolname)
 
     } catch (error) {
       console.log({error});
@@ -65,18 +58,14 @@ const DetailSchoolYear = () => {
     }
   };
 
-  const onChangeSchool = (e) => {
-
-  };
-
   return (
     <Formik
       validationSchema={validationSchema}
       onSubmit={handleSubmitForm}
       enableReinitialize
       initialValues={{
-        schoolId: schoolYear?.schoolId,
-        schoolYearName: schoolYear?.schoolYearName,
+        schoolId: schoolYear?.schoolId || '',
+        schoolYearName: schoolYear?.schoolYearName || '',
         // keThuaDuLieu: schoolYear,
         // thoiGianBatDau: schoolYear,
         // thoiGianKetThuc: schoolYear,
@@ -152,4 +141,3 @@ const DetailSchoolYear = () => {
 export default DetailSchoolYear
 
 DetailSchoolYear.getLayout = (page) => <Layout>{page}</Layout>;
-
