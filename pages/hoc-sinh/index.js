@@ -1,36 +1,58 @@
-import Input from "../../components/form/input";
-import Select from "../../components/form/select";
-import Table from "../../components/table";
-import Layout from "../../components/layout";
 import Link from "next/link";
-import Button from "../../components/button";
 
-const theadData = ['STT', 'Họ và tên', 'Tên lớp', 'Xem chi tiết'];
+import Input from "@components/form/input";
+import Select from "@components/form/select";
+import Table from "@components/table";
+import Layout from "@components/layout";
+import Button from "@components/button";
+import {EyeIcon} from "@heroicons/react/outline";
 
-const tbodyData = [
-  {
-    id: "1",
-    items: ["1", "Effort", "2000-2001", "A1"],
-  },
-  {
-    id: "2",
-    items: ["2", "Effort", "2000-2001", "A1"],
-  },
-  {
-    id: "3",
-    items: ["2", "Effort", "2000-2001", "A1"],
-  },
-];
 
 const Student = () => {
+
+  const rows = [
+    {
+      id: "1",
+      name: 'Sir Tran',
+      className: '1A'
+    },
+  ];
+
+  const columns = [
+    {
+      id: 'id',
+      title: 'STT',
+      key: 'id'
+    },
+    {
+      id: 'name',
+      title: 'Họ và tên',
+    },
+    {
+      id: 'className',
+      title: 'Tên lớp',
+    },
+    {
+      id: 'action',
+      title: 'Xem chi tiết',
+      render: (element) => (
+        <>
+          <Link href={`/hoc-sinh/${element._id}`}>
+            <a><EyeIcon className='h-5 w-5 inline'/></a>
+          </Link>
+        </>
+      )
+    }
+  ]
+
   return (
     <>
       <h4>Hồ sơ học sinh</h4>
       <div className="grid-container">
         <Input placeholder="Tìm kiếm"/>
-        <Select options={['one', 'two', 'three']}/>
-        <Select options={['one', 'two', 'three']}/>
-        <Select options={['one', 'two', 'three']}/>
+        <Select name='ohshit' options={[]}/>
+        <Select name='ohshit2' options={[]}/>
+        <Select name='ohshit3' options={[]}/>
       </div>
 
       <Link href='/hoc-sinh/them-hoc-sinh'>
@@ -41,7 +63,7 @@ const Student = () => {
       </Link>
       <div className="mt-8 drop-shadow-2xl overflow-x-auto lg:overflow-x-visible">
         <Table
-          theadData={theadData} tbodyData={tbodyData}
+          columns={columns} rows={rows}
           titleTable="Danh sách hồ sơ học sinh"
         />
       </div>

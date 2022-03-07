@@ -46,7 +46,7 @@ const CovidStudent = () => {
   return (
     <>
       <div className='flex flex-col lg:flex-row gap-y-4 lg:gap-x-4 mb-4 w-2/3'>
-        <Link href={`/hoc-sinh/${router.query.id}` }>
+        <Link href={`/hoc-sinh/${router.query.id}`}>
           <a>
             <Button className='bg-primary-light text-black'>SỔ THEO DÕI SỨC KHỎE HỌC SINH</Button>
           </a>
@@ -55,9 +55,15 @@ const CovidStudent = () => {
       </div>
       <div className='form'>
         <div className='flex justify-end gap-x-4 mb-8 lg:mb-0'>
-          <Button>Khai báo thông tin tiêm chủng</Button>
-          <Button>Khai báo y tế</Button>
-          <Button>Khai báo F0</Button>
+          <Link href={`/hoc-sinh/${router.query.id}/covid-19/tiem-chung`}>
+            <a><Button>Khai báo thông tin tiêm chủng</Button></a>
+          </Link>
+          <Link href={`/hoc-sinh/${router.query.id}/covid-19/y-te`}>
+            <a><Button>Khai báo y tế</Button></a>
+          </Link>
+          <Link href={`/hoc-sinh/${router.query.id}/covid-19/f0`}>
+            <a><Button>Khai báo F0</Button></a>
+          </Link>
         </div>
         <h3>Thông tin liên hệ</h3>
         <div className='grid grid-cols-2 lg:grid-cols-4 gap-x-6'>

@@ -1,10 +1,10 @@
-import React, {useState} from "react";
+import {useState} from "react";
 
-import Layout from "../../../components/layout";
-import Input from "../../../components/form/input";
-import Button from "../../../components/button";
-import Radio from "../../../components/form/radio";
-import Textarea from "../../../components/form/textarea";
+import Layout from "@components/layout";
+import Input from "@components/form/input";
+import Button from "@components/button";
+import Radio from "@components/form/radio";
+import Textarea from "@components/form/textarea";
 
 const KhamSucKhoeForm = () => {
 
@@ -198,7 +198,7 @@ const KhamSucKhoeForm = () => {
 
   return (
     <div className="form">
-      <h3 className="">Khám sức khoẻ định kỳ</h3>
+      <h3>Khám sức khoẻ định kỳ</h3>
       <div className="form-kskdk">
         <div className="form-kskdk__tabs">
           {tabContent.map(item => {

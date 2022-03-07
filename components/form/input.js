@@ -27,7 +27,7 @@ const Input = (props) => {
       />
       {useFormik && (
         <div className='text-danger mt-[5px]'>
-          {(name) && <ErrorMessage name={name}/>}      
+          {(name) && <ErrorMessage name={name}/>}
         </div>
       )}
     </div>

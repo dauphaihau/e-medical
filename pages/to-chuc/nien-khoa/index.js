@@ -1,15 +1,13 @@
 import {useEffect, useState} from "react";
-import Link from "next/link";
 import {useRouter} from "next/router";
-import {PencilIcon, TrashIcon} from "@heroicons/react/outline";
+import Link from "next/link";
 
 import Input from "@components/form/input";
 import Button from "@components/button";
 import { schoolYearService } from "@services";
 import Pagination from "@components/table/pagination";
 import swal from "sweetalert";
-
-const skip = 0;
+import {PencilIcon, TrashIcon} from "@heroicons/react/outline";
 
 const SchoolYearList = () => {
 

@@ -2,16 +2,10 @@ import {useEffect, useState} from "react";
 import Link from "next/link";
 import {useRouter} from "next/router";
 import {PencilIcon, TrashIcon} from "@heroicons/react/outline";
-
-import Input from "../../../components/form/input";
-import Layout from "../../../components/layout";
-import Button from "../../../components/button";
-import {schoolService} from "../../../services";
-import Pagination from "../../../components/table/pagination";
-import swal from "sweetalert";
+import Input from "@components/form/input";
+import {schoolService} from "@services";
 
 const SchoolList = () => {
-
   const [schools, setSchools] = useState([])
   const router = useRouter();
 
@@ -23,8 +17,6 @@ const SchoolList = () => {
       console.log({error})
     }
   }, []);
-
-  let skip = 0;
 
   const handleDelete = async (id) => {
     swal({

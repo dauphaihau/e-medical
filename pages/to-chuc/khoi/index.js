@@ -40,8 +40,7 @@ const GroupList = () => {
           swal('Xóa không thành công!!', '', 'error');s
         }
       }
-    });
-    
+    });  
   }
 
   return (
