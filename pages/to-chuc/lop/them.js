@@ -5,20 +5,22 @@ import {useRouter} from "next/router";
 import swal from "sweetalert";
 import Link from "next/link";
 
-import Select from "../../../../components/form/select";
-import Input from "../../../../components/form/input";
-import Button from "../../../../components/button";
-import Layout from "../../../../components/layout";
-import {classroomService, schoolService} from "../../../../services";
-import schoolYearService from "../../../../services/organize/school-year";
+import Select from "@components/form/select";
+import Input from "@components/form/input";
+import Button from "@components/button";
+import {classroomService, schoolService, schoolYearService} from "@services";
 
 const validationSchema = Yup.object().shape({
-  className: Yup.string().required('Tên lớp không được để trống').min(5, 'Tên lớp ít nhất là 5 ký tự').max(50, 'Tên lớp tối đa là 50 ký tự'),
-  schoolYearId: Yup.string().required('niên khoá trường không được để trống'),
-  schoolId: Yup.string().required('trường không được để trống'),
+  className: Yup.string()
+    .required('Tên lớp không được để trống')
+    .min(5, 'Tên lớp ít nhất là 5 ký tự')
+    .max(50, 'Tên lớp tối đa là 50 ký tự'),
+  schoolYearId: Yup.string().required('Vui lòng chọn niên khóa'),
+  parentId: Yup.string().required('Vui lòng chọn khối.'),
+  schoolId: Yup.string().required('Vui lòng chọn trường.'),
 });
 
-const DetailClassroom = () => {
+const AddClassroom = () => {
 
   const router = useRouter();
   const [listSchool, setListSchool] = useState();
@@ -31,63 +33,51 @@ const DetailClassroom = () => {
   }, [router.isReady, router.asPath])
 
   const loadInit = async () => {
-    const schools = await schoolService.list({limit: 20});
-    console.log(schools);
+    const schools = await schoolService.list({limit: 100});
     if (schools.total) {
       setListSchool(schools.data.map((data) => ({
         value: data._id,
         label: data.schoolname,
       })));
     }
+  }
 
-    const schoolYear = await schoolYearService.list({limit: 20});
+  const handleSubmitForm = async (values) => {
+    const result = await classroomService.create(values)
+    if(result){
+      swal({
+        text: "Thêm mới thành công",
+        icon: "success"
+      })
+        .then(() => router.push('/to-chuc/lop/'));
+    }
+    else{
+      swal({
+        text: "Thêm mới không thành công",
+        icon: "error"
+      });
+    }
+  };
+
+  const onChangeSchool = async (idSchool) => {
+    const schoolYear = await schoolYearService.list({schoolId: idSchool})
     if (schoolYear.total) {
       setListSchoolYear(schoolYear.data.map((data) => ({
         value: data._id,
         label: data.schoolYearName,
       })));
     }
+  };
 
-    const group = await classroomService.list({type: 'class'});
-    console.log('group', group);
-
-    if (group.total) {
-      setListGroup(group.data.map((data) => ({
+  const onChangeSchoolYear = async (schoolYearId) => {
+    const clsGrp = await classroomService.listGroup({schoolYearId, limit: 100});
+    if (clsGrp.total) {
+      setListGroup(clsGrp.data.map((data) => ({
         value: data._id,
         label: data.className,
       })));
     }
   }
-
-  const handleSubmitForm = async (values) => {
-    console.log('values', values);
-    try {
-      await classroomService.update(values)
-      swal({
-        text: "Tạo khối thành công",
-        icon: "success"
-      })
-      router.back()
-    } catch ({response}) {
-      console.log(response);
-      if (response.data.message) {
-        swal({
-          text: "Khối này đã có lớp rồi, vui lòng tạo lớp khác",
-          icon: "error"
-        })
-      }
-    }
-  };
-
-  const onChangeSchool = async (idSchool) => {
-    const schoolY = await schoolYearService.list({schoolId: idSchool})
-    if (schoolY.total) {
-      setListSchoolYear(schoolY.data.map((data) => ({
-        value: data._id,
-        label: data.schoolYearName,
-      })));
-    }
-  };
 
   const onChangeGroup = async (idSchool) => {
     const group = await classroomService.list({schoolId: idSchool, type: 'class'})
@@ -116,13 +106,13 @@ const DetailClassroom = () => {
       >
         {({
             handleChange,
-            setFieldValue
+            setFieldValue,
           }) => (
-          <Form className='form lg:w-1/4'>
+          <Form className='form lg:w-1/2'>
             <h3>Thêm mới lớp học</h3>
             <div>
               <Select
-                label='Tên Trường *'
+                label='Tên Trường'
                 name='schoolId'
                 useFormik='true'
                 onChange={e => {
@@ -133,9 +123,12 @@ const DetailClassroom = () => {
                 options={listSchool}
               />
               <Select
-                label='Niên khoá trường *'
+                label='Niên khoá trường'
                 name='schoolYearId'
-                onChange={e => setFieldValue('schoolYearId', e.value)}
+                onChange={e => {
+                  onChangeSchoolYear(e.value);
+                  setFieldValue('schoolYearId', e.value)
+                }}
                 options={listSchoolYear}
                 useFormik='true'
               />
@@ -147,14 +140,14 @@ const DetailClassroom = () => {
                 options={listGroup}
               />
               <Input
-                label='Tên lớp *'
+                label='Tên lớp'
                 name='className'
                 onChange={handleChange}
                 useFormik='true'
               />
             </div>
             <div className='py-4'>
-              <Button type='submit' className='mr-4'>Cập nhật</Button>
+              <Button type='submit' className='mr-4'>Thêm</Button>
               <Link href='/to-chuc/lop'>
                 <a><Button type='text'>Huỷ</Button></a>
               </Link>
@@ -166,6 +159,4 @@ const DetailClassroom = () => {
   );
 }
 
-export default DetailClassroom;
-
-DetailClassroom.getLayout = (page) => <Layout>{page}</Layout>;
+export default AddClassroom;

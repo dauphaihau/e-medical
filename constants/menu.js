@@ -147,6 +147,22 @@ export const MENU = {
       link: "/hoc-sinh",
       roles: ["agent", "manager", "admin"],
       icon: "icon-User",
+      subNav: [
+        {
+          id: 3.1,
+          title: "Phụ Huynh",
+          link: "/phu-huynh",
+          roles: ["agent", "manager", "admin"],
+          icon: "mdi mdi-medical-bag",
+        },
+        {
+          id: 3.1,
+          title: "Học Sinh",
+          link: "/hoc-sinh",
+          roles: ["agent", "manager", "admin"],
+          icon: "mdi mdi-medical-bag",
+        },
+      ],
     },
     {
       id: 4,

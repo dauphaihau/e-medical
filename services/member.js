@@ -37,5 +37,38 @@ export const memberService = {
     catch(e){
       return false;
     }
-  }
+  },
+  listParent: async (params) => {
+    try{
+      params = {...params, ...{
+        type: 'parent'
+      }};
+      const { ...response } = await api.get("/member", {params});
+      return response.data;
+    }
+    catch(e){
+      return false
+    }
+  },
+  createParent: async (data) => {
+    try{
+      data = {...data, ...{
+        role: 'parent',
+      }}
+      const {...response} = await api.post("/member/", data);
+      return true;
+    }
+    catch(e){
+      return false;
+    }
+  },
+  updateParent: async (id, data) => {
+    try{
+      const {...response} = await api.patch(`/member/${id}`, data);
+      return true;
+    }
+    catch(e){
+      return false;
+    }
+  },
 }

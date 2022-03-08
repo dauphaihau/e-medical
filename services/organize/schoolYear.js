@@ -21,9 +21,13 @@ export const schoolYearService = {
     }
   },
   create: async (data) => {
-    return await api.post(
-      "/organization/schoolyear", data
-    );
+    try{
+      const result = await api.post("/organization/schoolyear", data);
+      return result;
+    }
+    catch(e){
+      return false;
+    }
   },
   delete: async (id) => {
     return await api.delete(
@@ -31,10 +35,15 @@ export const schoolYearService = {
     );
   },
   update: async (id, dataUpdate) => {
-    console.log(dataUpdate);
-    return await api.patch(
-      `/organization/schoolyear/${id}`, dataUpdate
-    );
+    try{
+      const {...response} = await api.patch(
+        `/organization/schoolyear/${id}`, dataUpdate
+      );
+      return true;
+    }
+    catch(e){
+      return false;
+    }
+    
   },
 }
-

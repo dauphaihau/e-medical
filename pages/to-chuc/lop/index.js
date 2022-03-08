@@ -1,99 +1,112 @@
 import {useEffect, useState} from "react";
 import {useRouter} from "next/router";
 import Link from "next/link";
-
 import {PencilIcon, TrashIcon} from "@heroicons/react/outline";
+
 import Input from "@components/form/input";
 import Select from "@components/form/select";
-import Layout from "@components/layout";
 import Button from "@components/button";
 import {classroomService} from "@services";
-import Table from "@components/table";
+import Pagination from "@components/table/pagination";
+import swal from "sweetalert";
 
+let skip = 0;
 
 const ClassroomList = () => {
 
   const [listClassroom, setListClassroom] = useState()
   const router = useRouter();
 
-  useEffect(async () => {
-    try {
-      const {...response} = await classroomService.list()
-      console.log(response);
-      setListClassroom(response.data)
-    } catch (error) {
-      console.log({error})
-    }
-  }, []);
+  useEffect( () => {
+    if (!router.isReady) return;
+    loadInit();
+  }, [router.isReady]);
 
+  const loadInit = async () => {
+    const listClass = await classroomService.list();
+    setListClassroom(listClass);
+  }
 
   const handleDelete = async (id) => {
-    try {
-      await classroomService.delete(id)
-      await swal('Xoá thành công');
-      router.reload();
-    } catch (error) {
-      console.log({error})
-    }
+    swal({
+      title: "Bạn chắc chắn muốn xóa?",
+      text: "",
+      icon: "warning",
+      buttons: true,
+      successMode: true,
+    }).then(async (willDelete) => {
+      if (willDelete) {
+        const result = await classroomService.delete(id)
+        if(result){
+          router.reload();
+        }
+        else{
+          swal('Xóa không thành công!!', '', 'error');
+        }
+      }
+    });
   };
-
-  const columns = [
-    {
-      id: 'id',
-      title: 'STT',
-      key: 'id'
-    },
-    {
-      id: 'className',
-      title: 'Tên lớp',
-    },
-    {
-      id: 'amountStudent',
-      title: 'Số học sinh',
-    },
-    {
-      id: 'teacher',
-      title: 'Giáo viên chủ nhiệm',
-    },
-    {
-      id: 'action',
-      title: 'Xem chi tiết',
-      render: (element) => (
-        <>
-          <Link href={router.pathname + '/' + element._id}>
-            <a><PencilIcon className='h-5 w-5 inline'/></a>
-          </Link>
-          <TrashIcon
-            className='h-5 w-5 inline ml-4 cursor-pointer'
-            onClick={() => handleDelete(element._id)}
-          />
-        </>
-      )
-    }
-  ]
 
   return (
     <>
-      <h4>Tổ chức</h4>
+      <h4>Lớp</h4>
       <div className='grid-container'>
-        <Input placeholder='Tìm kiếm...'/>
+        <Input name="s" placeholder='Tìm kiếm...'/>
         <Select
+          name="schoolYear"
           options={[]}
           placeholder='Chọn niên khoá'
         />
         <Select
+          name="classGroup"
           options={[]}
           placeholder='Khối'
         />
       </div>
-      <Link href={router.pathname + '/' + 'them'}>
-        <a><Button>Thêm mới</Button></a>
-      </Link>
-      <Table columns={columns} rows={listClassroom} titleTable='Lớp' widthContainer='w-[1200px]'/>
+
+      <div className="mt-8 overflow-x-auto lg:overflow-x-visible">
+        <div className='container-table'>
+          <table className='table'>
+            <thead>
+              <tr>
+                <th className='w-2 text-center'>STT</th>
+                <th>Tên lớp</th>
+                <th>Số học sinh</th>
+                <th>Giáo viên chủ nhiệm</th>
+                <th className="w-[100px]"/>
+              </tr>
+            </thead>
+            <tbody>
+              {listClassroom && listClassroom.total
+              ? (
+                listClassroom.data.map((cr, index) => (
+                  <tr key={index}>
+                    <td>{parseInt(skip) + index + 1}</td>
+                    <td>{cr.className}</td>
+                    <td></td>
+                    <td></td>
+                    <td>
+                       <Link href={`/to-chuc/lop/${cr._id}`}>
+                         <a><PencilIcon className='h-5 w-5 inline'/></a>
+                       </Link>
+                       <TrashIcon
+                         className='h-5 w-5 inline ml-4 cursor-pointer'
+                         onClick={() => handleDelete(cr._id)}
+                       />
+                    </td>
+                </tr>
+                ))
+              )
+              : (<tr><td colSpan={5}>Chưa có dữ liệu</td></tr>)
+              }
+              {}
+            </tbody>
+          </table>
+          <Pagination data={listClassroom}/>
+        </div>
+      </div>
     </>
   );
 }
 
 export default ClassroomList;
-
-ClassroomList.getLayout = (page) => <Layout>{page}</Layout>;

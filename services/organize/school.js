@@ -24,9 +24,21 @@ export const schoolService = {
     return await api.post("/organization/school", dataSchool);
   },
   delete: async (id) => {
-    return await api.delete(`/organization/school/${id}`);
+    try{
+      await api.delete(`/organization/school/${id}`);
+      return true
+    }
+    catch(e){
+      return false;
+    }
   },
   update: async (id, dataUpdateSchool) => {
-    return await api.patch(`/organization/school/${id}`, dataUpdateSchool);
+    try{
+      const {...response} = await api.patch(`/organization/school/${id}`, dataUpdateSchool);
+      return true;
+    }
+    catch({response}){
+      return false;
+    }
   },
 }

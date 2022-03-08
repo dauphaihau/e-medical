@@ -1,4 +1,5 @@
 import {useEffect, useRef, useState} from "react";
+import Router, {useRouter} from "next/router";
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -12,7 +13,7 @@ const navigation = [
   {name: 'Đăng xuất', href: '/'},
 ]
 
-const useOuterClick = (callback) => {
+function useOuterClick(callback) {
   const innerRef = useRef();
   const callbackRef = useRef();
 
@@ -39,9 +40,46 @@ const useOuterClick = (callback) => {
 }
 
 
+function renderButtonAddNew(pathname){
+  let addLink='/to-chuc/truong/them';
+  
+  if( pathname.includes('to-chuc/truong') ){
+    addLink = '/to-chuc/truong/them';
+  }
+  if( pathname.includes('to-chuc/nien-khoa') ){
+    addLink = '/to-chuc/nien-khoa/them';
+  }
+  if( pathname.includes('to-chuc/khoi') ){
+    addLink = '/to-chuc/khoi/them';
+  }
+  if( pathname.includes('to-chuc/lop') ){
+    addLink = '/to-chuc/lop/them';
+  }
+  if( pathname.includes('hoc-sinh') ){
+    addLink = '/hoc-sinh/them';
+  }
+  if( pathname.includes('phu-huynh') ){
+    addLink = '/phu-huynh/them';
+  }
+  
+  return (
+    <Link href={addLink}>
+      <a><Button className='ml-4 rounded-[11px] hidden lg:block'>Thêm mới</Button></a>
+    </Link>
+  );
+};
+
+
 const Header = ({stateSidebar, setStateSidebar}) => {
+  const router = useRouter();
   const [dropdown, setDropdown] = useState(false)
-  const innerRef = useOuterClick(() => setDropdown(false));
+  const innerRef = useOuterClick(() => {
+    setDropdown(false)
+  });
+  let addLink='';
+  if( router.pathname.includes('to-chuc/truong') ){
+    addLink = '/to-chuc/truong/them';
+  }
 
   return (
     <div className="header">
@@ -71,7 +109,7 @@ const Header = ({stateSidebar, setStateSidebar}) => {
               />
             </svg>
           </button>
-          <Button className='ml-4 rounded-[11px] hidden lg:block'>Thêm mới</Button>
+          {renderButtonAddNew(router.pathname)}
         </div>
         <div className='navbar-right'>
           <div className='navbar-right__info' ref={innerRef} onClick={() => setDropdown(!dropdown)}>
@@ -81,7 +119,7 @@ const Header = ({stateSidebar, setStateSidebar}) => {
             </div>
             <img src="https://i.pravatar.cc/300" alt='avatar'/>
           </div>
-          {/* Dropdown profile */}
+          {/*Dropdown profile*/}
           <div className={`navbar-right__profile ${dropdown ? 'block' : 'hidden'}`}>
             <div>
               <div role="menu" aria-orientation="vertical" aria-labelledby="user-menu">
@@ -93,7 +131,7 @@ const Header = ({stateSidebar, setStateSidebar}) => {
               </div>
             </div>
           </div>
-          {/* end Dropdown profile */}
+          {/*Dropdown profile*/}
         </div>
       </div>
     </div>
@@ -101,4 +139,3 @@ const Header = ({stateSidebar, setStateSidebar}) => {
 }
 
 export default Header;
-

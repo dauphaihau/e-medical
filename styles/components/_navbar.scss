@@ -8,8 +8,8 @@
 
   .navbar-left {
     @apply flex;
-    button:nth-child(1) {
-      @apply md:block btn-hamburger bg-primary-light hover:bg-primary hover:text-white transition duration-300;
+    .btn-hamburger {
+      @apply md:block bg-primary-light hover:bg-primary hover:text-white transition duration-300;
     }
 
     //button:nth-child(2) {

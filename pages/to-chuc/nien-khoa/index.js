@@ -2,99 +2,88 @@ import {useEffect, useState} from "react";
 import {useRouter} from "next/router";
 import Link from "next/link";
 
-import {PencilIcon, TrashIcon} from "@heroicons/react/outline";
 import Input from "@components/form/input";
-import Layout from "@components/layout";
-import Button from "@components/button";
-import schoolYearService from "@services/organize/school-year";
-import Table from "@components/table";
-
+import { schoolYearService } from "@services";
+import Pagination from "@components/table/pagination";
+import swal from "sweetalert";
+import {PencilIcon, TrashIcon} from "@heroicons/react/outline";
 
 const SchoolYearList = () => {
-
-  const [listSchoolYear, setListSchoolYear] = useState([])
   const router = useRouter();
+  const [listSchoolYear, setListSchoolYear] = useState([])
+  let skip = 0;
 
   useEffect(async () => {
     try {
       const {...response} = await schoolYearService.list()
       setListSchoolYear(response.data)
-      // console.log('response-data', response.data);
     } catch (error) {
       console.log({error})
     }
   }, []);
 
-
   const handleDelete = async (id) => {
-    try {
-      await schoolYearService.delete(id)
-      await swal('Xoá thành công');
-      router.reload();
-    } catch (error) {
-      console.log({error})
-    }
+    swal({
+      title: "Bạn chắc chắn muốn xóa?",
+      text: "",
+      icon: "warning",
+      buttons: true,
+      successMode: true,
+    }).then(async (willDelete) => {
+      if (willDelete) {
+        const result = await schoolYearService.delete(id)
+        if(result){
+          router.reload();
+        }
+        else{
+          swal('Xóa không thành công!!', '', 'error');s
+        }
+      }
+    });
   };
-
-  const columns = [
-    {
-      id: 'id',
-      title: 'STT',
-      key: 'id'
-    },
-    {
-      id: 'schoolYearName',
-      title: 'Niên khoá',
-    },
-    {
-      id: 'address',
-      title: 'Số lớp',
-    },
-    {
-      id: 'province',
-      title: 'Số học sinh',
-    },
-    {
-      id: 'district',
-      title: 'Thời gian bắt đầu',
-    },
-    {
-      id: 'ward',
-      title: 'Thời gian kết thúc',
-    },
-    {
-      id: 'action',
-      title: 'Thao tác',
-      render: (element) => (
-        <>
-          <Link href={router.pathname + '/' + element._id}>
-            <a><PencilIcon className='h-5 w-5 inline'/></a>
-          </Link>
-          <TrashIcon
-            className='h-5 w-5 inline ml-4 cursor-pointer'
-            onClick={() => handleDelete(element._id)}
-          />
-        </>
-      )
-    }
-  ]
 
   return (
     <>
       <h4>Tổ chức</h4>
       <Input className='md:w-1/2 lg:w-1/4' placeholder='Tìm kiếm...'/>
-      <Link href={router.pathname + '/' + 'them'}>
-        <a><Button>Thêm mới</Button></a>
-      </Link>
-      <Table
-        columns={columns} rows={listSchoolYear}
-        widthContainer='w-[1200px]'
-        titleTable='Niên Khoá'
-      />
+    
+      <div className="mt-8 overflow-x-auto lg:overflow-x-visible">
+        <div className='container-table'>
+          <h4>Niên Khoá</h4>
+          <table className='table'>
+            <thead>
+            <tr>
+              <th className='w-2 text-center'>STT</th>
+              <th>Niên khoá</th>
+              <th>Số lớp</th>
+              <th>Số học sinh</th>
+              <th className="w-[100px]"/>
+            </tr>
+            </thead>
+            <tbody>
+              {listSchoolYear?.map((item, idz) => (
+                <tr key={idz}>
+                  <td>{skip + idz + 1}</td>
+                  <td>{item.schoolYearName}</td>
+                  <td/>
+                  <td/>
+                  <td>
+                    <Link href={`/to-chuc/nien-khoa/${item._id}`}>
+                      <a><PencilIcon className='h-5 w-5 inline'/></a>
+                    </Link>
+                    <TrashIcon
+                      className='h-5 w-5 inline ml-4 cursor-pointer'
+                      onClick={() => handleDelete(item._id)}
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <Pagination data={listSchoolYear}/>
+        </div>
+      </div>
     </>
   );
 }
-
 export default SchoolYearList;
-
-SchoolYearList.getLayout = (page) => <Layout>{page}</Layout>;

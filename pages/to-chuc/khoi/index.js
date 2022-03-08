@@ -1,157 +1,96 @@
 import Link from "next/link";
-import {useRouter} from "next/router";
 import {useEffect, useState} from "react";
-
+import {useRouter} from "next/router";
+import swal from "sweetalert";
 import Input from "@components/form/input";
-import Layout from "@components/layout";
-import Select from "@components/form/select";
 import Button from "@components/button";
 import {classroomService} from "@services";
 import {PencilIcon, TrashIcon} from "@heroicons/react/outline";
-import Table from "@components/table";
-import {schoolService} from "../../../services";
-import {schoolYearService} from "../../../services/organize/school-year";
+import Pagination from "@components/table/pagination";
+
+let skip = 0;
 
 const GroupList = () => {
-
-  const [listSchool, setListSchool] = useState();
-  const [schoolYear, setSchoolYear] = useState([])
-  const [listGroup, setListGroup] = useState()
   const router = useRouter();
-  console.log('list-school', listSchool);
-
-  useEffect(async () => {
+  const [listGroup, setListGroup] = useState()
+  useEffect(() => {
+    if (!router.isReady) return;
     loadInit();
-    // try {
-    //   // get class
-    //   // const {...res} = await classroomService.list();
-    //
-    //   // get group
-    //   const {...res} = await classroomService.list({type: 'group'});
-    //
-    //   console.log('res', res);
-    //   setListGroup(res.data)
-    //   // setListClassroom(response.data)
-    // } catch (error) {
-    //   console.log({error})
-    // }
-  }, [])
-
+  }, [router.isReady])
 
   const loadInit = async () => {
-    const schools = await schoolService.list({limit: 20});
-    if (schools.total) {
-      setListSchool(schools.data.map((data) => ({
-        value: data._id,
-        label: data.schoolname,
-      })));
-    }
+    const listGroup = await classroomService.listGroup();
+    setListGroup(listGroup);
   }
 
   const handleDelete = async (id) => {
-    try {
-      await classroomService.delete(id)
-      await swal({text: 'Xoá thành công', icon: 'success'});
-      router.reload();
-    } catch (error) {
-      console.log({error})
-    }
-  };
-
-  const onChangeSchool = async (idSchool) => {
-    const schoolY = await schoolYearService.list({schoolId: idSchool})
-    if (schoolY.total) {
-      setSchoolYear(schoolY.data.map((data) => ({
-        value: data._id,
-        label: data.schoolYearName,
-      })));
-    }
-  };
-
-  const onChangeSchoolYear = async (value) => {
-    console.log('value', value);
-    // const schoolY = await schoolYearService.list({schoolId: idSchool})
-    // if (schoolY.total) {
-    //   setSchoolYear(schoolY.data.map((data) => ({
-    //     value: data._id,
-    //     label: data.schoolYearName,
-    //   })));
-    // }
-
-    const group = await classroomService.list({schoolId: idSchool, type: 'group'})
-    console.log('group', group);
-    setListGroup(group.data)
-  };
-
-  const columns = [
-    {
-      id: 'id',
-      title: 'STT',
-      key: 'id'
-    },
-    {
-      id: 'className',
-      title: 'Tên khối',
-    },
-    {
-      id: 'amountStudent',
-      title: 'Số học sinh',
-    },
-    {
-      id: 'teacher',
-      title: 'Giáo viên chủ nhiệm',
-    },
-    {
-      id: 'action',
-      title: 'Thao tác',
-      render: (element) => {
-        console.log('element', element);
-        return <>
-          <Link href={router.pathname + '/' + element._id}>
-            <a><PencilIcon className='h-5 w-5 inline'/></a>
-          </Link>
-          <TrashIcon
-            className='h-5 w-5 inline ml-4 cursor-pointer'
-            onClick={() => handleDelete(element._id)}
-          />
-        </>
+    swal({
+      title: "Bạn chắc chắn muốn xóa?",
+      text: "",
+      icon: "warning",
+      buttons: true,
+      successMode: true,
+    }).then(async (willDelete) => {
+      if (willDelete) {
+        const result = await classroomService.deleteGroup(id);
+        if(result){
+          router.reload();
+        }
+        else{
+          swal('Xóa không thành công!!', '', 'error');s
+        }
       }
-    }
-  ]
+    });  
+  }
 
   return (
     <>
-      <h4>Tổ chức</h4>
+      <h4>Khối</h4>
       <div className='grid-container'>
         <Input placeholder='Tìm kiếm ..'/>
-        <Select
-          // label='Tên trường'
-          name='schoolId'
-          onChange={(e) => onChangeSchool(e.value)}
-          options={listSchool}
-          placeholder='Chọn trường'
-        />
-        <Select
-          // label='Niên khoá'
-          name='schoolYearId'
-          onChange={(e) => onChangeSchoolYear(e.value)}
-          options={schoolYear}
-          placeholder='Chọn niên khoá'
-        />
       </div>
-      <Link href={router.pathname + '/' + 'them'}>
-        <a><Button>Thêm mới</Button></a>
-      </Link>
-      <Table
-        columns={columns} rows={listGroup}
-        widthContainer='w-[1200px]'
-        titleTable='Khối'
-      />
+      <div className="mt-8 overflow-x-auto lg:overflow-x-visible">
+        <div className='container-table'>
+          <table className='table'>
+            <thead>
+              <tr>
+                <th className='text-center w-1'>STT</th>
+                <th>Tên khối</th>
+                <th>Trường</th>
+                <th className="w-[100px]"/>
+              </tr>
+            </thead>
+            <tbody>
+            {listGroup && listGroup.total
+              ? (
+                listGroup.data.map((group, index) => (
+                  <tr key={index}>
+                    <td>{skip + index + 1}</td>
+                    <td>{group.className}</td>
+                    <td></td>
+                    <td>
+                      <Link href={`/to-chuc/khoi/${group._id}`}>
+                        <a><PencilIcon className='h-5 w-5 inline'/></a>
+                      </Link>
+                      <TrashIcon
+                        className='h-5 w-5 inline ml-4 cursor-pointer'
+                        onClick={() => handleDelete(group._id)}
+                      />
+                    </td>
+                  </tr>
+                ))
+              )
+              :(
+                <tr><td colSpan={4}>Chưa có dữ liệu</td></tr>
+              )
+            }
+            </tbody>
+          </table>
+          {/*<Pagination data={listClassroom}/>*/}
+      </div>
+      </div>
     </>
   );
 }
 
 export default GroupList;
-
-GroupList.getLayout = (page) => <Layout>{page}</Layout>;
-
