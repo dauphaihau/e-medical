@@ -1,5 +1,6 @@
 import {Formik, Form} from "formik";
 import Link from "next/link";
+import * as Yup from "yup";
 
 import {CheckIcon, EyeIcon} from "@heroicons/react/outline";
 import Input from "@components/form/input";
@@ -18,6 +19,16 @@ const arrData = [
   {type: 'Sởi', icon: <CheckIcon/>, icon2: '', icon3: <CheckIcon/>},
   {type: 'Viêm não Nhật bản B', icon: <CheckIcon/>, icon2: '', icon3: <CheckIcon/>},
 ];
+
+const validationSchema = Yup.object().shape({
+  schoolname: Yup.string().required('Họ Tên không được để trống').min(5, 'Họ Tên ít nhất là 5 ký tự').max(50, 'Họ Tên tối đa là 50 ký tự'),
+  schoolname2: Yup.string().required('Ngày sinh không được để trống'),
+  schoolname3: Yup.string().required('Địa chỉ không được để trống'),
+  schoolname4: Yup.string().required('Chiều cao không được để trống'),
+  schoolname5: Yup.string().required('Cân nặng không được để trống'),
+  schoolname6: Yup.string().required('Thời gian không được để trống'),
+  schoolname7: Yup.string().required('Loại không được để trống'),
+});
 
 const AddStudent = () => {
 
@@ -66,6 +77,8 @@ const AddStudent = () => {
       <Formik
         onSubmit={handleSubmitForm}
         enableReinitialize
+        validationSchema={validationSchema}
+        initialValues={{}}
       >
         {({
             handleChange,
@@ -115,7 +128,7 @@ const AddStudent = () => {
                       <th rowSpan='2'>Loại Vacxin</th>
                       <th colSpan='3' className=''>Tình trạng tiêm/uống </th>
                     </tr>
-                          <tr>
+                    <tr>
                       <th rowSpan='1'>Có</th>
                       <th colSpan='1'>Không</th>
                       <th colSpan='1'>Không nhớ</th>

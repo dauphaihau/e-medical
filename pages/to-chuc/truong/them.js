@@ -56,6 +56,7 @@ const AddSchool = () => {
               name='schoolname'
               onChange={handleChange}
               onBlur={handleBlur}
+              useFormik='true'
             />
             <Input
               label='Địa chỉ'

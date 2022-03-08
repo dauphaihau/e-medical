@@ -102,7 +102,7 @@ const AddGroup = () => {
               }}
               options={listSchool}
               placeholder='Chọn trường'
-              useFokmik='true'
+              useFormik='true'
             />
             <Select
               label='Niên khoá'
@@ -110,13 +110,13 @@ const AddGroup = () => {
               onChange={e => setFieldValue('schoolYearId', e.value)}
               options={schoolYear}
               placeholder='Chọn niên khoá'
-              useFokmik='true'
+              useFormik='true'
             />
             <Input
               name='className'
               label='Tên khối'
               onChange={handleChange}
-              useFokmik='true'
+              useFormik='true'
             />
           </div>
           <div className='py-4'>

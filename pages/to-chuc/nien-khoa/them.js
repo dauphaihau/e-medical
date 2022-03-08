@@ -12,8 +12,8 @@ import schoolYearService from "@services/organize/school-year";
 import {schoolService} from "@services";
 
 const validationSchema = Yup.object().shape({
-  schoolYearName: Yup.string().required('Tên niên khoá trường không được để trống'),
-  schoolId: Yup.string().required('Mã trường không được để trống'),
+  schoolId: Yup.string().required('Tên trường không được để trống'),
+  schoolYearName: Yup.string().required('Niên khoá trường không được để trống'),
 });
 
 const AddSchoolYear = () => {
@@ -76,7 +76,7 @@ const AddSchoolYear = () => {
           handleChange,
           setFieldValue
         }) => (
-        <Form className='form lg:w-2/5'>
+        <Form className='form lg:w-1/4'>
           <h3>Thêm niên khoá</h3>
           {/*<div className='flex flex-wrap gap-x-4 lg:grid-container'>*/}
           <div className=''>
@@ -86,6 +86,7 @@ const AddSchoolYear = () => {
               onChange={e => setFieldValue('schoolId', e.value)}
               options={listSchool}
               placeholder='Chọn trường'
+              useFormik='true'
             />
             <Input
               name='schoolYearName' label='Niên khoá trường *'

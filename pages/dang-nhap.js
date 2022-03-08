@@ -8,8 +8,8 @@ import {Formik, Form} from "formik";
 import Cookie from "cookie-cutter";
 import * as Yup from "yup";
 
-import Input from "../components/form/input";
-import Button from "../components/button";
+import Input from "@components/form/input";
+import Button from "@components/button";
 import logo2 from "../public/images/logo2.png";
 import { accountService } from '@services';
 

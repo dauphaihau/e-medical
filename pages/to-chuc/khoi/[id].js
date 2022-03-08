@@ -35,12 +35,13 @@ const DetailGroup = () => {
   const loadInit = async () => {
 
     // return []
-    const schools = await classroomService.list({schoolId: router.query.id, type: 'group'});
+    // const schools = await classroomService.list({schoolId: router.query.id, type: 'group'});
 
     // return []
-    // const schools = await classroomService.list({schoolId: router.query.id});
+    const schools = await classroomService.list({schoolId: router.query.id});
 
     console.log('schools', schools);
+
     if (schools.total) {
       setListSchool(schools.data.map((data) => ({
         value: data._id,

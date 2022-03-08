@@ -9,27 +9,44 @@ import Button from "@components/button";
 import {classroomService} from "@services";
 import {PencilIcon, TrashIcon} from "@heroicons/react/outline";
 import Table from "@components/table";
+import {schoolService} from "../../../services";
+import {schoolYearService} from "../../../services/organize/school-year";
 
 const GroupList = () => {
 
+  const [listSchool, setListSchool] = useState();
+  const [schoolYear, setSchoolYear] = useState([])
   const [listGroup, setListGroup] = useState()
   const router = useRouter();
+  console.log('list-school', listSchool);
 
   useEffect(async () => {
-    try {
-      // get class
-      const {...res} = await classroomService.list();
-
-      // get group
-      // const {...res} = await classroomService.list({type: 'group'});
-
-      console.log('res', res);
-      setListGroup(res.data)
-      // setListClassroom(response.data)
-    } catch (error) {
-      console.log({error})
-    }
+    loadInit();
+    // try {
+    //   // get class
+    //   // const {...res} = await classroomService.list();
+    //
+    //   // get group
+    //   const {...res} = await classroomService.list({type: 'group'});
+    //
+    //   console.log('res', res);
+    //   setListGroup(res.data)
+    //   // setListClassroom(response.data)
+    // } catch (error) {
+    //   console.log({error})
+    // }
   }, [])
+
+
+  const loadInit = async () => {
+    const schools = await schoolService.list({limit: 20});
+    if (schools.total) {
+      setListSchool(schools.data.map((data) => ({
+        value: data._id,
+        label: data.schoolname,
+      })));
+    }
+  }
 
   const handleDelete = async (id) => {
     try {
@@ -39,6 +56,31 @@ const GroupList = () => {
     } catch (error) {
       console.log({error})
     }
+  };
+
+  const onChangeSchool = async (idSchool) => {
+    const schoolY = await schoolYearService.list({schoolId: idSchool})
+    if (schoolY.total) {
+      setSchoolYear(schoolY.data.map((data) => ({
+        value: data._id,
+        label: data.schoolYearName,
+      })));
+    }
+  };
+
+  const onChangeSchoolYear = async (value) => {
+    console.log('value', value);
+    // const schoolY = await schoolYearService.list({schoolId: idSchool})
+    // if (schoolY.total) {
+    //   setSchoolYear(schoolY.data.map((data) => ({
+    //     value: data._id,
+    //     label: data.schoolYearName,
+    //   })));
+    // }
+
+    const group = await classroomService.list({schoolId: idSchool, type: 'group'})
+    console.log('group', group);
+    setListGroup(group.data)
   };
 
   const columns = [
@@ -83,8 +125,17 @@ const GroupList = () => {
       <div className='grid-container'>
         <Input placeholder='Tìm kiếm ..'/>
         <Select
-          name='schoolYear'
-          options={[]}
+          // label='Tên trường'
+          name='schoolId'
+          onChange={(e) => onChangeSchool(e.value)}
+          options={listSchool}
+          placeholder='Chọn trường'
+        />
+        <Select
+          // label='Niên khoá'
+          name='schoolYearId'
+          onChange={(e) => onChangeSchoolYear(e.value)}
+          options={schoolYear}
           placeholder='Chọn niên khoá'
         />
       </div>

@@ -11,7 +11,19 @@ import Input from "@components/form/input";
 import Layout from "@components/layout";
 import Select from "@components/form/select";
 
-const validationSchema = Yup.object().shape({});
+const phoneRegExp = /(([03+[2-9]|05+[6|8|9]|07+[0|6|7|8|9]|08+[1-9]|09+[1-4|6-9]]){3})+[0-9]{7}\b/
+
+const validationSchema = Yup.object().shape({
+  name: Yup.string().required('Họ Tên không được để trống').min(5, 'Họ Tên ít nhất là 5 ký tự').max(50, 'Họ Tên tối đa là 50 ký tự'),
+  phoneNumber: Yup.string()
+    .matches(phoneRegExp, 'Số điện thoại không hợp lệ')
+    .required('Số điện thoại không được để trống'),
+  address: Yup.string().required('Địa chỉ không được để trống'),
+  schoolname4: Yup.string().required('Loại vaccine không được để trống'),
+  schoolname5: Yup.string().required('Ngày tiêm không được để trống'),
+  schoolname6: Yup.string().required('Đơn vị tiêm chủng không được để trống'),
+  image: Yup.string().required('Hình ảnh không được để trống'),
+});
 
 const VaccineForm = () => {
   const router = useRouter();
@@ -33,8 +45,8 @@ const VaccineForm = () => {
   let schoolYear;
   return (
     <Formik
-      validationSchema={validationSchema}
       onSubmit={handleSubmitForm}
+      validationSchema={validationSchema}
       enableReinitialize
       initialValues={{}}
     >

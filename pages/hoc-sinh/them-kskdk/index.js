@@ -173,7 +173,6 @@ const KhamSucKhoeForm = () => {
   const handleTabClick = (currentTab) => {
     setActiveTab(currentTab);
     const currentTabContent = tabContent.filter(item => item.id === currentTab);
-    console.log('current-tab-content', currentTabContent);
     setCurrentTab(currentTabContent[0]);
   };
 

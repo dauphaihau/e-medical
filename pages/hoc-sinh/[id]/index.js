@@ -10,6 +10,7 @@ import Button from "@components/button";
 import Textarea from "@components/form/textarea";
 import Select from "@components/form/select";
 import Table from "@components/table";
+import * as Yup from "yup";
 
 const arrData = [
   {type: 'BCG (Lao)', icon: <CheckIcon/>, icon2: <CheckIcon/>,},
@@ -19,6 +20,17 @@ const arrData = [
   {type: 'Sởi', icon: <CheckIcon/>, icon2: '', icon3: <CheckIcon/>},
   {type: 'Viêm não Nhật bản B', icon: <CheckIcon/>, icon2: '', icon3: <CheckIcon/>},
 ];
+
+
+const validationSchema = Yup.object().shape({
+  schoolname: Yup.string().required('Họ Tên không được để trống').min(5, 'Họ Tên ít nhất là 5 ký tự').max(50, 'Họ Tên tối đa là 50 ký tự'),
+  schoolname2: Yup.string().required('Ngày sinh không được để trống'),
+  schoolname3: Yup.string().required('Địa chỉ không được để trống'),
+  schoolname4: Yup.string().required('Chiều cao không được để trống'),
+  schoolname5: Yup.string().required('Cân nặng không được để trống'),
+  schoolname6: Yup.string().required('Thời gian không được để trống'),
+  schoolname7: Yup.string().required('Loại không được để trống'),
+});
 
 const DetailStudent = () => {
 
@@ -74,6 +86,7 @@ const DetailStudent = () => {
       </div>
       <Formik
         onSubmit={handleSubmitForm}
+        validationSchema={validationSchema}
         enableReinitialize
         initialValues={{}}
       >

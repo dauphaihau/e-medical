@@ -1,6 +1,6 @@
-import Card from "../../components/card";
-import Layout from "../../components/layout";
-import Select from "../../components/form/select";
+import Card from "@components/card";
+import Layout from "@components/layout";
+import Select from "@components/form/select";
 
 const cards = [
   {title: 'Tổng số lớp học', valueNumber: 48},
@@ -21,7 +21,7 @@ const students = [
 const Summary = () => {
   return (
     <div>
-      <div className='lg:flex justify-between  mb-6'>
+      <div className='lg:flex justify-between mb-6'>
         <p className='text-[1.8rem]'>Tổng quan</p>
         <div className='lg:flex'>
           <p className='hidden lg:block leading-[3.5rem] mr-4 text-base'>Niên khoá</p>
@@ -33,7 +33,6 @@ const Summary = () => {
           />
         </div>
       </div>
-
       <div className='box-container'>
         <div className='box'>
           <h3>Thống kê niên khoá hiện tại</h3>
