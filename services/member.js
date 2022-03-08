@@ -62,4 +62,13 @@ export const memberService = {
       return false;
     }
   },
+  updateParent: async (id, data) => {
+    try{
+      const {...response} = await api.patch(`/member/${id}`, data);
+      return true;
+    }
+    catch(e){
+      return false;
+    }
+  },
 }
