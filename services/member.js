@@ -38,6 +38,7 @@ export const memberService = {
       return false;
     }
   },
+  // parents
   listParent: async (params) => {
     try{
       params = {...params, ...{
@@ -71,4 +72,29 @@ export const memberService = {
       return false;
     }
   },
+  // students
+  listStudent: async (params) => {
+    try{
+      params = {...params, ...{
+        type: 'student'
+      }};
+      const { ...response } = await api.get("/member", {params});
+      return response.data;
+    }
+    catch(e){
+      return false
+    }
+  },
+  createStudent: async (data) => {
+    try{
+      data = {...data, ...{
+        role: 'student',
+      }}
+      const {...response} = await api.post("/member/", data);
+      return true;
+    }
+    catch(e){
+      return false;
+    }
+  }
 }

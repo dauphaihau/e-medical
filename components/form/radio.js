@@ -4,20 +4,23 @@ const Radio = (props) => {
     value = '',
     checked,
     className = '',
+    labelName = '',
     name='',
+    id='',
     ...others
   } = props;
 
   return (
     <div className={`${className} form-radio-input`}>
       <input
+        id={id}
         type="radio"
         name={name}
         value={value}
         checked={checked}
         {...others}
       />
-      <label>{value}</label>
+      <label htmlFor={id}>{labelName}</label>
     </div>
   );
 }

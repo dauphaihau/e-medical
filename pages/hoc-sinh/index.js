@@ -1,13 +1,25 @@
+import { useEffect, useState } from "react";
+import {useRouter} from "next/router";
 import Link from "next/link";
 
+import { memberService } from "@services";
 import Input from "@components/form/input";
 import Select from "@components/form/select";
-import Layout from "@components/layout";
 import Button from "@components/button";
-import {EyeIcon} from "@heroicons/react/outline";
+import {EyeIcon, PencilAltIcon} from "@heroicons/react/outline";
 
 const Student = () => {
-  
+  const router = useRouter();
+  const [members, setMembers] = useState();
+
+  useEffect(() => {
+    loadInit();
+  }, []);
+
+  const loadInit = async () => {
+    const listMember = await memberService.listStudent();
+    setMembers(listMember);
+  }
 
   return (
     <>
@@ -31,16 +43,34 @@ const Student = () => {
                 <th className="w-2">STT</th>
                 <th>Họ và tên</th>
                 <th>Tên lớp</th>
+                <th>Phụ Huynh</th>
                 <th className="w-[100px]"/>
               </tr>
               </thead>
               <tbody>
+              {members?.total?
+                members.data.map( (row, idz) => (
+                  <tr key={idz}>
+                    <td>{idz+1}</td>
+                    <td>{row.fullName}</td>
+                    <td>{(row.schoolWorking) ? row.schoolWorking?.className : ''}</td>
+                    <td>
+                      <Link href={`/phu-huynh/${row.parent[0].parentId}`}>
+                        <a>{row.parent && row.parent[0].fullName}</a>
+                      </Link>
+                    </td>
+                    <td>
+                      <Link href={router.pathname + '/' + row._id}>
+                        <a href=""><PencilAltIcon className="h-5 w-5 text-primary"/></a>
+                      </Link>
+                    </td>
+                  </tr>
+                ))
+              :(
                 <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
+                  <td colSpan='4'>Chưa có dữ liệu</td>
                 </tr>
+              )}
               </tbody>
             </table>
             {/* <Pagination
@@ -57,4 +87,3 @@ const Student = () => {
 }
 export default Student
 
-Student.getLayout = (page) => <Layout>{page}</Layout>;
