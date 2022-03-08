@@ -19,6 +19,7 @@ const Select = (props) => {
     <div className={`form-group ${direction} ${width}`}>
       <label>{label}</label>
       <ReactSelect
+        id={name}
         placeholder={placeholder}
         name={name}
         instanceId={name}

@@ -6,7 +6,6 @@ import swal from "sweetalert";
 
 import Button from "@components/button";
 import Input from "@components/form/input";
-import Layout from "@components/layout";
 import Region from "@components/form/region";
 import { schoolService, locationService } from "@services";
 

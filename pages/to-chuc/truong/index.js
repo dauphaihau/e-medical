@@ -3,12 +3,13 @@ import Link from "next/link";
 import {useRouter} from "next/router";
 import {PencilIcon, TrashIcon} from "@heroicons/react/outline";
 import Input from "@components/form/input";
+import Pagination from "@components/pagination";
 import {schoolService} from "@services";
 
 const SchoolList = () => {
   const [schools, setSchools] = useState([])
   const router = useRouter();
-
+  let skip = 0;
   useEffect(async () => {
     try {
       const {...response} = await schoolService.list()
@@ -61,7 +62,7 @@ const SchoolList = () => {
             <tbody>
               {schools?.map((school, index) => (
                 <tr key={index}>
-                  <td>{parseInt(skip) + index + 1}</td>
+                  <td>{skip + index + 1}</td>
                   <td>{school.schoolname}</td>
                   <td>{school.address}</td>
                   <td>{school.province?.provinceName}</td>
@@ -80,7 +81,7 @@ const SchoolList = () => {
               ))}
             </tbody>
           </table>
-          <Pagination data={schools}/>
+          {/* <Pagination data={schools}/> */}
         </div>
       </div>
 

@@ -70,9 +70,8 @@ const AddSchoolYear = () => {
           handleChange,
           setFieldValue,
         }) => (
-        <Form className='form'>
+        <Form className='form lg:w-1/2'>
           <h3>Thêm niên khoá</h3>
-          {/*<div className='flex flex-wrap gap-x-4 lg:grid-container'>*/}
           <div>
             <Select
               label='Tên trường'

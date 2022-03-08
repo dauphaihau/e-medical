@@ -39,14 +39,36 @@ function useOuterClick(callback) {
   return innerRef;
 }
 
+
 function renderButtonAddNew(pathname){
-  let addLink;
-  // console.log(router.pathname);
+  let addLink='/to-chuc/truong/them';
+  
   if( pathname.includes('to-chuc/truong') ){
     addLink = '/to-chuc/truong/them';
   }
- 
+  if( pathname.includes('to-chuc/nien-khoa') ){
+    addLink = '/to-chuc/nien-khoa/them';
+  }
+  if( pathname.includes('to-chuc/khoi') ){
+    addLink = '/to-chuc/khoi/them';
+  }
+  if( pathname.includes('to-chuc/lop') ){
+    addLink = '/to-chuc/lop/them';
+  }
+  if( pathname.includes('hoc-sinh') ){
+    addLink = '/hoc-sinh/them';
+  }
+  if( pathname.includes('phu-huynh') ){
+    addLink = '/phu-huynh/them';
+  }
+  
+  return (
+    <Link href={addLink}>
+      <a><Button className='ml-4 rounded-[11px] hidden lg:block'>Thêm mới</Button></a>
+    </Link>
+  );
 };
+
 
 const Header = ({stateSidebar, setStateSidebar}) => {
   const router = useRouter();
@@ -87,9 +109,7 @@ const Header = ({stateSidebar, setStateSidebar}) => {
               />
             </svg>
           </button>
-          
-          <Button className='ml-4 rounded-[11px] hidden lg:block'>Thêm mới</Button>
-          
+          {renderButtonAddNew(router.pathname)}
         </div>
         <div className='navbar-right'>
           <div className='navbar-right__info' ref={innerRef} onClick={() => setDropdown(!dropdown)}>

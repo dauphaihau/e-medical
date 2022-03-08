@@ -63,6 +63,7 @@ const Region = (props) => {
         <label>Tỉnh/Thành</label>
         <Select
           id="province"
+          instanceId="province"
           label='Tỉnh/thành'
           name='province'
           options={listProvince}
@@ -86,6 +87,7 @@ const Region = (props) => {
         <label>Quận/Huyện</label>
         <Select
           id="district"
+          instanceId="district"
           label='Quận/huyện'
           name='district'
           options={listDistrict}
@@ -107,6 +109,7 @@ const Region = (props) => {
         <label>Phường/Xã</label>
         <Select
           id="ward"
+          instanceId="ward"
           label='Phường/Xã' 
           name='ward'
           options={listWard}

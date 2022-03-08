@@ -49,7 +49,7 @@ const ClassroomList = () => {
 
   return (
     <>
-      <h4>Tổ chức</h4>
+      <h4>Lớp</h4>
       <div className='grid-container'>
         <Input name="s" placeholder='Tìm kiếm...'/>
         <Select
@@ -63,22 +63,17 @@ const ClassroomList = () => {
           placeholder='Khối'
         />
       </div>
-      <Link href='/to-chuc/lop/them'>
-        <a>
-          <Button>Thêm mới</Button>
-        </a>
-      </Link>
+
       <div className="mt-8 overflow-x-auto lg:overflow-x-visible">
         <div className='container-table'>
-          <h4>Lớp</h4>
           <table className='table'>
             <thead>
               <tr>
-                <th className='text-center'>STT</th>
+                <th className='w-2 text-center'>STT</th>
                 <th>Tên lớp</th>
                 <th>Số học sinh</th>
                 <th>Giáo viên chủ nhiệm</th>
-                <th/>
+                <th className="w-[100px]"/>
               </tr>
             </thead>
             <tbody>
