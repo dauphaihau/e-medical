@@ -27,21 +27,21 @@ export function AuthProvider({ children }) {
             setUser(response.data);
           }
           else{
-            setUser({});
-            Cookie.set("accessToken", "", {
-              path: "/",
-              expires: new Date(0),
-            });
-            Router.reload();
+            // setUser({});
+            // Cookie.set("accessToken", "", {
+            //   path: "/",
+            //   expires: new Date(0),
+            // });
+            // Router.reload();
           }
         }
         catch(e){
-          setUser({});
-          Cookie.set("accessToken", "", {
-            path: "/",
-            expires: new Date(0),
-          });
-          Router.reload();
+          // setUser({});
+          // Cookie.set("accessToken", "", {
+          //   path: "/",
+          //   expires: new Date(0),
+          // });
+          // Router.reload();
         }
       }
       verifyAuth();
