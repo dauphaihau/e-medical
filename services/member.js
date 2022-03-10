@@ -96,5 +96,32 @@ export const memberService = {
     catch(e){
       return false;
     }
+  },
+  updateStudent: async (id, data) => {
+    try{
+      const {...response} = await api.patch(`/member/${id}`, data);
+      return true;
+    }
+    catch(e){
+      return false;
+    }
+  },
+  addVaccination: async (id, data) => {
+    try{
+      const {...response} = await api.post(`/member/${id}/vaccination`, data);
+      return true;
+    }
+    catch(e){
+      return false;
+    }
+  },
+  addHealthDeclaration: async (id, data) => {
+    try{
+      const {...response} = await api.post(`/member/${id}/health-declaration`, data);
+      return true;
+    }
+    catch(e){
+      return false;
+    }
   }
 }

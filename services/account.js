@@ -18,6 +18,12 @@ export const accountService = {
     );
   },
   me: async () => {
-    return await api.get("/account/me");
+    try{
+      const {...response} = await api.get("/member/me");
+      return response.data;
+    }
+    catch(e){
+      return false;
+    }
   }
 }

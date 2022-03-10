@@ -1,36 +1,280 @@
-import {Formik, Form} from "formik";
+import {useEffect, useState} from "react";
+import {Formik, Form, Field} from "formik";
 import Link from "next/link";
 import {useRouter} from "next/router";
+import * as Yup from "yup";
+import swal from "sweetalert";
 
-import {CheckIcon, EyeIcon} from "@heroicons/react/outline";
 import Input from "@components/form/input";
 import Radio, {RadioGroup} from "@components/form/radio";
-import Layout from "@components/layout";
 import Button from "@components/button";
 import Textarea from "@components/form/textarea";
 import Select from "@components/form/select";
-import Table from "@components/table";
+import AsyncSelect from 'react-select/async';
 
+import {classroomService, schoolService, schoolYearService, memberService} from "@services";
+
+const validationSchema = Yup.object().shape({
+  fullName: Yup.string()
+    .required('Họ tên không được để trống')
+    .min(5, 'Họ tên ít nhất là 5 ký tự')
+    .max(50, 'Họ tên tối đa là 50 ký tự'),
+  dateOfBirth:  Yup.string().required('Ngày sinh không được để trống'),
+  schoolYearId: Yup.string().required('Vui lòng chọn niên khóa'),
+  parent: Yup.array().min(1, 'Vui lòng chọn phụ huynh').required(),
+  schoolId: Yup.string().required('Vui lòng chọn trường.'),
+  classId: Yup.string().required('Vui lòng chọn lớp.'),
+});
+
+const bodyMassSchema = Yup.object().shape({
+  height: Yup.number()
+    .required('Vui lòng nhập chiều cao.'),
+  weight: Yup.number()
+    .required('Vui lòng nhập cân nặng.'),
+  // obstetric: Yup.string().required('Vui lòng chọn 1 trong 2'),
+});
 
 const DetailStudent = () => {
   const router = useRouter();
+  const [member, setMember] = useState();
+  const [listSchool, setListSchool] = useState();
+  const [listSchoolYear, setListSchoolYear] = useState();
+  const [listGroup, setListGroup] = useState();
+  const [listClass, setListClass] = useState();
+
+  useEffect( () => {
+    if( !router.isReady ) return;
+    loadInit();
+  }, [router.isReady])
+
+  const loadInit = async () => {
+    const { id } = router.query;
+    const member = await memberService.detail(id);
+
+    if( !member ){
+      swal('Thông tin này không tồn tại!!', '', 'error')
+        .then( () => router.push('/hoc-sinh') );
+    }
+    setMember(member);
+    
+    const schools = await schoolService.list({limit: 100});
+    if (schools.total) {
+      setListSchool(schools.data.map((data) => ({
+        value: data._id,
+        label: data.schoolname,
+      })));
+    }
+  }
+
+  const onChangeSchool = async (idSchool) => {
+    const schoolYear = await schoolYearService.list({schoolId: idSchool})
+    if (schoolYear.total) {
+      setListSchoolYear(schoolYear.data.map((data) => ({
+        value: data._id,
+        label: data.schoolYearName,
+      })));
+    }
+  };
+
+  const onChangeSchoolYear = async (schoolYearId) => {
+    const clsGrp = await classroomService.listGroup({schoolYearId, limit: 100, type: 'group'});
+    if (clsGrp.total) {
+      setListGroup(clsGrp.data.map((data) => ({
+        value: data._id,
+        label: data.className,
+      })));
+    }
+  }
+
+  const onChangeGroup = async (id) => {
+    const classes = await classroomService.list({parentId: id, type: 'class'})
+    if (classes.total) {
+      setListClass(classes.data.map((data) => ({
+        value: data._id,
+        label: data.className,
+      })));
+    }
+  };
+
   const handleSubmitForm = async (values) => {
     console.log(values);
+    const { id } = router.query;
+
   };
-  return (
-    <>
-      <div className='flex gap-x-4 mb-4'>
-        <Button>SỔ THEO DÕI SỨC KHỎE HỌC SINH</Button>
-        <Link href={`/hoc-sinh/${router.query.id}/covid-19`}>
-          <a>
-            <Button className='bg-primary-light text-black'>THEO DÕI PHÒNG CHỐNG DỊCH COVID-19</Button>
-          </a>
-        </Link>
+
+  const handleSubmitFormBodyMass = async (values) => {
+    const { id } = router.query;
+    const result = await memberService.update(id, {bodyMass: values});
+
+    if(result){
+      swal({
+        text: "Cập nhật thành công",
+        icon: "success"
+      });
+    }
+    else{
+      swal({
+        text: "Cập nhật không thành công",
+        icon: "error"
+      });
+    }
+  };
+
+  const loadOptions = async (inputValue) => {
+    if(inputValue.length > 2){
+      const response = await memberService.listParent({s:inputValue});
+      if(response && response.total){
+        return response.data.map( (row) => ({value: row._id, fullName: row.fullName, label:row.fullName + ' (' + row.phoneNumber + ')'}));
+      }
+    }
+  };
+
+  return ( 
+    <div className="mt-8 drop-shadow-2xl overflow-x-auto lg:overflow-x-visible">
+      <div className="mt-8 overflow-x-auto lg:overflow-x-visible">
+        <div className="border-b border-gray-200 dark:border-gray-700">
+          <ul className="flex -mb-px">
+              <li className="mr-2">
+                <a href={`/hoc-sinh/${router.query.id}`} className="inline-block py-4 px-4 text-sm font-medium text-center rounded-t-lg border-b-2 active text-primary border-primary" aria-current="page">Hồ sơ</a>
+              </li>
+              <li className="mr-2">
+                <a href={`/hoc-sinh/${router.query.id}/kham-suc-khoe`} className="inline-block py-4 px-4 text-sm font-medium text-center rounded-t-lg border-b-2 border-transparent hover:border-primary-light">Khám sức khỏe</a>
+              </li>
+              <li className="mr-2">
+                <a href={`/hoc-sinh/${router.query.id}/khai-bao-y-te`} className="inline-block py-4 px-4 text-sm font-medium text-center rounded-t-lg border-b-2 border-transparent hover:border-primary-light">Khai báo Y Tế</a>
+              </li>
+              <li className="mr-2">
+                <a href={`/hoc-sinh/${router.query.id}/tiem-chung`} className="inline-block py-4 px-4 text-sm font-medium text-center rounded-t-lg border-b-2 border-transparent hover:border-primary-light">Tiêm chủng</a>
+              </li>
+              
+          </ul>
+        </div>
+
+        <div className="grid gap-4 lg:grid-cols-2 mt-6">
+          <div className="form">
+            <Formik
+              validationSchema={validationSchema}
+              onSubmit={handleSubmitForm}
+              enableReinitialize
+              initialValues={{
+                schoolId: member ? member.schoolWorking?.schoolId : '',
+                classId: member ? member.schoolWorking?.classId : '',
+                parent: '',
+                fullName: member ? member.fullName : '',
+                dateOfBirth: member ? member.dateOfBirth : '',
+                gender: member ? member.gender : '',
+              }}
+            >
+              {({
+                  handleChange,
+                  setFieldValue,
+                  values,
+                }) => (
+                <Form>
+                  <h3>Thông tin cá nhân</h3>
+                  <Select
+                    label='Tên Trường'
+                    name='schoolId'
+                    useFormik='true'
+                    onChange={e => {
+                      onChangeSchool(e.value);
+                      setFieldValue('schoolId', e.value)
+                    }}
+                    options={listSchool}
+                  />
+                  <Select
+                    label='Niên khoá'
+                    name='schoolYearId'
+                    onChange={e => {
+                      onChangeSchoolYear(e.value);
+                      setFieldValue('schoolYearId', e.value)
+                    }}
+                    options={listSchoolYear}
+                    useFormik='true'
+                  />
+                  <Select
+                    label='Khối'
+                    name='classGroup'
+                    useFormik='true'
+                    onChange={e => {
+                      onChangeGroup(e.value);
+                      setFieldValue('classGroup', e.value)
+                    }}
+                    options={listGroup}
+                  />
+                  <Select
+                    label='Lớp'
+                    name='classId'
+                    useFormik='true'
+                    onChange={e => setFieldValue('classId', e.value)}
+                    options={listClass}
+                  />
+                  <Input label='Họ và tên' name='fullName' useFormik onChange={handleChange} value={values.fullName}/>
+                  <Input label='Ngày sinh' name='dateOfBirth' useFormik onChange={handleChange} value={values.dateOfBirth}/>
+                
+                  <RadioGroup label='Giới Tính'>
+                    <Radio name='sex' onChange={handleChange} checked={values.gender===1}  value='1' labelName="Nam" id="sex-male"/>
+                    <Radio name='sex' onChange={handleChange} checked={values.gender===2} value='2' labelName="Nữ" id='sex-female'/>
+                  </RadioGroup>
+                
+                  <h3 className='mt-6'>Phụ Huynh</h3>
+                  <AsyncSelect
+                    id="parent"
+                    instanceId="parent"
+                    cacheOptions
+                    isMulti
+                    loadOptions={loadOptions}
+                    defaultOptions
+                    onChange={(e)=> setFieldValue('parent', e.map((v)=> ({parentId: v.value, fullName:v.fullName})))}
+                  />
+                  <div className="mt-6">
+                    <Button type='submit'>Cập nhật thông tin</Button>
+                  </div>
+                </Form>
+              )}
+            </Formik>
+          </div>
+          <div className="form">
+          <Formik
+              validationSchema={bodyMassSchema}
+              onSubmit={handleSubmitFormBodyMass}
+              enableReinitialize
+              initialValues={{
+                height: member && member.bodyMass ? member.bodyMass.height : '',
+                weight: member && member.bodyMass ? member.bodyMass.weight : '',
+                obstetric: member && member.bodyMass ? member.bodyMass.obstetric : 'normal',
+                note: member && member.bodyMass ? member.bodyMass.note : '',
+              }}
+            >
+              {({
+                  handleChange,
+                  setFieldValue,
+                  values,
+                }) => (
+                <Form>
+                  <h3>Thể trạng</h3>
+                  
+                  <Input label='Chiều cao (cm)' name='height' useFormik onChange={handleChange} value={values.height}/>
+                  <Input label='Cân nặng (kg)' name='weight' useFormik onChange={handleChange} value={values.weight}/>
+                
+                  <RadioGroup label='Sản khoa'> 
+                    <Radio name='obstetric' checked={values.obstetric === 'normal'} onChange={handleChange} value='normal' labelName="Bình thường" id="obstetric-1"/>
+                    <Radio name='obstetric' checked={values.obstetric === 'gotsick'} onChange={handleChange} value='gotsick' labelName="Mẹ mắc bệnh khi mang thai" id='obstetric-2'/>
+                  </RadioGroup>
+                  <div className='form-textarea-input'>
+                    <label htmlFor="note">Các bệnh đang điều trị:</label>
+                    <textarea rows="3" name="note" value={values.note} onChange={handleChange}/>
+                  </div>
+                  <div className="mt-6">
+                    <Button type='submit'>Cập nhật thông tin</Button>
+                  </div>
+                </Form>
+              )}
+            </Formik>
+          </div>
+        </div>
       </div>
-     
-    </>
+    </div>
   );
 }
 export default DetailStudent;
-
-DetailStudent.getLayout = (page) => <Layout>{page}</Layout>;
