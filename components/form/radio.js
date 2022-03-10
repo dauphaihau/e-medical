@@ -1,3 +1,5 @@
+import {ErrorMessage} from "formik";
+
 const Radio = (props) => {
 
   const {
@@ -5,8 +7,9 @@ const Radio = (props) => {
     checked,
     className = '',
     labelName = '',
-    name='',
-    id='',
+    name = '',
+    useFormik = false,
+    id = '',
     ...others
   } = props;
 
@@ -21,6 +24,11 @@ const Radio = (props) => {
         {...others}
       />
       <label htmlFor={id}>{labelName}</label>
+      {useFormik && (
+        <div className='text-danger mt-[5px]'>
+          {(name) && <ErrorMessage name={name}/>}
+        </div>
+      )}
     </div>
   );
 }

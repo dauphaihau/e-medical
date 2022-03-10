@@ -4,7 +4,7 @@ const api = apiRequest.init("eschool");
 export const schoolYearService = {
   list: async (params) => {
     try{
-      const {request, ...response} = await api.get('/organization/schoolyear/', {params});
+      const {request, ...response} = await api.get('/organization/schoolyear/', params);
       return response.data;
     }
     catch(e){

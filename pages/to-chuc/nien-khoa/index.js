@@ -42,6 +42,30 @@ const SchoolYearList = () => {
         label: data.schoolname,
       })));
     }
+
+    if (
+      router.query &&
+      router.query.s &&
+      router.query.s.length <= 2
+    ) {
+      swal("", "Số ký tự tìm kiếm phải lớn hơn 2", "warning", {
+        button: "Tôi đã hiểu",
+        dangerMode: true,
+      });
+    } else {
+      try {
+        const {...res} = await schoolYearService.list({
+          params: _.pickBy({...router.query}, _.identity)
+        })
+        setListSchoolYear(res.data);
+
+      } catch (error) {
+        await swal("", "Đã có lỗi xảy ra", "error", {
+          button: "Tôi đã hiểu",
+          dangerMode: true,
+        });
+      }
+    }
   }, []);
 
   const handleDelete = async (id) => {
@@ -67,7 +91,19 @@ const SchoolYearList = () => {
   const handleSubmit = async (data) => {
     if (data.s === '') delete data.s;
     if (data.schoolId === '') delete data.schoolId;
-    const {...res} = await schoolYearService.list(data);
+
+    await router.push({
+        pathname: router.pathname,
+        query: _.pickBy({...router.query, ...data}, _.identity),
+      },
+      undefined,
+      {shallow: true}
+    );
+
+    const {...res} = await schoolYearService.list({
+      params: _.pickBy({...router.query, ...data}, _.identity)
+    })
+
     if (_.isEmpty(res)) {
       swal({
         text: "Tìm kiếm không thành công",

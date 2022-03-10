@@ -14,22 +14,43 @@ import Region from "@components/form/region";
 import {locationService} from "@services";
 
 const SchoolList = () => {
+  const router = useRouter();
   const [schools, setSchools] = useState([])
   const [listProvince, setListProvince] = useState([]);
-  const router = useRouter();
   let skip = 0;
 
   useEffect(async () => {
-    try {
-      const {...response} = await schoolService.list()
-      setSchools(response.data)
+    const {...response} = await schoolService.list()
+    setSchools(response.data)
 
-      const provinces = await locationService.listProvince();
-      setListProvince(provinces);
-    } catch (error) {
-      console.log({error})
+    const provinces = await locationService.listProvince();
+    setListProvince(provinces);
+
+    if (
+      router.query &&
+      router.query.s &&
+      router.query.s.length <= 2
+    ) {
+      swal("", "Số ký tự tìm kiếm phải lớn hơn 2", "warning", {
+        button: "Tôi đã hiểu",
+        dangerMode: true,
+      });
+    } else {
+      try {
+        const {...res} = await schoolService.list({
+          params: _.pickBy({...router.query}, _.identity)
+        })
+        setSchools(res.data);
+
+      } catch (error) {
+        await swal("", "Đã có lỗi xảy ra", "error", {
+          button: "Tôi đã hiểu",
+          dangerMode: true,
+        });
+      }
     }
   }, []);
+
 
   const handleDelete = async (id) => {
     swal({
@@ -58,24 +79,21 @@ const SchoolList = () => {
       district: data.district.code,
       ward: data.ward.code,
     };
+
     if (bodyData.s === '') delete bodyData.s;
-    const test = _.pickBy({limit: 12, ...router.query}, _.identity);
-    console.log('test', test);
-    router.push({
-        // pathname: '/organization/school/',
-        // query: {
-        //   province: bodyData.province,
-        //   // district: bodyData.district,
-        //   // ward: bodyData.ward,
-        // }
+
+    await router.push({
+        pathname: router.pathname,
         query: _.pickBy({...router.query, ...bodyData}, _.identity),
       },
       undefined,
       {shallow: true}
     );
+
     const {...res} = await schoolService.list({
-      params: _.pickBy({limit: '0', ...router.query, ...bodyData}, _.identity())
+      params: _.pickBy({...router.query, ...bodyData}, _.identity)
     })
+
     if (_.isEmpty(res)) {
       swal({
         text: "Tìm kiếm không thành công",
@@ -98,7 +116,7 @@ const SchoolList = () => {
           ward: {},
         }}
       >
-        {({handleChange, values}) => (
+        {({handleChange}) => (
           <Form>
             <div className='grid-container'>
               <Input
@@ -155,7 +173,6 @@ const SchoolList = () => {
           {/* <Pagination data={schools}/> */}
         </div>
       </div>
-
     </>
   );
 }
