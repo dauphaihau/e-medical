@@ -21,21 +21,11 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     if(Cookie.get('accessToken')){
       async function verifyAuth() {
-        try{
-          const { request, ...response } = await accountService.me();
-          if(response.data){
-            setUser(response.data);
-          }
-          else{
-            // setUser({});
-            // Cookie.set("accessToken", "", {
-            //   path: "/",
-            //   expires: new Date(0),
-            // });
-            // Router.reload();
-          }
+        const userRes = await accountService.me();
+        if(userRes){
+          setUser(userRes);
         }
-        catch(e){
+        else{
           // setUser({});
           // Cookie.set("accessToken", "", {
           //   path: "/",
