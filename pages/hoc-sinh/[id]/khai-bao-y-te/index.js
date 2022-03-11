@@ -3,22 +3,28 @@ import {useRouter} from "next/router";
 import Link from "next/link";
 
 import { memberService } from "@services";
-import Input from "@components/form/input";
-import Select from "@components/form/select";
 import Button from "@components/button";
 import {EyeIcon, PencilAltIcon} from "@heroicons/react/outline";
+import swal from "sweetalert";
+import moment from "moment";
 
 const HealthDeclaration = () => { 
   const router = useRouter();
-  const [members, setMembers] = useState();
+  const [member, setMember] = useState();
 
   useEffect(() => {
+    if(!router.isReady) return;
     loadInit();
-  }, []);
+  }, [router.isReady]);
 
   const loadInit = async () => {
-    const listMember = await memberService.listStudent();
-    setMembers(listMember);
+    const {id} = router.query;
+    const memberRes = await memberService.detail(id);
+    if(!memberRes) {
+      swal('Thông tin này không tồn tại!!', '', 'error')
+        .then( () => router.push('/hoc-sinh') );
+    }
+    setMember(memberRes);
   }
 
   return (
@@ -46,7 +52,7 @@ const HealthDeclaration = () => {
             <div className="flex justify-between">
               <h1>Lịch sử khai báo y tế</h1>
               <Link href={`${router.asPath}/them`}>
-                <Button>Khai báo y tế</Button>
+                <a><Button>Khai báo y tế</Button></a>
               </Link>
             </div>
             
@@ -54,27 +60,21 @@ const HealthDeclaration = () => {
               <thead>
               <tr>
                 <th className="w-2">STT</th>
-                <th>Họ và tên</th>
-                <th>Tên lớp</th>
-                <th>Phụ Huynh</th>
-                <th className="w-[100px]"/>
+                <th>Ngày khai báo</th>
+                <th>Tình trạng</th>
+                <th>Xem chi tiết</th>
               </tr>
               </thead>
               <tbody>
-              {members?.total?
-                members.data.map( (row, idz) => (
+              {member && member.healthDeclaration ?
+                member.healthDeclaration.map( (row, idz) => (
                   <tr key={idz}>
                     <td>{idz+1}</td>
-                    <td>{row.fullName}</td>
-                    <td>{(row.schoolWorking) ? row.schoolWorking?.className : ''}</td>
+                    <td>{moment(row.createdAt).format("DD/MM/YYYY HH:mm:ss")}</td>
+                    <td>{row.haveSick?"Bất thường":"Bình thường"}</td>
                     <td>
-                      <Link href={`/phu-huynh/${row.parent[0].parentId}`}>
-                        <a>{row.parent && row.parent[0].fullName}</a>
-                      </Link>
-                    </td>
-                    <td>
-                      <Link href={router.pathname + '/' + row._id}>
-                        <a href=""><PencilAltIcon className="h-5 w-5 text-primary"/></a>
+                      <Link href={`/phu-huynh/`}>
+                        <a><EyeIcon className="h-5 w-5 text-primary"/></a>
                       </Link>
                     </td>
                   </tr>
@@ -86,12 +86,6 @@ const HealthDeclaration = () => {
               )}
               </tbody>
             </table>
-            {/* <Pagination
-              itemsPerPage={itemsPerPage}
-              currentPage={currentPage}
-              rows={rows}
-              onPageChange={page => setCurrentPage(page)}
-            /> */}
           </div>
         </div>
       </div>

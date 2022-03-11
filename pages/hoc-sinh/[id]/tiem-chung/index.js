@@ -7,18 +7,26 @@ import Input from "@components/form/input";
 import Select from "@components/form/select";
 import Button from "@components/button";
 import {EyeIcon, PencilAltIcon} from "@heroicons/react/outline";
+import swal from "sweetalert";
+import moment from "moment";
 
 const Vaccination = () => { 
   const router = useRouter();
-  const [members, setMembers] = useState();
+  const [member, setMember] = useState();
 
   useEffect(() => {
+    if(!router.isReady) return;
     loadInit();
-  }, []);
+  }, [router.isReady]);
 
   const loadInit = async () => {
-    const listMember = await memberService.listStudent();
-    setMembers(listMember);
+    const {id} = router.query;
+    const memberRes = await memberService.detail(id);
+    if(!memberRes) {
+      swal('Thông tin này không tồn tại!!', '', 'error')
+        .then( () => router.push('/hoc-sinh') );
+    }
+    setMember(memberRes);
   }
 
   return (
@@ -54,24 +62,20 @@ const Vaccination = () => {
               <thead>
               <tr>
                 <th className="w-2">STT</th>
-                <th>Họ và tên</th>
-                <th>Tên lớp</th>
-                <th>Phụ Huynh</th>
+                <th>Loại Vaccine</th>
+                <th>Ngày tiêm</th>
+                <th>Đơn vị tiêm</th>
                 <th className="w-[100px]"/>
               </tr>
               </thead>
               <tbody>
-              {members?.total?
-                members.data.map( (row, idz) => (
+              {member && member.vaccination ?
+                member.vaccination.map( (row, idz) => (
                   <tr key={idz}>
                     <td>{idz+1}</td>
-                    <td>{row.fullName}</td>
-                    <td>{(row.schoolWorking) ? row.schoolWorking?.className : ''}</td>
-                    <td>
-                      <Link href={`/phu-huynh/${row.parent[0].parentId}`}>
-                        <a>{row.parent && row.parent[0].fullName}</a>
-                      </Link>
-                    </td>
+                    <td>{row.vaccineName}</td>
+                    <td>{moment(row.injectionAt).format("DD/MM/YYYY")}</td>
+                    <td>{row.vaccinationUnit}</td>
                     <td>
                       <Link href={router.pathname + '/' + row._id}>
                         <a href=""><PencilAltIcon className="h-5 w-5 text-primary"/></a>

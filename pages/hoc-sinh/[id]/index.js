@@ -250,7 +250,7 @@ const DetailStudent = () => {
                 // parent: '',
                 fullName: member ? member.fullName : '',
                 dateOfBirth: member ? member.dateOfBirth : '',
-                gender: member ? member.gender : '',
+                gender: member ? member.gender : 1,
               }}
             >
               {({
@@ -311,8 +311,8 @@ const DetailStudent = () => {
                   <Input label='Ngày sinh' name='dateOfBirth' useFormik onChange={handleChange} value={values.dateOfBirth}/>
                 
                   <RadioGroup label='Giới Tính'>
-                    <Radio name='sex' onChange={handleChange} checked={values.gender===1}  value='1' labelName="Nam" id="sex-male"/>
-                    <Radio name='sex' onChange={handleChange} checked={values.gender===2} value='2' labelName="Nữ" id='sex-female'/>
+                    <Radio name='gender' onChange={handleChange} checked={parseInt(values.gender)===1}  value='1' labelName="Nam" id="sex-male"/>
+                    <Radio name='gender' onChange={handleChange} checked={parseInt(values.gender)===2} value='2' labelName="Nữ" id='sex-female'/>
                   </RadioGroup>
                 
                   <h3 className='mt-6'>Phụ Huynh</h3>
