@@ -16,10 +16,22 @@ import {locationService} from "@services";
 const SchoolList = () => {
   const router = useRouter();
   const [schools, setSchools] = useState([])
-  const [listProvince, setListProvince] = useState([]);
+  const [listProvince, setListProvince] = useState({});
+
+  const [initProvince, setInitProvince] = useState({})
+  const [initDistrict, setInitDistrict] = useState({});
+  const [initWard, setInitWard] = useState({});
+
   let skip = 0;
 
-  useEffect(async () => {
+  useEffect(() => {
+    if (!router.isReady) return;
+    loadInit();
+  }, [router.isReady]);
+
+  const loadInit = async () => {
+    const {query} = router;
+
     const {...response} = await schoolService.list()
     setSchools(response.data)
 
@@ -27,30 +39,36 @@ const SchoolList = () => {
     setListProvince(provinces);
 
     if (
-      router.query &&
-      router.query.s &&
-      router.query.s.length <= 2
+      query &&
+      query.s &&
+      query.s.length <= 3
     ) {
-      swal("", "Số ký tự tìm kiếm phải lớn hơn 2", "warning", {
+      swal("", "Số ký tự tìm kiếm phải lớn hơn 3", "warning", {
         button: "Tôi đã hiểu",
         dangerMode: true,
       });
     } else {
-      try {
-        const {...res} = await schoolService.list({
-          params: _.pickBy({...router.query}, _.identity)
-        })
-        setSchools(res.data);
+      const {...res} = await schoolService.list({
+        params: _.pickBy({...router.query}, _.identity)
+      })
+      setSchools(res.data);
 
-      } catch (error) {
-        await swal("", "Đã có lỗi xảy ra", "error", {
-          button: "Tôi đã hiểu",
-          dangerMode: true,
-        });
+      if (provinces) {
+        const provinceSelected = _.find(provinces, (o) => o.code === query.province);
+        setInitProvince(provinceSelected)
+        if (provinceSelected) {
+          const districts = await locationService.listDistrict(provinceSelected.code);
+          const districtSelected = _.find(districts, (o) => o.code === query.district);
+          setInitDistrict(districtSelected);
+          if (districtSelected) {
+            const wards = await locationService.listWard(districtSelected.code);
+            const wardSelected = _.find(wards, (o) => o.code === query.ward);
+            setInitWard(wardSelected);
+          }
+        }
       }
     }
-  }, []);
-
+  };
 
   const handleDelete = async (id) => {
     swal({
@@ -72,14 +90,14 @@ const SchoolList = () => {
     });
   };
 
-  const handleSubmit = async (data) => {
+  const handleSubmitSearch = async (data) => {
+
     let bodyData = {
       s: data.s,
       province: data.province.code,
       district: data.district.code,
       ward: data.ward.code,
     };
-
     if (bodyData.s === '') delete bodyData.s;
 
     await router.push({
@@ -107,7 +125,7 @@ const SchoolList = () => {
     <>
       <h4>Tổ chức</h4>
       <Formik
-        onSubmit={handleSubmit}
+        onSubmit={handleSubmitSearch}
         enableReinitialize
         initialValues={{
           s: '',
@@ -127,6 +145,9 @@ const SchoolList = () => {
               <Field
                 component={Region}
                 listProvince={listProvince}
+                provinceSelected={initProvince}
+                districtSelected={initDistrict}
+                wardSelected={initWard}
               />
             </div>
             <Button type='submit'>Tìm kiếm</Button>

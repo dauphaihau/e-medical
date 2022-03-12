@@ -1,4 +1,4 @@
-import {useEffect, useRef, useState} from "react";
+import {useEffect, useState} from "react";
 import {useRouter} from "next/router";
 import Link from "next/link";
 import swal from "sweetalert";
@@ -13,60 +13,61 @@ import {schoolService} from "@services";
 import Button from "@components/button";
 import Select from "@components/form/select";
 
-export function useIsMounted() {
-  const isMounted = useRef(false);
-
-  useEffect(() => {
-    isMounted.current = true;
-    return () => isMounted.current = false;
-  }, []);
-
-  return isMounted;
-}
+let skip = 0;
 
 const SchoolYearList = () => {
   const router = useRouter();
-  const isMounted = useIsMounted();
   const [listSchoolYear, setListSchoolYear] = useState([])
   const [listSchool, setListSchool] = useState([]);
-  let skip = 0;
+  const [schoolSelected, setSchoolSelected] = useState();
 
-  useEffect(async () => {
+  useEffect(() => {
+    if (!router.isReady) return;
+    loadInit();
+  }, [router.isReady]);
+
+  useEffect(() => {
+    setSchoolSelected(schoolSelected)
+  }, [schoolSelected])
+
+  const loadInit = async () => {
+    const {query} = router;
     const {...response} = await schoolYearService.list();
     setListSchoolYear(response.data);
 
     const schools = await schoolService.list({limit: 100});
-    if (schools.total && isMounted.current) {
-      setListSchool(schools.data.map((data) => ({
+    if (schools.total) {
+      const schoolOptions = schools.data.map((data) => ({
         value: data._id,
         label: data.schoolname,
-      })));
+      }));
+      setListSchool(schoolOptions);
     }
 
     if (
-      router.query &&
-      router.query.s &&
-      router.query.s.length <= 2
+      query &&
+      query.s &&
+      query.s.length <= 3
     ) {
-      swal("", "Số ký tự tìm kiếm phải lớn hơn 2", "warning", {
+      swal("", "Số ký tự tìm kiếm phải lớn hơn 3", "warning", {
         button: "Tôi đã hiểu",
         dangerMode: true,
       });
     } else {
-      try {
-        const {...res} = await schoolYearService.list({
-          params: _.pickBy({...router.query}, _.identity)
-        })
-        setListSchoolYear(res.data);
+      const res = await schoolYearService.list({
+        params: _.pickBy({...query}, _.identity)
+      })
+      setListSchoolYear(res.data);
 
-      } catch (error) {
-        await swal("", "Đã có lỗi xảy ra", "error", {
-          button: "Tôi đã hiểu",
-          dangerMode: true,
-        });
+      if (query.schoolId) {
+        const schoolOption = await schoolService.detail(query.schoolId);
+        setSchoolSelected({
+          value: schoolOption._id,
+          label: schoolOption.schoolname
+        })
       }
     }
-  }, []);
+  };
 
   const handleDelete = async (id) => {
     swal({
@@ -82,13 +83,12 @@ const SchoolYearList = () => {
           router.reload();
         } else {
           swal('Xóa không thành công!!', '', 'error');
-          s
         }
       }
     });
   };
 
-  const handleSubmit = async (data) => {
+  const handleSubmitSearch = async (data) => {
     if (data.s === '') delete data.s;
     if (data.schoolId === '') delete data.schoolId;
 
@@ -117,11 +117,11 @@ const SchoolYearList = () => {
     <>
       <h4>Tổ chức</h4>
       <Formik
-        onSubmit={handleSubmit}
+        onSubmit={handleSubmitSearch}
         enableReinitialize
         initialValues={{s: '', schoolId: '',}}
       >
-        {({handleChange, setFieldValue}) => (
+        {({handleChange, setFieldValue, values}) => (
           <Form>
             <div className='grid-container'>
               <Input
@@ -132,7 +132,13 @@ const SchoolYearList = () => {
               <Select
                 label='Tên trường'
                 name='schoolId'
-                onChange={e => setFieldValue('schoolId', e.value)}
+                id="schoolId"
+                instanceId="schoolId"
+                value={schoolSelected}
+                onChange={e => {
+                  setFieldValue('schoolId', e.value);
+                  setSchoolSelected(e)
+                }}
                 options={listSchool}
                 placeholder='Chọn trường'
               />
@@ -181,3 +187,5 @@ const SchoolYearList = () => {
   );
 }
 export default SchoolYearList;
+
+

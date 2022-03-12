@@ -3,29 +3,28 @@ import apiRequest from "../request";
 const api = apiRequest.init("eschool");
 export const schoolYearService = {
   list: async (params) => {
-    try{
-      const {request, ...response} = await api.get('/organization/schoolyear/', params);
+    if (!params) return [];
+    try {
+      const {request, ...response} = await api.get('/organization/schoolyear/', {params: {...params}});
       return response.data;
-    }
-    catch(e){
+    } catch (e) {
       return false;
     }
   },
   detail: async (id) => {
-    try{
+    try {
       const {...response} = await api.get(`/organization/schoolyear/${id}`);
+      console.log('response', response);
       return response.data;
-    }
-    catch(e){
+    } catch (e) {
       return false;
     }
   },
   create: async (data) => {
-    try{
+    try {
       const result = await api.post("/organization/schoolyear", data);
       return result;
-    }
-    catch(e){
+    } catch (e) {
       return false;
     }
   },
@@ -35,15 +34,14 @@ export const schoolYearService = {
     );
   },
   update: async (id, dataUpdate) => {
-    try{
+    try {
       const {...response} = await api.patch(
         `/organization/schoolyear/${id}`, dataUpdate
       );
       return true;
-    }
-    catch(e){
+    } catch (e) {
       return false;
     }
-    
+
   },
 }

@@ -12,17 +12,23 @@ import Button from "@components/button";
 import {classroomService} from "@services";
 import Pagination from "@components/table/pagination";
 import {schoolService} from "@services";
-import {schoolYearService} from "../../../services";
+import {schoolYearService} from "@services";
 
 let skip = 0;
 
 const ClassroomList = () => {
 
   const router = useRouter();
+  const {query} = router;
   const [listClassroom, setListClassroom] = useState()
-  const [listSchool, setListSchool] = useState([]);
-  const [listSchoolYear, setListSchoolYear] = useState()
-  const [listGroup, setListGroup] = useState()
+
+  const [schoolOptions, setSchoolOptions] = useState([]);
+  const [schoolYearOptions, setSchoolYearOptions] = useState([])
+  const [groupOptions, setGroupOptions] = useState([])
+
+  const [schoolSelected, setSchoolSelected] = useState();
+  const [schoolYearSelected, setSchoolYearSelected] = useState()
+  const [groupSelected, setGroupSelected] = useState()
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -35,10 +41,60 @@ const ClassroomList = () => {
 
     const schools = await schoolService.list({limit: 100});
     if (schools.total) {
-      setListSchool(schools.data.map((data) => ({
+      setSchoolOptions(schools.data.map((data) => ({
         value: data._id,
         label: data.schoolname,
       })));
+    }
+
+    if (
+      query &&
+      query.s &&
+      query.s.length <= 3
+    ) {
+      swal("", "Số ký tự tìm kiếm phải lớn hơn 3", "warning", {
+        button: "Tôi đã hiểu",
+        dangerMode: true,
+      });
+    } else {
+      const {...res} = await classroomService.list(
+        _.pickBy({...query}, _.identity)
+      )
+      setListClassroom(res);
+
+      // region load init selected
+      if (query.schoolId) {
+        const schoolOption = await schoolService.detail(query.schoolId);
+        setSchoolSelected({
+          value: schoolOption._id,
+          label: schoolOption.schoolname
+        })
+        const schoolYears = await schoolYearService.list({schoolId: query.schoolId})
+        if (schoolYears && schoolYears.total) {
+          setSchoolYearOptions(schoolYears.data.map((data) => ({
+            value: data._id,
+            label: data.schoolYearName,
+          })));
+        }
+        const group = await classroomService.listGroup({schoolId: query.schoolId})
+        console.log('group', group);
+        if (group && group.total) {
+          setGroupSelected(group.data?.map((data) => ({
+            value: data._id,
+            label: data.className,
+          })));
+        }
+      }
+      if (query.schoolYearId) {
+        const {...schoolYearOpts} = await schoolYearService.list({
+          params: _.pickBy({...query}, _.identity)
+        })
+        setSchoolYearSelected({
+          value: schoolYearOpts.data[0]?._id,
+          label: schoolYearOpts.data[0]?.schoolYearName
+        })
+      }
+      //endregion
     }
   }
 
@@ -62,9 +118,24 @@ const ClassroomList = () => {
   };
 
   const handleSubmit = async (data) => {
+
     if (data.s === '') delete data.s;
     if (data.schoolId === '') delete data.schoolId;
-    const {...res} = await classroomService.list(data);
+    if (data.schoolYearId === '') delete data.schoolYearId;
+    if (data.parentId === '') delete data.parentId;
+
+    router.push({
+        pathname: router.pathname,
+        query: _.pickBy({...query, ...data}, _.identity),
+      },
+      undefined,
+      {shallow: true}
+    );
+
+    const {...res} = await classroomService.list(
+      _.pickBy({...query, ...data}, _.identity)
+    )
+
     if (_.isEmpty(res)) {
       swal({
         text: "Tìm kiếm không thành công",
@@ -74,36 +145,26 @@ const ClassroomList = () => {
     setListClassroom(res)
   };
 
-  const onChangeSchool = async (idSchool) => {
-    const schoolYear = await schoolYearService.list({schoolId: idSchool})
+  const onChangeSchool = async (e) => {
+    const schoolYear = await schoolYearService.list({schoolId: e.value})
     if (schoolYear.total) {
-      setListSchoolYear(schoolYear.data.map((data) => ({
+      setSchoolYearOptions(schoolYear.data.map((data) => ({
         value: data._id,
         label: data.schoolYearName,
       })));
     }
   };
 
-  const onChangeSchoolYear = async (schoolYearId) => {
-    const clsGrp = await classroomService.listGroup({schoolYearId, limit: 100});
-    if (clsGrp.total) {
-      setListGroup(clsGrp.data.map((data) => ({
+  const onChangeSchoolYear = async (e) => {
+    const groups = await classroomService.listGroup({schoolId: e.value, limit: 10});
+    console.log('groups', groups);
+    if (groups.total) {
+      setGroupOptions(groups.data?.map((data) => ({
         value: data._id,
         label: data.className,
       })));
     }
   }
-
-  const onChangeGroup = async (idSchool) => {
-    const group = await classroomService.list({schoolId: idSchool, type: 'class'})
-    console.log('group', group);
-    if (group.total) {
-      setListGroup(group.data.map((data) => ({
-        value: data._id,
-        label: data.className,
-      })));
-    }
-  };
 
   return (
     <>
@@ -132,29 +193,31 @@ const ClassroomList = () => {
                 name='schoolId'
                 onChange={e => {
                   setFieldValue('schoolId', e.value)
-                  onChangeSchool(e.value);
-                  onChangeGroup(e.value);
+                  onChangeSchool(e);
+                  onChangeSchoolYear(e)
+                  setSchoolSelected(e);
                 }}
-                options={listSchool}
+                value={schoolSelected}
+                options={schoolOptions}
                 placeholder='Chọn trường'
-                useFormik='true'
               />
               <Select
                 label='Niên khoá trường'
                 name='schoolYearId'
+                value={schoolYearSelected}
                 onChange={e => {
-                  onChangeSchoolYear(e.value);
+                  // onChangeSchoolYear(e.value);
                   setFieldValue('schoolYearId', e.value)
+                  // setSchoolYearSelected(e);
                 }}
-                options={listSchoolYear}
-                useFormik='true'
+                options={schoolYearOptions}
               />
               <Select
                 label='Khối'
                 name='parentId'
-                useFormik='true'
+                value={groupSelected}
                 onChange={e => setFieldValue('parentId', e.value)}
-                options={listGroup}
+                options={groupOptions}
               />
             </div>
             <Button type='submit'>Tìm kiếm</Button>

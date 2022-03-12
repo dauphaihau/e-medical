@@ -27,10 +27,10 @@ const MedicalForm = () => {
     const { id } = router.query;
     const member = await memberService.detail(id);
 
-    if( !member ){
-      swal('Thông tin này không tồn tại!!', '', 'error')
-        .then( () => router.push('/hoc-sinh') );
-    }
+    // if( !member ){
+    //   swal('Thông tin này không tồn tại!!', '', 'error')
+    //     .then( () => router.push('/hoc-sinh') );
+    // }
     setMember(member);
   }
 

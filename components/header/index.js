@@ -42,7 +42,6 @@ function useOuterClick(callback) {
 
 function renderButtonAddNew(pathname){
   let addLink='/to-chuc/truong/them';
-  console.log(pathname);
   if( pathname.includes('to-chuc/truong') ){
     addLink = '/to-chuc/truong/them';
   }

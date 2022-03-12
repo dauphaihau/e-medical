@@ -32,10 +32,9 @@ const DetailSchoolYear = () => {
   const loadInit = async () => {
     const {id} = router.query;
     const schoolRes = await schoolYearService.detail(id);
-    if(schoolRes){
+    if (schoolRes) {
       setSchoolYear(schoolRes);
-    }
-    else{
+    } else {
       swal('Thông tin này không tồn tại!!', '', 'error')
         .then(() => router.push('/to-chuc/nien-khoa/'));
     }
@@ -47,7 +46,7 @@ const DetailSchoolYear = () => {
       }));
       setListSchool(schoolOptions);
       const initSchool = _.find(schoolOptions, {value: schoolRes.schoolId});
-      if(initSchool){
+      if (initSchool) {
         setSchoolSelected(initSchool);
       }
     }
@@ -56,11 +55,10 @@ const DetailSchoolYear = () => {
   const handleSubmitForm = async (data) => {
     const {id} = router.query;
     const result = await schoolYearService.update(id, data);
-    if(result){
+    if (result) {
       swal('Cập nhật thành công!', '', 'success')
-        .then(()=> router.push('/to-chuc/tan-nien/'));
-    }
-    else{
+        .then(() => router.push('/to-chuc/tan-nien/'));
+    } else {
       swal('Cập nhật không thành công!', '', 'error');
     }
   };
@@ -71,8 +69,8 @@ const DetailSchoolYear = () => {
       onSubmit={handleSubmitForm}
       enableReinitialize
       initialValues={{
-        schoolId: schoolYear? schoolYear.schoolId:'',
-        schoolYearName: schoolYear?schoolYear.schoolYearName:'',
+        schoolId: schoolYear ? schoolYear.schoolId : '',
+        schoolYearName: schoolYear ? schoolYear.schoolYearName : '',
       }}
     >
       {({
