@@ -69,7 +69,7 @@ const AddStaff = () => {
     const result = await memberService.createStaff(bodyData);
     if(result){
       swal('Cập nhật thành công', '', 'success')
-        // .then(() => Router.push('/nhan-su/giao-vien/'));
+        .then(() => Router.push('/nhan-su/giao-vien/'));
     }
     else {
       swal('Cập nhật không thành công', '', 'error');

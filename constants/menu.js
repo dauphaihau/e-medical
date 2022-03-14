@@ -178,12 +178,12 @@ export const MENU = {
           roles: ["agent", "manager", "admin"],
           icon: "mdi mdi-medical-bag",
         },
-        {
-          title: "Cán bộ quản lý",
-          link: "/nhan-su/cbql",
-          roles: ["agent", "manager", "admin"],
-          icon: "mdi mdi-needle",
-        },
+        // {
+        //   title: "Cán bộ quản lý",
+        //   link: "/nhan-su/cbql",
+        //   roles: ["agent", "manager", "admin"],
+        //   icon: "mdi mdi-needle",
+        // },
         {
           title: "Nhân Viên",
           link: "/nhan-su/nhan-vien",
