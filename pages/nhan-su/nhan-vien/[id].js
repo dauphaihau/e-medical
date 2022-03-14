@@ -1,144 +1,194 @@
-import {Formik, Form} from "formik";
-import * as Yup from "yup";
+import {Formik, Form, Field} from "formik";
 import {useEffect, useState} from "react";
-import {useRouter} from "next/router";
+import * as Yup from "yup";
 import swal from "sweetalert";
+import Router, {useRouter} from "next/router";
 
-import Button from "../../../components/button";
-import Input from "../../../components/form/input";
-import Layout from "../../../components/layout";
+import Button from "@components/button";
+import Input from "@components/form/input";
+import { memberService, schoolYearService, schoolService, classroomService } from "@services";
+import Select from "@components/form/select";
+import Region from "@components/form/region";
+import _ from "lodash";
 
 const phoneRegExp = /(([03+[2-9]|05+[6|8|9]|07+[0|6|7|8|9]|08+[1-9]|09+[1-4|6-9]]){3})+[0-9]{7}\b/
-const pinRegExp = /^\d{4}$/
-
-const loginSchema = Yup.object().shape({
-  username: Yup.string().required('Tên người dùng không được để trống'),
-  password: Yup.string().required('Mật khẩu không được để trống'),
-  email: Yup.string().required('Email không được để trống').email('Email không hợp lệ'),
-  source: Yup.string().required('Nguồn không được để trống'),
-  medium: Yup.string().required('Hoàn cảnh không được để trống'),
-  campaign: Yup.string().required('Chiến dịch không được để trống'),
-  content: Yup.string().required('Content không được để trống'),
+const validationSchema = Yup.object().shape({
+  schoolId: Yup.string().required(),
+  fullName: Yup.string()
+    .min(5, 'Tên trường ít nhất là 5 ký tự')
+    .max(50, 'Tên trường tối đa là 50 ký tự')
+    .required('Tên người dùng không được để trống'),
   phoneNumber: Yup.string()
-    .matches(phoneRegExp, 'Số điện thoại không hợp lệ')
-    .required('Số điện thoại không được để trống'),
-  pin: Yup.string()
-    .matches(pinRegExp, "Vui lòng nhập 4 số mã PIN")
-    .required('Pin không được để trống')
+    .required('Vui logn2 nhập số điện thoại')
+    .matches(phoneRegExp, 'Số điện thoại không hợp lệ'),
+  // address: Yup.string().required('Địa chỉ không được để trống'),
+  province: Yup.object().shape({}),
+  district: Yup.object().shape({}),
+  ward: Yup.object().shape({}),
 });
+const defaultSelectValue = {
+  value: "",
+  label: "",
+  code: "",
+};
 
-const DetailStaff = () => {
-
+const UpdateStaff = () => {
   const router = useRouter();
-  const [staff, setStaff] = useState([]);
+  const [member, setMember] = useState();
+  const [listSchool, setListSchool] = useState([]);
+  const [listProvince, setListProvince] = useState([]);
+  const [initData, setInitData] = useState({
+    school: {},
+    schoolYear: {},
+    classGroup: {},
+    class: {},
+    province: {},
+    district: {},
+    ward: {},
+  });
 
-  const getStaff = async (idStaff) => {
-    try {
-      const {request, ...response} = await staffService.getAllStaff(idStaff);
-      setStaff(response.data);
-    } catch (error) {
-      console.log(error);
+  useEffect( () => {
+    if (!router.isReady) return;
+    let abortController = new AbortController();  
+  
+    loadInit();
+    return () => abortController.abort(); 
+  }, [router.isReady]);
+
+  const loadInit = async () => {
+    const { id } = router.query;
+    if( id ){
+      const memberRes = await memberService.detail(id);
+      if(memberRes && !_.isEmpty(memberRes)){
+        setMember(memberRes);
+      }
+      else{
+        swal("Thành viên này không tồn tại!", "", "error")
+          .then(() => Router.push('/nhan-su/giao-vien/'));
+      }
+
+      let initDataSelected = {};
+      const schools = await schoolService.list({limit:20});
+      if(schools.total){
+        const schoolSelect = schools.data.map((data) => ({
+          value: data._id,
+          label: data.schoolname,
+        }));
+        setListSchool(schoolSelect);
+        const initSchool = _.find(schoolSelect, {value: memberRes.schoolWorking?.schoolId});
+        initDataSelected.school = initSchool;
+      }
+      setInitData(initDataSelected);
     }
-  };
+    else{
+      Router.push('/nhan-su/nhan-vien/');
+    }
+  }
 
-  useEffect(async () => {
-    await getStaff(router.query.id);
-  }, []);
-
-  const handleSubmitForm = async (dataUpdateStaff) => {
-    console.log(dataUpdateStaff);
+  const handleSubmitForm = async (data) => {
+    const { id } = router.query;
     try {
-      await staffService.updateStaff(router.query.id, dataUpdateStaff);
-      await swal('Cap nhat thanh cong')
+      await memberService.update(id, data);
+      swal('Cập nhật thành công', '', 'success')
+        .then(() => Router.push('/nhan-su/nhan-vien/'));
     } catch (error) {
-      console.log({error});
+      swal('Cập nhật không thành công.', 'Vui lòng thử lại.', 'error');
     }
   };
 
   return (
     <Formik
-      validationSchema={loginSchema}
+      className='my-4'
+      validationSchema={validationSchema}
       onSubmit={handleSubmitForm}
       enableReinitialize
       initialValues={{
-        username: staff.username,
-        password: staff.password,
-        pin: staff.pin,
-        status: "new",
-        phoneNumber: staff.phoneNumber,
-        email: staff.email,
-        source: staff.source,
-        medium: staff.medium,
-        campaign: staff.campaign,
-        content: staff.content
+        schoolId: member && member.schoolWorking.schoolId,
+        fullName: member?.fullName ?? '',
+        address: member?.address ?? '',
+        phoneNumber: member?.phoneNumber ?? '',
+        
+        province: member && member.province ? {
+          value: member.province.code, 
+          code: member.province.code,
+          label: member.province.provinceName
+        }:defaultSelectValue,
+        district: member && member.district ? {
+          value: member.district.code, 
+          code: member.district.code,
+          label: member.district.districtName
+        }:defaultSelectValue,
+        ward: member && member.ward ? {
+          value: member.ward.code, 
+          code: member.ward.code,
+          label: member.ward.wardName
+        }:defaultSelectValue,
       }}
     >
       {({
-          handleSubmit,
           handleChange,
           values,
+          setFieldValue,
         }) => (
-        <Form className='form' onSubmit={handleSubmit}>
-          <h3>Thông tin nhân viên</h3>
-          <div className='grid lg:grid-cols-2 gap-4 lg:w-1/2'>
-            <Input
-              label='Tên nhân viên'
-              name='username'
-              useFormik='true'
-              onChange={handleChange}
-              value={values.username}
+        <Form className='form py-8'>
+          <h3>Cập nhật thông tin</h3>
+          
+          <Select
+            label='Tên trường'
+            name='schoolId'
+            options={listSchool}
+            value={initData.school && !_.isEmpty(initData.school)?initData.school: ''}
+            onChange={(e) => {
+              setFieldValue('schoolId', e.value);
+              setInitData({...initData, ...{
+                school: e,
+                class: {},
+              }});
+            }}
+          />
+          <Input
+            label='Họ tên'
+            name='fullName'
+            onChange={handleChange}
+            value={values.fullName}
+          />
+          <Input
+            label='Phone'
+            name='phoneNumber'
+            onChange={handleChange}
+            value={values.phoneNumber}
+          />
+          <Input
+            label='Địa chỉ'
+            name='address'
+            onChange={handleChange}
+            value={values.address}
+          />
+          <div className='grid lg:grid-cols-2 gap-x-4'>
+            <Field
+              component={Region}
+              listProvince={listProvince}
+              provinceSelected={values.province}
+              districtSelected={values.district}
+              wardSelected={values.ward}
             />
-            <Input
-              label='Mã Pin' name='pin'
-              useFormik='true'
-              onChange={handleChange}
-              value={values.pin}
-            />
-            <Input
-              label='Số điện thoại'
-              name='phoneNumber'
-              useFormik='true'
-              onChange={handleChange}
-              value={values.phoneNumber}
-            />
-            <Input
-              label='Email' name='email'
-              useFormik='true'
-              onChange={handleChange}
-              value={values.email}
-            />
-            <Input
-              label='Nguồn' name='source'
-              useFormik='true'
-              onChange={handleChange}
-              value={values.source}
-            />
-            <Input
-              label='Hoàn cảnh' name='medium'
-              useFormik='true'
-              onChange={handleChange}
-              value={values.medium}
-            />
-            <Input
-              label='Chiến dịch' name='campaign'
-              useFormik='true'
-              onChange={handleChange}
-              value={values.campaign}
-            />
-            <Input
-              label='Nội dung' name='content'
-              useFormik='true'
-              onChange={handleChange}
-              value={values.content}
+            <Select
+              label='Phân quyền'  
+              name='role'
+              options={[
+                {value:'staff', label:'Nhân viên'},
+                {value:'manger', label:'Cán bộ quản lý'},
+              ]}
+              onChange={(e) => {
+                setFieldValue('role', e.value);
+              }}
+              defaultValue={{value:'staff', label:'Nhân viên'}}
             />
           </div>
-          <Button type='submit'>Cập nhật</Button>
+          <Button type='submit' className='mr-4'>Cập nhật</Button>
         </Form>
       )}
     </Formik>
   )
 }
-export default DetailStaff
-
-DetailStaff.getLayout = (page) => <Layout>{page}</Layout>;
-
+export default UpdateStaff;

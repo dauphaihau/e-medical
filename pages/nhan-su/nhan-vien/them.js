@@ -1,121 +1,154 @@
-import {Formik, Form} from "formik";
+import {Formik, Form, Field} from "formik";
+import {useEffect, useState} from "react";
 import * as Yup from "yup";
+import swal from "sweetalert";
+import Router, {useRouter} from "next/router";
 
-import Button from "../../../components/button";
-import Input from "../../../components/form/input";
-import Layout from "../../../components/layout";
+import Button from "@components/button";
+import Input from "@components/form/input";
+import { memberService, locationService, schoolService, classroomService, schoolYearService } from "@services";
+import Select from "@components/form/select";
+import Region from "@components/form/region";
+import _ from "lodash";
 
 const phoneRegExp = /(([03+[2-9]|05+[6|8|9]|07+[0|6|7|8|9]|08+[1-9]|09+[1-4|6-9]]){3})+[0-9]{7}\b/
-const pinRegExp = /^\d{4}$/
-
-const loginSchema = Yup.object().shape({
-  // username: Yup.string().required('Tên người dùng không được để trống'),
-  // password: Yup.string().required('Mật khẩu không được để trống'),
-  // email: Yup.string().required('Email không được để trống'),
-  // source: Yup.string().required('Nguồn không được để trống'),
-  // medium: Yup.string().required('Hoàn cảnh không được để trống'),
-  // campaign: Yup.string().required('Chiến dịch không được để trống'),
-  // content: Yup.string().required('Content không được để trống'),
-  // phoneNumber: Yup.string()
-  //   .matches(phoneRegExp, 'Số điện thoại không hợp lệ')
-  //   .required('Số điện thoại không được để trống'),
-  // pin: Yup.string()
-  //   .matches(pinRegExp, "Vui lòng nhập 4 số mã PIN")
-  //   .required('Pin không được để trống')
+const validationSchema = Yup.object().shape({
+  schoolId: Yup.string().required(),
+  fullName: Yup.string()
+    .min(5, 'Tên trường ít nhất là 5 ký tự')
+    .max(50, 'Tên trường tối đa là 50 ký tự')
+    .required('Tên người dùng không được để trống'),
+  phoneNumber: Yup.string()
+    .required('Vui lòng nhập số điện thoại')
+    .matches(phoneRegExp, 'Số điện thoại không hợp lệ'),
+  // address: Yup.string().required('Địa chỉ không được để trống'),
+  province: Yup.object().shape({}),
+  district: Yup.object().shape({}),
+  ward: Yup.object().shape({}),
 });
 
 const AddStaff = () => {
+  const router = useRouter();
+  const [listSchool, setListSchool] = useState();
+  const [listProvince, setListProvince] = useState();
 
-  const handleSubmitForm = async (dataStaff) => {
-    console.log(dataStaff);
-    try {
-      await staffServices.createStaff(dataStaff)
-      alert('Tạo nhân viên thành công')
-    } catch ({response}) {
-      console.log(response);
+  useEffect( () => {
+    if (!router.isReady) return;
+    let abortController = new AbortController();  
+    
+    loadInit();
+    return () => abortController.abort(); 
+  }, [router.isReady]);
+
+  const loadInit = async () => {
+    const provinces = await locationService.listProvince();
+    setListProvince(provinces);
+    const schools = await schoolService.list({limit:20});
+    if(schools.total){
+      setListSchool(schools.data.map((data) => ({
+        value: data._id,
+        label: data.schoolname,
+      })));
+    }
+  }
+
+  const handleSubmitForm = async (data, {resetForm}) => {
+    //format data
+    let bodyData = {};
+    if(data.province && !_.isEmpty(data.province)){
+      bodyData.province = {code: data.province.code, provinceName: data.province.label}
+    }
+    if(data.district && !_.isEmpty(data.district)){
+      bodyData.district = {code: data.district.code, districtName: data.district.label}
+    }
+    if(data.ward && !_.isEmpty(data.ward)){
+      bodyData.ward = {code: data.ward.code, wardName: data.ward.label}
+    }
+    bodyData = {...data, ...bodyData};
+
+    const result = await memberService.createStaff(bodyData);
+    if(result){
+      swal('Cập nhật thành công', '', 'success')
+        // .then(() => Router.push('/nhan-su/giao-vien/'));
+    }
+    else {
+      swal('Cập nhật không thành công', '', 'error');
     }
   };
 
   return (
     <Formik
-      validationSchema={loginSchema}
+      className='my-4'
+      validationSchema={validationSchema}
       onSubmit={handleSubmitForm}
       enableReinitialize
       initialValues={{
-        username: '',
-        password: '',
-        pin: '',
-        status: "new",
+        schoolId: '',
+        fullName: '',
+        address: '',
         phoneNumber: '',
-        email: '',
-        source: '',
-        medium: '',
-        campaign: '',
-        content: ''
+        province: {},
+        district: {},
+        ward: {},
+        role: 'staff'
       }}
     >
       {({
-          handleSubmit,
           handleChange,
-          touched,
-          errors,
+          values,
+          setFieldValue,
         }) => (
-        <Form className='form' onSubmit={handleSubmit}>
-          <h3>Tạo nhân viên</h3>
-          <div className='grid lg:grid-cols-2 gap-4 lg:w-1/2'>
-            <Input
-              label='Tên nhân viên' name='username'
-              useFormik='true'
-              onChange={handleChange}
+        <Form className='form py-8'>
+          <h3>Thêm Nhân viên</h3>
+          <Select
+            label='Tên trường'
+            name='schoolId'
+            options={listSchool}
+            onChange={(e) => {
+              setFieldValue('schoolId', e.value);
+            }}
+          />
+          <Input
+            label='Họ tên'
+            name='fullName'
+            onChange={handleChange}
+            value={values.fullName}
+          />
+          <Input
+            label='Phone'
+            name='phoneNumber'
+            onChange={handleChange}
+            value={values.phoneNumber}
+          />
+          <Input
+            label='Địa chỉ'
+            name='address'
+            onChange={handleChange}
+            value={values.address}
+          />
+          <div className='grid lg:grid-cols-2 gap-x-4'>
+            <Field
+              component={Region}
+              listProvince={listProvince}
             />
-            <Input
-              label='Mật khẩu' name='password'
-              useFormik='true'
-              onChange={handleChange}
-            />
-            <Input
-              label='Mã Pin' name='pin'
-              useFormik='true'
-              onChange={handleChange}
-            />
-            <Input
-              label='Số điện thoại' name='phoneNumber'
-              useFormik='true'
-              onChange={handleChange}
-            />
-            <Input
-              label='Email' name='email'
-              useFormik='true'
-              onChange={handleChange}
-            />
-            <Input
-              label='Nguồn' name='source'
-              useFormik='true'
-              onChange={handleChange}
-            />
-            <Input
-              label='Hoàn cảnh' name='medium'
-              useFormik='true'
-              onChange={handleChange}
-            />
-            <Input
-              label='Chiến dịch' name='campaign'
-              useFormik='true'
-              onChange={handleChange}
-            />
-            <Input
-              label='Nội dung' name='content'
-              useFormik='true'
-              onChange={handleChange}
+            <Select
+              label='Phân quyền'
+              name='role'
+              options={[
+                {value:'staff', label:'Nhân viên'},
+                {value:'manger', label:'Cán bộ quản lý'},
+              ]}
+              onChange={(e) => {
+                setFieldValue('role', e.value);
+              }}
+              defaultValue={{value:'staff', label:'Nhân viên'}}
             />
           </div>
-          <Button type='submit'>Tạo</Button>
+          
+          <Button type='submit' className='mr-4'>Thêm</Button>
         </Form>
       )}
     </Formik>
   )
 }
 export default AddStaff
-
-AddStaff.getLayout = (page) => <Layout>{page}</Layout>;
-
