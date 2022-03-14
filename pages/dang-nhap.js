@@ -117,7 +117,7 @@ export default function Login() {
               label='Số điện thoại'
               name='phoneNumber'
               onBlur={handleBlur}
-              // error={errors.soDienThoai && touched.soDienThoai ? errors.soDienThoai : null}
+              useFormik
               onChange={(e) => {
                 handleChange(e);
                 handlePhoneNumberChange(e.target.value);

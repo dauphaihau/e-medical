@@ -48,9 +48,7 @@ const SchoolList = () => {
         dangerMode: true,
       });
     } else {
-      const {...res} = await schoolService.list({
-        params: _.pickBy({...router.query}, _.identity)
-      })
+      const {...res} = await schoolService.list(_.pickBy({...router.query}, _.identity))
       setSchools(res.data);
 
       if (provinces) {
@@ -108,9 +106,7 @@ const SchoolList = () => {
       {shallow: true}
     );
 
-    const {...res} = await schoolService.list({
-      params: _.pickBy({...router.query, ...bodyData}, _.identity)
-    })
+    const {...res} = await schoolService.list(_.pickBy({...router.query, ...bodyData}, _.identity))
 
     if (_.isEmpty(res)) {
       swal({

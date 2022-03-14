@@ -54,9 +54,7 @@ const SchoolYearList = () => {
         dangerMode: true,
       });
     } else {
-      const res = await schoolYearService.list({
-        params: _.pickBy({...query}, _.identity)
-      })
+      const res = await schoolYearService.list(_.pickBy({...query}, _.identity))
       setListSchoolYear(res.data);
 
       if (query.schoolId) {
@@ -100,9 +98,9 @@ const SchoolYearList = () => {
       {shallow: true}
     );
 
-    const {...res} = await schoolYearService.list({
-      params: _.pickBy({...router.query, ...data}, _.identity)
-    })
+    const {...res} = await schoolYearService.list(
+      _.pickBy({...router.query, ...data}, _.identity)
+    )
 
     if (_.isEmpty(res)) {
       swal({

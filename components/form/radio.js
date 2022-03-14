@@ -13,7 +13,6 @@ const Radio = (props) => {
     ...others
   } = props;
 
-
   return (
     <div className={`${className} form-radio-input`}>
       <input
@@ -36,7 +35,15 @@ const Radio = (props) => {
 
 export default Radio;
 
-export const RadioGroup = ({className = '', children, label = '', direction}) => {
+export const RadioGroup = (props) => {
+
+  const {
+    direction='',
+    children,
+    className = '',
+    label='',
+  } = props;
+
   return (
     <div className={`mb-4 ${className}`}>
       <p className='mb-2 text-base font-medium'>{label}</p>
