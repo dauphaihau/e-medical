@@ -60,6 +60,12 @@ function renderButtonAddNew(pathname){
   if( pathname.includes('phu-huynh') ){
     addLink = '/phu-huynh/them';
   }
+  if( pathname.includes('giao-vien') ){
+    addLink = '/nhan-su/giao-vien/them';
+  }
+  if( pathname.includes('nhan-vien') ){
+    addLink = '/nhan-su/nhan-vien/them';
+  }
   
   return (
     <Link href={addLink}>

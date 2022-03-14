@@ -12,7 +12,6 @@ export const memberService = {
     }
   },
   detail: async (id) => {
-    console.log(id);
     if( !id ) return false;
     try{
       const { ...response } = await api.get("/member/"+id);
@@ -33,6 +32,29 @@ export const memberService = {
     try{
       const { ...response } = await api.delete("/member/"+id);
       return response.data;
+    }
+    catch(e){
+      return false;
+    }
+  },
+
+  createStaff: async (data) => {
+    try{
+      const {...response} = await api.post("/member/", data);
+      return true;
+    }
+    catch(e){
+      return false;
+    }
+  },
+  //teacher
+  createTeacher: async (data) => {
+    try{
+      data = {...data, ...{
+        role: 'teacher',
+      }}
+      const {...response} = await api.post("/member/", data);
+      return true;
     }
     catch(e){
       return false;

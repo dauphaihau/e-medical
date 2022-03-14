@@ -21,7 +21,7 @@ const validationSchema = Yup.object().shape({
     .max(50, 'Họ tên tối đa là 50 ký tự'),
   dateOfBirth:  Yup.string().required('Ngày sinh không được để trống'),
   schoolYearId: Yup.string().required('Vui lòng chọn niên khóa'),
-  parent: Yup.array().min(1, 'Vui lòng chọn phụ huynh').required(),
+  // parent: Yup.array().min(1, 'Vui lòng chọn phụ huynh').required(),
   schoolId: Yup.string().required('Vui lòng chọn trường.'),
   classId: Yup.string().required('Vui lòng chọn lớp.'),
 });
@@ -42,6 +42,25 @@ const DetailStudent = () => {
   const [listGroup, setListGroup] = useState();
   const [listClass, setListClass] = useState();
 
+  const [initData, setInitData] = useState({
+    school: {
+      value: "",
+      label: "",
+    },
+    schoolYear: {
+      value: "",
+      label: "",
+    },
+    classGroup: {
+      value: "",
+      label: "",
+    },
+    class: {
+      value: "",
+      label: "",
+    }
+  })
+
   useEffect( () => {
     if( !router.isReady ) return;
     loadInit();
@@ -49,21 +68,76 @@ const DetailStudent = () => {
 
   const loadInit = async () => {
     const { id } = router.query;
-    const member = await memberService.detail(id);
+    const memberRes = await memberService.detail(id);
 
-    if( !member ){
+    if( !memberRes ){
       swal('Thông tin này không tồn tại!!', '', 'error')
         .then( () => router.push('/hoc-sinh') );
     }
-    setMember(member);
+    setMember(memberRes);
     
+    const initDataState = {
+      school: {
+        value: "",
+        label: "",
+      },
+      schoolYear: {
+        value: "",
+        label: "",
+      },
+      classGroup: {
+        value: "",
+        label: "",
+      },
+    };
     const schools = await schoolService.list({limit: 100});
     if (schools.total) {
-      setListSchool(schools.data.map((data) => ({
+      const schoolOpts = schools.data.map((data) => ({
         value: data._id,
         label: data.schoolname,
-      })));
+      }));
+      setListSchool(schoolOpts);
+      const schoolSelected = _.find(schoolOpts, {value: memberRes.schoolWorking?.schoolId});
+      if(schoolSelected){
+        initDataState.school = schoolSelected;
+        const schoolYears = await schoolYearService.list({schoolId: schoolSelected.value, limit: 100})
+        if (schoolYears && schoolYears.total) {
+          const schoolYearOpt = schoolYears.data.map((data) => ({
+            value: data._id,
+            label: data.schoolYearName,
+          }));
+          setListSchoolYear(schoolYearOpt);
+          const schoolYearSelected = _.find(schoolYearOpt, {value: memberRes.schoolWorking?.schoolYearId});
+          if(schoolYearSelected){
+            initDataState.schoolYear = schoolYearSelected;
+
+            const clsGroup = await classroomService.listGroup({schoolYearId: memberRes.schoolWorking?.schoolYearId, limit: 100});
+            if (clsGroup && clsGroup.total) {
+              const clsGroupOpt = clsGroup.data.map((data) => ({
+                value: data._id,
+                label: data.className,
+              }));
+              setListGroup(clsGroupOpt);
+              const clsGroupSelected = _.find(clsGroupOpt, {value: memberRes.schoolWorking?.classGroupId});
+              if(clsGroupSelected){
+                initDataState.classGroup = clsGroupSelected;
+                const listCls = await classroomService.list({parentId: clsGroupSelected.value})
+                if(listCls && listCls.total){
+                  const listClsOpt = listCls.data.map((data) => ({
+                    value: data._id,
+                    label: data.className,
+                  }));
+                  setListClass(listClsOpt);
+                  const clsSelected = _.find(listClsOpt, {value: memberRes.schoolWorking?.classId});
+                  initDataState.class = clsSelected;
+                }
+              }
+            }
+          }
+        }
+      }
     }
+    setInitData(initDataState);
   }
 
   const onChangeSchool = async (idSchool) => {
@@ -97,9 +171,21 @@ const DetailStudent = () => {
   };
 
   const handleSubmitForm = async (values) => {
-    console.log(values);
     const { id } = router.query;
-
+    console.log(values);
+    const result = memberService.updateStudent(id, values);
+    if(result){
+      swal({
+        text: "Cập nhật thành công",
+        icon: "success"
+      });
+    }
+    else{
+      swal({
+        text: "Cập nhật không thành công",
+        icon: "error"
+      });
+    }
   };
 
   const handleSubmitFormBodyMass = async (values) => {
@@ -158,11 +244,13 @@ const DetailStudent = () => {
               enableReinitialize
               initialValues={{
                 schoolId: member ? member.schoolWorking?.schoolId : '',
+                schoolYearId: member ? member.schoolWorking?.schoolYearId : '',
+                classGroupId: member ? member.schoolWorking?.classGroupId : '',
                 classId: member ? member.schoolWorking?.classId : '',
-                parent: '',
+                // parent: '',
                 fullName: member ? member.fullName : '',
                 dateOfBirth: member ? member.dateOfBirth : '',
-                gender: member ? member.gender : '',
+                gender: member ? member.gender : 1,
               }}
             >
               {({
@@ -178,8 +266,10 @@ const DetailStudent = () => {
                     useFormik='true'
                     onChange={e => {
                       onChangeSchool(e.value);
-                      setFieldValue('schoolId', e.value)
+                      setFieldValue('schoolId', e.value);
+                      setInitData({...initData, ...{school: e}});
                     }}
+                    value={initData.school}
                     options={listSchool}
                   />
                   <Select
@@ -187,34 +277,42 @@ const DetailStudent = () => {
                     name='schoolYearId'
                     onChange={e => {
                       onChangeSchoolYear(e.value);
-                      setFieldValue('schoolYearId', e.value)
+                      setFieldValue('schoolYearId', e.value);
+                      setInitData({...initData, ...{schoolYear: e}});
                     }}
                     options={listSchoolYear}
+                    value={initData.schoolYear}
                     useFormik='true'
                   />
                   <Select
                     label='Khối'
-                    name='classGroup'
+                    name='classGroupId'
                     useFormik='true'
                     onChange={e => {
                       onChangeGroup(e.value);
-                      setFieldValue('classGroup', e.value)
+                      setFieldValue('classGroupId', e.value);
+                      setInitData({...initData, ...{classGroup: e}});
                     }}
+                    value={initData.classGroup}
                     options={listGroup}
                   />
                   <Select
                     label='Lớp'
                     name='classId'
                     useFormik='true'
-                    onChange={e => setFieldValue('classId', e.value)}
+                    onChange={e => {
+                      setFieldValue('classId', e.value);
+                      setInitData({...initData, ...{class: e}});
+                    }}
                     options={listClass}
+                    value={initData.class}
                   />
                   <Input label='Họ và tên' name='fullName' useFormik onChange={handleChange} value={values.fullName}/>
                   <Input label='Ngày sinh' name='dateOfBirth' useFormik onChange={handleChange} value={values.dateOfBirth}/>
                 
                   <RadioGroup label='Giới Tính'>
-                    <Radio name='sex' onChange={handleChange} checked={values.gender===1}  value='1' labelName="Nam" id="sex-male"/>
-                    <Radio name='sex' onChange={handleChange} checked={values.gender===2} value='2' labelName="Nữ" id='sex-female'/>
+                    <Radio name='gender' onChange={handleChange} checked={parseInt(values.gender)===1}  value='1' labelName="Nam" id="sex-male"/>
+                    <Radio name='gender' onChange={handleChange} checked={parseInt(values.gender)===2} value='2' labelName="Nữ" id='sex-female'/>
                   </RadioGroup>
                 
                   <h3 className='mt-6'>Phụ Huynh</h3>

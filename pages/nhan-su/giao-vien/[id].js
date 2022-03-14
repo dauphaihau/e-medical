@@ -1,14 +1,15 @@
-import {Formik, Form} from "formik";
+import {Formik, Form, Field} from "formik";
 import {useEffect, useState} from "react";
 import * as Yup from "yup";
 import swal from "sweetalert";
 import Router, {useRouter} from "next/router";
-import _ from "lodash";
 
 import Button from "@components/button";
 import Input from "@components/form/input";
-import { memberService, locationService, schoolService, classroomService } from "@services";
+import { memberService, schoolYearService, schoolService, classroomService } from "@services";
 import Select from "@components/form/select";
+import Region from "@components/form/region";
+import _ from "lodash";
 
 const phoneRegExp = /(([03+[2-9]|05+[6|8|9]|07+[0|6|7|8|9]|08+[1-9]|09+[1-4|6-9]]){3})+[0-9]{7}\b/
 const validationSchema = Yup.object().shape({
@@ -26,40 +27,44 @@ const validationSchema = Yup.object().shape({
   district: Yup.object().shape({}),
   ward: Yup.object().shape({}),
 });
-
+const defaultSelectValue = {
+  value: "",
+  label: "",
+  code: "",
+};
 const labelAddType = {
   'giao-vien': 'Giáo Viên',
   'nhan-vien': 'Nhân viên',
 };
 
-const UpdateStaff = () => {
+const UpdateTeacher = () => {
   const router = useRouter();
   const [member, setMember] = useState();
   const [listSchool, setListSchool] = useState([]);
+  const [listSchoolYear, setListSchoolYear] = useState();
+  const [listGroup, setListGroup] = useState();
   const [listClass, setListClass] = useState([]);
   const [listProvince, setListProvince] = useState([]);
-  const [listDistrict, setListDistrict] = useState([]);
-  const [listWard, setListWard] = useState([]);
   const [addType, setAddType] = useState();
   const [initData, setInitData] = useState({
     school: {},
+    schoolYear: {},
+    classGroup: {},
     class: {},
     province: {},
     district: {},
     ward: {},
   });
-  const [schoolSelected, setSchoolSelected] = useState();
-  const [classSelected, setSelected] = useState();
 
   useEffect( () => {
     if (!router.isReady) return;
-    let abortController = new AbortController();
-
+    let abortController = new AbortController();  
+    
     if( router.pathname.includes('giao-vien') ){
       setAddType('giao-vien');
     }
     loadInit();
-    return () => abortController.abort();
+    return () => abortController.abort(); 
   }, [router.isReady]);
 
   useEffect( () => {
@@ -78,23 +83,6 @@ const UpdateStaff = () => {
       }
 
       let initDataSelected = {};
-      const provinces = await locationService.listProvince();
-      setListProvince(provinces);
-      initDataSelected.province = _.find(provinces, {code: memberRes?.province?.code})
-      //set init province
-      if(initDataSelected.province && initDataSelected.province.code){
-        const districts = await locationService.listDistrict(initDataSelected.province.code);
-        setListDistrict(districts);
-        initDataSelected.district = _.find(districts, {code: memberRes?.district?.code});
-      }
-      //set init district
-      if(initDataSelected.district && initDataSelected.district.code){
-        const wards = await locationService.listWard(initDataSelected.district.code);
-        setListWard(wards);
-        initDataSelected.ward = _.find(wards, {code: memberRes?.ward?.code});
-      }
-      console.log(initDataSelected);
-
       const schools = await schoolService.list({limit:20});
       if(schools.total){
         const schoolSelect = schools.data.map((data) => ({
@@ -103,18 +91,48 @@ const UpdateStaff = () => {
         }));
         setListSchool(schoolSelect);
         const initSchool = _.find(schoolSelect, {value: memberRes.schoolWorking?.schoolId});
-        setSchoolSelected(initSchool);
         initDataSelected.school = initSchool;
-        // initData.school = initSchool;
 
         if(initSchool && !_.isEmpty(initSchool)){
-          const classSelect = await onChangeSchool(initSchool.value);
-          if(classSelect){
-            initDataSelected.class = _.find(classSelect, {value: memberRes.schoolWorking?.classId});
+          const schoolYears = await schoolYearService.list({schoolId: initSchool.value});
+          if(schoolYears && schoolYears.total){
+            const schoolYearSelect = schoolYears.data.map((data) => ({
+              value: data._id,
+              label: data.schoolYearName,
+            }));
+            setListSchoolYear(schoolYearSelect);
+            const initYear = _.find(schoolYearSelect, {value: memberRes.schoolWorking?.schoolYearId});
+            initDataSelected.schoolYear = initYear;
+            
+            if( !_.isEmpty(initYear) ){
+              const clsGroup = await classroomService.listGroup({schoolYearId: memberRes.schoolWorking?.schoolYearId, limit: 100});
+              if (clsGroup && clsGroup.total) {
+                const clsGroupOpt = clsGroup.data.map((data) => ({
+                  value: data._id,
+                  label: data.className,
+                }));
+                setListGroup(clsGroupOpt);
+                const clsGroupSelected = _.find(clsGroupOpt, {value: memberRes.schoolWorking?.classGroupId});
+                if(clsGroupSelected){
+                  initDataSelected.classGroup = clsGroupSelected;
+
+                  const listCls = await classroomService.list({parentId: clsGroupSelected.value})
+                  if(listCls && listCls.total){
+                    const listClsOpt = listCls.data.map((data) => ({
+                      value: data._id,
+                      label: data.className,
+                    }));
+                    setListClass(listClsOpt);
+                    const clsSelected = _.find(listClsOpt, {value: memberRes.schoolWorking?.classId});
+                    initDataSelected.class = clsSelected;
+                  }
+                }
+              }
+            }
           }
         }
-        setInitData(initDataSelected);
       }
+      setInitData(initDataSelected);
     }
     else{
       Router.push('/nhan-su/giao-vien/');
@@ -132,37 +150,36 @@ const UpdateStaff = () => {
     }
   };
 
-  const onChangeProvince = async (e) => {
-    const districts = await locationService.listDistrict(e.code);
-    setListDistrict(districts);
-    setInitData({...initData, ...{
-      province: e,
-      district: {},
-      ward: {},
-    }});
-  }
+  const onChangeSchool = async (idSchool) => {
+    const schoolYear = await schoolYearService.list({schoolId: idSchool})
+    if (schoolYear.total) {
+      setListSchoolYear(schoolYear.data.map((data) => ({
+        value: data._id,
+        label: data.schoolYearName,
+      })));
+    }
+    else setListSchoolYear([]);
+  };
 
-  const onChangeDistrict = async (e) => {
-    const wards = await locationService.listWard(e.code);
-    setListWard(wards);
-    setInitData({...initData, ...{
-      district: e,
-      ward: {},
-    }});
-  }
-
-  const onChangeSchool = async (schoolId) => {
-    const classes = await classroomService.list({schoolId});
-    let classSelected = [];
-    if(classes.total){
-      classSelected = classes.data.map((data) => ({
+  const onChangeSchoolYear = async (schoolYearId) => {
+    const clsGrp = await classroomService.listGroup({schoolYearId, limit: 100, type: 'group'});
+    if (clsGrp.total) {
+      setListGroup(clsGrp.data.map((data) => ({
         value: data._id,
         label: data.className,
-      }));
+      })));
     }
-    setListClass(classSelected);
-    return classSelected;
   }
+
+  const onChangeGroup = async (id) => {
+    const classes = await classroomService.list({parentId: id, type: 'class'})
+    if (classes.total) {
+      setListClass(classes.data.map((data) => ({
+        value: data._id,
+        label: data.className,
+      })));
+    }
+  };
 
   return (
     <Formik
@@ -171,14 +188,29 @@ const UpdateStaff = () => {
       onSubmit={handleSubmitForm}
       enableReinitialize
       initialValues={{
-        schoolId: initData.school?.value ?? '',
-        classId: initData.class?.value ?? '',
+        schoolId: member && member.schoolWorking.schoolId,
+        schoolYearId: member && member.schoolWorking.schoolYearId,
+        classGroupId: member && member.schoolWorking.classGroupId,
+        classId: member && member.schoolWorking.classId,
         fullName: member?.fullName ?? '',
         address: member?.address ?? '',
         phoneNumber: member?.phoneNumber ?? '',
-        province: member?.province ?? {},
-        district: member?.district?? {},
-        ward: member?.ward ?? {},
+        
+        province: member && member.province ? {
+          value: member.province.code, 
+          code: member.province.code,
+          label: member.province.provinceName
+        }:defaultSelectValue,
+        district: member && member.district ? {
+          value: member.district.code, 
+          code: member.district.code,
+          label: member.district.districtName
+        }:defaultSelectValue,
+        ward: member && member.ward ? {
+          value: member.ward.code, 
+          code: member.ward.code,
+          label: member.ward.wardName
+        }:defaultSelectValue,
       }}
     >
       {({
@@ -202,6 +234,28 @@ const UpdateStaff = () => {
                   class: {},
                 }});
               }}
+            />
+            <Select
+              label='Niên khoá'
+              name='schoolYearId'
+              onChange={e => {
+                onChangeSchoolYear(e.value);
+                setFieldValue('schoolYearId', e.value)
+              }}
+              options={listSchoolYear}
+              value={initData.schoolYear && !_.isEmpty(initData.schoolYear)?initData.schoolYear: ''}
+              useFormik='true'
+            />
+            <Select
+              label='Khối'
+              name='classGroupId'
+              useFormik='true'
+              onChange={e => {
+                onChangeGroup(e.value);
+                setFieldValue('classGroupId', e.value)
+              }}
+              value={initData.classGroup && !_.isEmpty(initData.classGroup)?initData.classGroup: ''}
+              options={listGroup}
             />
             <Select
               label='Lớp chủ nhiệm'
@@ -235,38 +289,12 @@ const UpdateStaff = () => {
             value={values.address}
           />
           <div className='grid lg:grid-cols-2 gap-x-4'>
-            <Select
-              label='Tỉnh/thành'
-              name='province'
-              options={listProvince}
-              value={initData.province && !_.isEmpty(initData.province)?initData.province:''}
-              onChange={(e) => {
-                onChangeProvince(e);
-                setFieldValue('province', e);
-              }}
-            />
-            <Select
-              label='Quận/huyện'
-              name='district'
-              options={listDistrict}
-              value={initData.district && !_.isEmpty(initData.district)?initData.district:''}
-              onChange={(e) => {
-                onChangeDistrict(e);
-                setFieldValue('district', e);
-              }}
-            />
-            <Select
-              label='Phường/Xã'
-              name='ward'
-              options={listWard}
-              value={initData.ward && !_.isEmpty(initData.ward)?initData.ward:''}
-              onChange={(e) => {
-                handleChange(e.code)
-                setFieldValue('ward', e);
-                setInitData({...initData, ...{
-                  ward: e,
-                }});
-              }}
+            <Field
+              component={Region}
+              listProvince={listProvince}
+              provinceSelected={values.province}
+              districtSelected={values.district}
+              wardSelected={values.ward}
             />
           </div>
           <Button type='submit' className='mr-4'>Cập nhật</Button>
@@ -275,4 +303,4 @@ const UpdateStaff = () => {
     </Formik>
   )
 }
-export default UpdateStaff;
+export default UpdateTeacher;

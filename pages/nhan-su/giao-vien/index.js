@@ -16,7 +16,9 @@ const Teacher = () => {
   }, []);
 
   const loadInit = async () => {
-    const listMember = await memberService.list();
+    const listMember = await memberService.list({
+      type: 'teacher'
+    });
     setMembers(listMember);
   }
 
