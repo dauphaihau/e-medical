@@ -4,6 +4,7 @@ import Link from "next/link";
 import swal from "sweetalert";
 import {Form, Formik} from "formik";
 import _ from "lodash";
+import * as Yup from "yup";
 
 import Input from "@components/form/input";
 import {schoolYearService} from "@services";
@@ -32,8 +33,8 @@ const SchoolYearList = () => {
 
   const loadInit = async () => {
     const {query} = router;
-    const {...response} = await schoolYearService.list();
-    setListSchoolYear(response.data);
+    const res = await schoolYearService.list();
+    setListSchoolYear(res.data);
 
     const schools = await schoolService.list({limit: 100});
     if (schools.total) {
@@ -87,28 +88,40 @@ const SchoolYearList = () => {
   };
 
   const handleSubmitSearch = async (data) => {
+
     if (data.s === '') delete data.s;
     if (data.schoolId === '') delete data.schoolId;
 
+    console.log('data', data);
+
     await router.push({
         pathname: router.pathname,
-        query: _.pickBy({...router.query, ...data}, _.identity),
+        query: _.pickBy(data, _.identity),
       },
       undefined,
       {shallow: true}
     );
 
-    const {...res} = await schoolYearService.list(
-      _.pickBy({...router.query, ...data}, _.identity)
-    )
-
+    const res = await schoolYearService.list(_.pickBy(data, _.identity))
+    console.log('res', res);
     if (_.isEmpty(res)) {
       swal({
         text: "Tìm kiếm không thành công",
         icon: "error"
       });
+    } else {
+      if (data.s) {
+        const filteredData = res.data?.filter((item) => {
+          return Object.values(item.schoolYearName)
+            .join("")
+            .toLowerCase()
+            .includes(data.s?.toLowerCase());
+        });
+        return setListSchoolYear(filteredData);
+      } else {
+        return setListSchoolYear(res.data);
+      }
     }
-    setListSchoolYear(res.data)
   };
 
   return (
@@ -117,13 +130,17 @@ const SchoolYearList = () => {
       <Formik
         onSubmit={handleSubmitSearch}
         enableReinitialize
+        validationSchema={Yup.object().shape({
+          s: Yup.string().min(3, 'Nội dung tìm kiếm ít nhất là 3 ký tự')
+        })}
         initialValues={{s: '', schoolId: '',}}
       >
-        {({handleChange, setFieldValue, values}) => (
+        {({handleChange, setFieldValue}) => (
           <Form>
             <div className='grid-container'>
               <Input
                 label='Tìm kiếm'
+                useFormik
                 placeholder='Tên niên khoá...' name="s"
                 onChange={handleChange}
               />
@@ -159,23 +176,26 @@ const SchoolYearList = () => {
             </tr>
             </thead>
             <tbody>
-              {listSchoolYear?.map((item, idz) => (
-                <tr key={idz}>
-                  <td>{skip + idz + 1}</td>
-                  <td className='text-center'>{item.schoolYearName}</td>
-                  <td/>
-                  <td/>
-                  <td>
-                    <Link href={`/to-chuc/nien-khoa/${item._id}`}>
-                      <a><PencilIcon className='h-5 w-5 inline'/></a>
-                    </Link>
-                    <TrashIcon
-                      className='h-5 w-5 inline ml-4 cursor-pointer'
-                      onClick={() => handleDelete(item._id)}
-                    />
-                  </td>
-                </tr>
-              ))}
+              {!_.isEmpty(listSchoolYear)
+                ? listSchoolYear?.map((item, idz) => (
+                  <tr key={idz}>
+                    <td>{skip + idz + 1}</td>
+                    <td className='text-center'>{item.schoolYearName}</td>
+                    <td/>
+                    <td/>
+                    <td>
+                      <Link href={`/to-chuc/nien-khoa/${item._id}`}>
+                        <a><PencilIcon className='h-5 w-5 inline'/></a>
+                      </Link>
+                      <TrashIcon
+                        className='h-5 w-5 inline ml-4 cursor-pointer'
+                        onClick={() => handleDelete(item._id)}
+                      />
+                    </td>
+                  </tr>
+                ))
+                : (<tr><td colSpan='6'>Chưa có dữ liệu</td></tr>)
+              }
             </tbody>
           </table>
           <Pagination data={listSchoolYear}/>

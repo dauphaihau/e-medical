@@ -1,20 +1,18 @@
 import apiRequest from "../request";
-import _ from "lodash";
 
 const api = apiRequest.init("eschool");
 export const classroomService = {
   listGroup: async (params) => {
-    if (!params) return [];
     try {
-      const {...response} = await api.get('/organization/classroom/', {params: {...params, type: 'group'}});
-      return response.data;
+      const res = await api.get('/organization/classroom/', {params: {...params, type: 'group'}});
+      return res.data;
     } catch (e) {
       return false
     }
   },
   createGroup: async (data) => {
     try {
-      const {...response} = await api.post("/organization/classroom", data);
+      const response = await api.post("/organization/classroom", data);
       return true;
     } catch (e) {
       return false;
@@ -22,7 +20,7 @@ export const classroomService = {
   },
   updateGroup: async (id, data) => {
     try {
-      const {...response} = await api.patch(`/organization/classroom/${id}`, data);
+      const response = await api.patch(`/organization/classroom/${id}`, data);
       return true;
     } catch (e) {
       return false;
@@ -30,7 +28,7 @@ export const classroomService = {
   },
   detailGroup: async (id) => {
     try {
-      const {...response} = await api.get("/organization/classroom/" + id);
+      const response = await api.get("/organization/classroom/" + id);
       return response.data;
     } catch (e) {
       return false;
@@ -38,7 +36,7 @@ export const classroomService = {
   },
   deleteGroup: async (id) => {
     try {
-      const {...response} = await api.delete(`/organization/classroom/${id}`);
+      const response = await api.delete(`/organization/classroom/${id}`);
       return true;
     } catch (e) {
       return false;
@@ -47,7 +45,7 @@ export const classroomService = {
   },
   list: async (params) => {
     try {
-      const {...response} = await api.get('/organization/classroom/', {params: {...params}});
+      const response = await api.get('/organization/classroom/', {params: {...params}});
       return response.data;
     } catch (e) {
       return false
@@ -55,7 +53,7 @@ export const classroomService = {
   },
   create: async (data) => {
     try {
-      const {...response} = await api.post("/organization/classroom", data);
+      const response = await api.post("/organization/classroom", data);
       return true;
     } catch (e) {
       return false;
@@ -63,7 +61,7 @@ export const classroomService = {
   },
   delete: async (id) => {
     try {
-      const {...response} = await api.delete(`/organization/classroom/${id}`);
+      const response = await api.delete(`/organization/classroom/${id}`);
       return true;
     } catch (e) {
       return false;
@@ -71,7 +69,7 @@ export const classroomService = {
   },
   update: async (id, data) => {
     try {
-      const {...response} = await api.patch(`/organization/classroom/${id}`, data);
+      const response = await api.patch(`/organization/classroom/${id}`, data);
       return true;
     } catch (e) {
       return false;
@@ -79,7 +77,7 @@ export const classroomService = {
   },
   detail: async (id) => {
     try {
-      const {...response} = await api.get("/organization/classroom/" + id);
+      const response = await api.get("/organization/classroom/" + id);
       return response.data;
     } catch (e) {
       return false;

@@ -43,6 +43,7 @@ const DetailStudent = () => {
   const [listClass, setListClass] = useState();
 
   const [initData, setInitData] = useState({
+
     school: {
       value: "",
       label: "",

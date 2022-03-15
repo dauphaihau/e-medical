@@ -1,69 +1,48 @@
-import { useEffect, useState } from "react";
-import {useRouter} from "next/router";
-import { memberService } from "@services";
-import Link from 'next/link'
-import { PencilAltIcon } from '@heroicons/react/solid';
-import Input from "@components/form/input";
-import Button from "@components/button";
+import Input from "../../../components/form/input";
+import Table from "../../../components/table";
+import Layout from "../../../components/layout";
+import Select from "../../../components/form/select";
 
-const Staff = () => {
-  const router = useRouter();
-  const [members, setMembers] = useState();
+const theadData = [
+  'STT',
+  'Mã nhân viên',
+  'Thông tin nhân viên',
+  , '', ' '
+];
 
-  useEffect(() => {
-    if(!router.isReady) return;
-    loadInit();
-  }, [router.isReady]);
 
-  const loadInit = async () => {
-    const listMember = await memberService.list({
-      type: ['staff', 'manager']
-    });
-    setMembers(listMember);
-  }
+const tbodyData = [
+  {
+    id: "1",
+    items: ["1", '12', 'Nguyen B \n Niên khoá: 2021-2022', ],
+  },
+];
 
+const options = [
+  {value: '2009-2010', label: '2009-2010'},
+  {value: '2019-2012', label: '2009-2010'},
+  {value: '2009-2012', label: '2009-2010'},
+]
+
+const StaffList = () => {
   return (
     <>
-      <h4>Danh sách giáo viên</h4>
-      <Input className='md:w-1/2 lg:w-1/4' name='search' placeholder='Tìm kiếm...'/>
+      <h4>Nhân viên</h4>
+      <div className='grid-container'>
+        <Input placeholder='Tìm kiếm...'/>
+        <Select options={options} placeholder='Thời gian'/>
+      </div>
       <div className="mt-8 drop-shadow-2xl overflow-x-auto lg:overflow-x-visible">
-        <div className='container-table'>
-          <table className='table'>
-            <thead>
-            <tr>
-              <th className="w-3">STT</th>
-              <th className="text-left">Nhân viên</th>
-              <th className="text-left">Phone</th>
-              <th className="text-left">Lớp CN</th>
-              <th className="w-2"/>
-            </tr>
-            </thead>
-            <tbody>
-              {members?.total?
-                members.data.map( (row, idz) => (
-                  <tr key={idz}>
-                    <td>{idz+1}</td>
-                    <td>{row.fullName}</td>
-                    <td>{row.phoneNumber}</td>
-                    <td>{(row.schoolWorking) ? row.schoolWorking?.className : ''}</td>
-                    <td>
-                      <Link href={router.pathname + '/' + row._id}>
-                        <a><PencilAltIcon className="h-5 w-5 text-primary"/></a>
-                      </Link>
-                    </td>
-                  </tr>
-                ))
-              :(
-                <tr>
-                  <td colSpan='4'>Chưa có dữ liệu</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+        <Table
+          pathLinkBtnAdd='/nhan-su/nhan-vien/them-nhan-vien'
+          titleTable='Nhân viên y tế'
+          theadData={theadData} tbodyData={tbodyData}
+        />
       </div>
     </>
   );
 }
 
-export default Staff;
+export default StaffList;
+
+StaffList.getLayout = (page) => <Layout>{page}</Layout>;

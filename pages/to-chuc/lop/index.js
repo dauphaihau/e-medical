@@ -2,7 +2,6 @@ import {useEffect, useState} from "react";
 import {useRouter} from "next/router";
 import Link from "next/link";
 import swal from "sweetalert";
-import {Form, Formik} from "formik";
 import _ from "lodash";
 
 import {PencilIcon, TrashIcon} from "@heroicons/react/outline";
@@ -26,9 +25,28 @@ const ClassroomList = () => {
   const [schoolYearOptions, setSchoolYearOptions] = useState([])
   const [groupOptions, setGroupOptions] = useState([])
 
-  const [schoolSelected, setSchoolSelected] = useState();
-  const [schoolYearSelected, setSchoolYearSelected] = useState()
-  const [groupSelected, setGroupSelected] = useState()
+  const [selects, setSelect] = useState({
+    s: '',
+    school: {
+      value: '',
+      label: ''
+    },
+    schoolYear: {
+      value: '',
+      label: ''
+    },
+    parent: {
+      value: '',
+      label: ''
+    },
+  })
+
+  const [filter, setFilter] = useState({
+    s: '',
+    schoolId: '',
+    schoolYearId: '',
+    parentId: '',
+  })
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -57,18 +75,44 @@ const ClassroomList = () => {
         dangerMode: true,
       });
     } else {
-      const {...res} = await classroomService.list(
+      const res = await classroomService.list(
         _.pickBy({...query}, _.identity)
       )
       setListClassroom(res);
 
-      // region load init selected
       if (query.schoolId) {
-        const schoolOption = await schoolService.detail(query.schoolId);
-        setSchoolSelected({
+        let schoolOption = await schoolService.detail(query.schoolId);
+        schoolOption = {
           value: schoolOption._id,
           label: schoolOption.schoolname
-        })
+        };
+        setSelect({...selects, ...{school: schoolOption}});
+
+        if (query.schoolYearId) {
+          let schoolYearOpts = await schoolYearService.list(
+            _.pickBy(query.schoolYearId, _.identity)
+          )
+          schoolYearOpts = {
+            value: schoolYearOpts.data[0]?._id,
+            label: schoolYearOpts.data[0]?.schoolYearName
+          };
+          setSelect({...selects, ...{school: schoolOption, schoolYear: schoolYearOpts}});
+
+          if (query.parentId) {
+            let groupOption = await classroomService.listGroup({schoolId: query.schoolId})
+            groupOption = groupOption.data.map(group => ({
+              value: group._id,
+              label: group.className,
+            }))
+            setSelect({
+              ...selects,
+              ...{
+                school: schoolOption, schoolYear: schoolYearOpts, parent: groupOption
+              }
+            });
+          }
+        }
+
         const schoolYears = await schoolYearService.list({schoolId: query.schoolId})
         if (schoolYears && schoolYears.total) {
           setSchoolYearOptions(schoolYears.data.map((data) => ({
@@ -76,25 +120,7 @@ const ClassroomList = () => {
             label: data.schoolYearName,
           })));
         }
-        const group = await classroomService.listGroup({schoolId: query.schoolId})
-        console.log('group', group);
-        if (group && group.total) {
-          setGroupSelected(group.data?.map((data) => ({
-            value: data._id,
-            label: data.className,
-          })));
-        }
       }
-      if (query.schoolYearId) {
-        const {...schoolYearOpts} = await schoolYearService.list({
-          params: _.pickBy({...query}, _.identity)
-        })
-        setSchoolYearSelected({
-          value: schoolYearOpts.data[0]?._id,
-          label: schoolYearOpts.data[0]?.schoolYearName
-        })
-      }
-      //endregion
     }
   }
 
@@ -117,37 +143,9 @@ const ClassroomList = () => {
     });
   };
 
-  const handleSubmit = async (data) => {
-
-    if (data.s === '') delete data.s;
-    if (data.schoolId === '') delete data.schoolId;
-    if (data.schoolYearId === '') delete data.schoolYearId;
-    if (data.parentId === '') delete data.parentId;
-
-    router.push({
-        pathname: router.pathname,
-        query: _.pickBy({...query, ...data}, _.identity),
-      },
-      undefined,
-      {shallow: true}
-    );
-
-    const {...res} = await classroomService.list(
-      _.pickBy({...query, ...data}, _.identity)
-    )
-
-    if (_.isEmpty(res)) {
-      swal({
-        text: "Tìm kiếm không thành công",
-        icon: "error"
-      });
-    }
-    setListClassroom(res)
-  };
-
   const onChangeSchool = async (e) => {
     const schoolYear = await schoolYearService.list({schoolId: e.value})
-    if (schoolYear.total) {
+    if (schoolYear) {
       setSchoolYearOptions(schoolYear.data.map((data) => ({
         value: data._id,
         label: data.schoolYearName,
@@ -157,7 +155,6 @@ const ClassroomList = () => {
 
   const onChangeSchoolYear = async (e) => {
     const groups = await classroomService.listGroup({schoolId: e.value, limit: 10});
-    console.log('groups', groups);
     if (groups.total) {
       setGroupOptions(groups.data?.map((data) => ({
         value: data._id,
@@ -166,64 +163,93 @@ const ClassroomList = () => {
     }
   }
 
+  const handleSubmitSearch = async (values) => {
+    values.preventDefault();
+
+    if (filter.s === '') delete filter.s;
+    if (filter.schoolId === '') delete filter.schoolId;
+    if (filter.schoolYearId === '') delete filter.schoolYearId;
+    if (filter.parentId === '') delete filter.parentId;
+
+    router.push({
+        pathname: router.pathname,
+        query: _.pickBy(filter, _.identity),
+      },
+      undefined,
+      {shallow: true}
+    );
+
+    const res = await classroomService.list(
+      _.pickBy(filter, _.identity)
+    )
+
+    if (_.isEmpty(res)) {
+      swal({
+        text: "Nội dung tìm kiếm ít nhất là 3 ký tự",
+        icon: "error"
+      });
+    } else {
+      if (filter.s) {
+        const filteredData = res.data?.filter((item) => {
+          return Object.values(item.className)
+            .join("")
+            .toLowerCase()
+            .includes(filter.s?.toLowerCase());
+        });
+        return setListClassroom({...listClassroom, data: filteredData});
+      } else {
+        return setListClassroom(res);
+      }
+    }
+  };
+
   return (
     <>
       <h4>Lớp</h4>
-      <Formik
-        onSubmit={handleSubmit}
-        enableReinitialize
-        initialValues={{
-          s: '',
-          schoolYearId: '',
-          schoolId: '',
-          parentId: '',
-        }}
-      >
-        {({handleChange, setFieldValue}) => (
-          <Form>
-            <div className='grid-container'>
-              <Input
-                label='Tìm kiếm'
-                placeholder='Tìm kiếm..'
-                name="s"
-                onChange={handleChange}
-              />
-              <Select
-                label='Tên trường'
-                name='schoolId'
-                onChange={e => {
-                  setFieldValue('schoolId', e.value)
-                  onChangeSchool(e);
-                  onChangeSchoolYear(e)
-                  setSchoolSelected(e);
-                }}
-                value={schoolSelected}
-                options={schoolOptions}
-                placeholder='Chọn trường'
-              />
-              <Select
-                label='Niên khoá trường'
-                name='schoolYearId'
-                value={schoolYearSelected}
-                onChange={e => {
-                  // onChangeSchoolYear(e.value);
-                  setFieldValue('schoolYearId', e.value)
-                  // setSchoolYearSelected(e);
-                }}
-                options={schoolYearOptions}
-              />
-              <Select
-                label='Khối'
-                name='parentId'
-                value={groupSelected}
-                onChange={e => setFieldValue('parentId', e.value)}
-                options={groupOptions}
-              />
-            </div>
-            <Button type='submit'>Tìm kiếm</Button>
-          </Form>
-        )}
-      </Formik>
+      <form onSubmit={handleSubmitSearch}>
+        <div className='grid-container'>
+          <Input
+            label='Tìm kiếm'
+            placeholder='Tìm kiếm..'
+            name="s"
+            onChange={e => setFilter({...filter, s: e.target.value})}
+          />
+          <Select
+            label='Tên trường'
+            placeholder='Chọn trường'
+            name='schoolId'
+            onChange={e => {
+              onChangeSchool(e);
+              onChangeSchoolYear(e);
+              setSelect({...selects, ...{school: e, schoolYear: null, parent: null}})
+              setFilter({...filter, schoolId: e.value, schoolYearId: '', parentId: ''})
+            }}
+            value={selects.school}
+            options={schoolOptions}
+          />
+          <Select
+            label='Niên khoá trường'
+            name='schoolYearId'
+            value={selects.schoolYear}
+            onChange={e => {
+              setSelect({...selects, ...{schoolYear: e}});
+              setFilter({...filter, schoolYearId: e.value})
+            }}
+            options={schoolYearOptions}
+          />
+          <Select
+            label='Khối'
+            name='parentId'
+            value={selects.parent}
+            onChange={e => {
+              setSelect({...selects, ...{parent: e}})
+              setFilter({...filter, parentId: e.value})
+            }}
+            options={groupOptions}
+          />
+        </div>
+        <Button type='submit'>Tìm kiếm</Button>
+      </form>
       <div className="mt-8 overflow-x-auto lg:overflow-x-visible">
         <div className='container-table'>
           <table className='table'>
@@ -237,29 +263,26 @@ const ClassroomList = () => {
               </tr>
             </thead>
             <tbody>
-              {listClassroom && listClassroom.total
-                ? (
-                  listClassroom.data.map((cr, index) => (
-                    <tr key={index}>
-                    <td>{parseInt(skip) + index + 1}</td>
-                    <td className='text-center'>{cr.className}</td>
-                    <td></td>
-                    <td></td>
-                    <td>
-                       <Link href={`/to-chuc/lop/${cr._id}`}>
-                         <a><PencilIcon className='h-5 w-5 inline'/></a>
-                       </Link>
-                       <TrashIcon
-                         className='h-5 w-5 inline ml-4 cursor-pointer'
-                         onClick={() => handleDelete(cr._id)}
-                       />
-                    </td>
-                </tr>
-                  ))
-                )
+              {!_.isEmpty(listClassroom?.data)
+                ? listClassroom.data?.map((cr, index) => (
+                  <tr key={index}>
+                      <td>{parseInt(skip) + index + 1}</td>
+                      <td className='text-center'>{cr.className}</td>
+                      <td/>
+                      <td/>
+                      <td>
+                         <Link href={`/to-chuc/lop/${cr._id}`}>
+                           <a><PencilIcon className='h-5 w-5 inline'/></a>
+                         </Link>
+                         <TrashIcon
+                           className='h-5 w-5 inline ml-4 cursor-pointer'
+                           onClick={() => handleDelete(cr._id)}
+                         />
+                      </td>
+                    </tr>
+                ))
                 : (<tr><td colSpan={5}>Chưa có dữ liệu</td></tr>)
               }
-              {}
             </tbody>
           </table>
           <Pagination data={listClassroom}/>

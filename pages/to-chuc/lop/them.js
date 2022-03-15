@@ -35,9 +35,7 @@ const AddClassroom = () => {
 
   const [schoolYearSelected, setSchoolYearSelected] = useState(defaultSelectValue)
   const [schoolSelected, setSchoolSelected] = useState(defaultSelectValue)
-
-  // console.log('list-school-year', listSchoolYear);
-  console.log('list-group', listGroup);
+  const [groupSelected, setGroupSelected] = useState()
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -72,7 +70,6 @@ const AddClassroom = () => {
 
   const onChangeSchool = async (e) => {
     const schoolYearList = await schoolYearService.list({schoolId: e.value})
-    console.log('school-year-list', schoolYearList);
     if (schoolYearList.total) {
       setListSchoolYear(schoolYearList.data.map((data) => ({
         value: data._id,
@@ -91,18 +88,6 @@ const AddClassroom = () => {
     }
   }
 
-  useEffect(() => {
-    setSchoolSelected(schoolSelected)
-    onChangeSchool(schoolSelected)
-    setSchoolYearSelected(defaultSelectValue)
-    console.log('re-render');
-  }, [schoolSelected, schoolYearSelected])
-
-  // useEffect(() => {
-  //   setSchoolYearSelected(schoolYearSelected)
-  //   onChangeSchoolYear(schoolYearSelected)
-  // }, [schoolYearSelected])
-  //
   return (
     <>
       <Formik
@@ -133,8 +118,8 @@ const AddClassroom = () => {
                   onChangeSchoolYear(e);
                   setSchoolSelected(e);
                   setListSchoolYear(defaultSelectValue);
-                  // onChangeGroup(e.value);
-                  // setListGroup([]);
+                  setSchoolYearSelected([]);
+                  setGroupSelected([]);
                   setFieldValue('schoolId', e.value)
                 }}
                 options={schoolOptions}
@@ -142,10 +127,11 @@ const AddClassroom = () => {
               <Select
                 label='Niên khoá trường'
                 name='schoolYearId'
-                // value={schoolYearSelected}
+                value={schoolYearSelected}
                 onChange={e => {
-                  // onChangeSchoolYear(e);
-                  setFieldValue('schoolYearId', e.value)
+                  setSchoolYearSelected(e)
+                  setFieldValue('schoolYearId', e.value);
+                  setGroupSelected([])
                 }}
                 options={listSchoolYear}
                 useFormik='true'
@@ -153,8 +139,12 @@ const AddClassroom = () => {
               <Select
                 label='Khối'
                 name='parentId'
+                value={groupSelected}
                 useFormik='true'
-                onChange={e => setFieldValue('parentId', e.value)}
+                onChange={e => {
+                  setGroupSelected(e);
+                  setFieldValue('parentId', e.value);
+                }}
                 options={listGroup}
               />
               <Input

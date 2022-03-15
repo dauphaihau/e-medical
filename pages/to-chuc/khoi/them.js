@@ -23,6 +23,7 @@ const AddGroup = () => {
   const router = useRouter();
   const [listSchool, setListSchool] = useState([]);
   const [listSchoolYear, setListSchoolYear] = useState([])
+  const [schoolYearSelected, setSchoolYearSelected] = useState()
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -41,14 +42,13 @@ const AddGroup = () => {
 
   const handleSubmitForm = async (data) => {
     const result = await classroomService.createGroup(data);
-    if(result){
+    if (result) {
       swal({
         text: "Thêm mới thành công",
         icon: "success"
       })
         .then(() => router.push('/to-chuc/khoi/'));
-    }
-    else{
+    } else {
       swal({
         text: "Thêm mới không thành công",
         icon: "error"
@@ -63,8 +63,7 @@ const AddGroup = () => {
         value: data._id,
         label: data.schoolYearName,
       })));
-    }
-    else{
+    } else {
       setListSchoolYear();
     }
   };
@@ -95,6 +94,7 @@ const AddGroup = () => {
               onChange={e => {
                 onChangeSchool(e.value);
                 setFieldValue('schoolId', e.value);
+                setSchoolYearSelected([]);
               }}
               options={listSchool}
               placeholder='Chọn trường'
@@ -103,7 +103,11 @@ const AddGroup = () => {
             <Select
               label='Niên khoá'
               name='schoolYearId'
-              onChange={e => setFieldValue('schoolYearId', e.value)}
+              value={schoolYearSelected}
+              onChange={e => {
+                setSchoolYearSelected(e);
+                setFieldValue('schoolYearId', e.value);
+              }}
               options={listSchoolYear}
               placeholder='Chọn niên khoá'
               useFormik

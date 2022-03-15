@@ -12,8 +12,8 @@ import { memberService } from "@services";
 import { values } from "lodash";
 
 const validationSchema = Yup.object().shape({
-  haveTravel: Yup.boolean().required('test')
-  // haveTravel: Yup.boolean().required('test').oneOf([true],('Xin vui lòng chọn có hoặc không')),
+  // haveTravel: Yup.boolean().required('test')
+  haveTravel: Yup.boolean().required('test').oneOf([true],('Xin vui lòng chọn có hoặc không')),
   // haveTravel: Yup.bool(),
   // haveSick: Yup.bool(),
   // meetCovidPatient: Yup.boolean(),
