@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import {useRouter} from "next/router";
 import Link from "next/link";
+import swal from "sweetalert";
+import moment from "moment";
 
 import { memberService } from "@services";
 import Button from "@components/button";
-import {EyeIcon, PencilAltIcon} from "@heroicons/react/outline";
-import swal from "sweetalert";
-import moment from "moment";
+import {EyeIcon} from "@heroicons/react/outline";
 
 const HealthDeclaration = () => { 
   const router = useRouter();
@@ -60,9 +60,9 @@ const HealthDeclaration = () => {
               <thead>
               <tr>
                 <th className="w-2">STT</th>
-                <th>Ngày khai báo</th>
-                <th>Tình trạng</th>
-                <th>Xem chi tiết</th>
+                <th className='text-left'>Ngày khai báo</th>
+                <th className='text-left'>Tình trạng</th>
+                <th className='text-left'>Xem chi tiết</th>
               </tr>
               </thead>
               <tbody>
@@ -72,8 +72,8 @@ const HealthDeclaration = () => {
                     <td>{idz+1}</td>
                     <td>{moment(row.createdAt).format("DD/MM/YYYY HH:mm:ss")}</td>
                     <td>{row.haveSick?"Bất thường":"Bình thường"}</td>
-                    <td>
-                      <Link href={`/phu-huynh/`}>
+                    <td className='pl-4'>
+                      <Link href={`/hoc-sinh/${row?._id}/khai-bao-y-te`}>
                         <a><EyeIcon className="h-5 w-5 text-primary"/></a>
                       </Link>
                     </td>

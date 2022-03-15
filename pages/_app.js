@@ -1,6 +1,5 @@
 import '../styles/globals.scss'
-import App from "next/app"
-import { AuthProvider, getUser } from "../context/auth";
+import {AuthProvider} from "../context/auth";
 import Layout from '@components/layout';
 
 function MyApp({Component, pageProps}) {

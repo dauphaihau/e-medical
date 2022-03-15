@@ -73,9 +73,9 @@ const Vaccination = () => {
                 member.vaccination.map( (row, idz) => (
                   <tr key={idz}>
                     <td>{idz+1}</td>
-                    <td>{row.vaccineName}</td>
-                    <td>{moment(row.injectionAt).format("DD/MM/YYYY")}</td>
-                    <td>{row.vaccinationUnit}</td>
+                    <td className='text-center'>{row.vaccineName}</td>
+                    <td className='text-center'>{moment(row.injectionAt).format("DD/MM/YYYY")}</td>
+                    <td className='text-center'>{row.vaccinationUnit}</td>
                     <td>
                       <Link href={router.pathname + '/' + row._id}>
                         <a href=""><PencilAltIcon className="h-5 w-5 text-primary"/></a>

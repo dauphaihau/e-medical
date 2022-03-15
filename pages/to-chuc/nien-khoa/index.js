@@ -29,17 +29,6 @@ const SchoolYearList = () => {
   }, [router.isReady]);
 
   const loadInit = async () => {
-    const res = await schoolYearService.list();
-    setListSchoolYear(res.data);
-
-    const schools = await schoolService.list({limit: 100});
-    if (schools.total) {
-      const schoolOptions = schools.data.map((data) => ({
-        value: data._id,
-        label: data.schoolname,
-      }));
-      setListSchool(schoolOptions);
-    }
 
     if (
       query &&
@@ -53,6 +42,15 @@ const SchoolYearList = () => {
     } else {
       const res = await schoolYearService.list(_.pickBy({...query}, _.identity))
       setListSchoolYear(res.data);
+
+      const schools = await schoolService.list({limit: 100});
+      if (schools.total) {
+        const schoolOptions = schools.data.map((data) => ({
+          value: data._id,
+          label: data.schoolname,
+        }));
+        setListSchool(schoolOptions);
+      }
 
       if (query.schoolId) {
         const schoolOption = await schoolService.detail(query.schoolId);

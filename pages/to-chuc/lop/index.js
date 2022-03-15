@@ -19,6 +19,7 @@ const ClassroomList = () => {
 
   const router = useRouter();
   const {query} = router;
+  const [isLoading, setIsLoading] = useState(false)
   const [listClassroom, setListClassroom] = useState()
 
   const [schoolOptions, setSchoolOptions] = useState([]);
@@ -53,16 +54,6 @@ const ClassroomList = () => {
   }, [router.isReady]);
 
   const loadInit = async () => {
-    const listClass = await classroomService.list();
-    setListClassroom(listClass);
-
-    const schools = await schoolService.list({limit: 100});
-    if (schools.total) {
-      setSchoolOptions(schools.data.map((data) => ({
-        value: data._id,
-        label: data.schoolname,
-      })));
-    }
 
     if (
       query &&
@@ -74,8 +65,17 @@ const ClassroomList = () => {
         dangerMode: true,
       });
     } else {
-      const res = await classroomService.list(_.pickBy({...query}, _.identity))
-      setListClassroom(res);
+      await setIsLoading(true);
+      const listClass = await classroomService.list();
+      setListClassroom(listClass);
+
+      const schools = await schoolService.list({limit: 100});
+      if (schools.total) {
+        setSchoolOptions(schools.data.map((data) => ({
+          value: data._id,
+          label: data.schoolname,
+        })));
+      }
 
       if (query.schoolId) {
         let schoolOption = await schoolService.detail(query.schoolId);
@@ -116,6 +116,7 @@ const ClassroomList = () => {
           }
         }
       }
+      await setIsLoading(false);
     }
   }
 
@@ -198,6 +199,19 @@ const ClassroomList = () => {
 
   return (
     <>
+
+      {isLoading ? (
+          <div className="flex flex-col items-center justify-center h-screen">
+            <svg className="animate-spin h-5 w-5 text-primary" xmlns="http:www.w3.org/2000/svg" fill="none"
+                 viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+              <path className="opacity-75" fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
+            </svg>
+          </div>
+        )
+        : (
+          <>
       <h4>Lớp</h4>
       <form onSubmit={handleSubmitSearch}>
         <div className='grid-container'>
@@ -243,6 +257,7 @@ const ClassroomList = () => {
         </div>
         <Button type='submit'>Tìm kiếm</Button>
       </form>
+
       <div className="mt-8 overflow-x-auto lg:overflow-x-visible">
         <div className='container-table'>
           <table className='table'>
@@ -260,6 +275,7 @@ const ClassroomList = () => {
                 ? listClassroom.data?.map((cr, index) => (
                   <tr key={index}>
                       <td>{parseInt(skip) + index + 1}</td>
+
                       <td className='text-center'>{cr.className}</td>
                       <td/>
                       <td/>
@@ -278,9 +294,11 @@ const ClassroomList = () => {
               }
             </tbody>
           </table>
-          <Pagination data={listClassroom}/>
+          {/*<Pagination data={listClassroom}/>*/}
         </div>
       </div>
+          </>
+        )}
     </>
   );
 }

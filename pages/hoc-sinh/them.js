@@ -180,6 +180,7 @@ const AddStudent = () => {
                 instanceId="parent"
                 cacheOptions
                 isMulti
+                placeholder='Nhập số điện thoại phụ huynh'
                 loadOptions={loadOptions}
                 defaultOptions
                 onChange={(e)=> setFieldValue('parent', e.map((v)=> ({parentId: v.value, fullName:v.fullName})))}

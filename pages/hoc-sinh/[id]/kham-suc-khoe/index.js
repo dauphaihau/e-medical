@@ -9,7 +9,7 @@ import Button from "@components/button";
 import {EyeIcon, PencilAltIcon} from "@heroicons/react/outline";
 import swal from "sweetalert";
 
-const ListHealth = () => { 
+const ListHealth = () => {
   const router = useRouter();
   const [member, setMember] = useState();
   const [listMedical, setListMedical] = useState();
@@ -27,7 +27,7 @@ const ListHealth = () => {
         .then( () => router.push('/hoc-sinh') );
     }
     setMember(memberRes);
-    
+
     const listMedical = await medicalService.list({memberId: memberRes._id});
     console.log(listMedical);
     setListMedical(listMedical);
@@ -59,7 +59,6 @@ const ListHealth = () => {
               <a><Button>Thêm khám sức khỏe</Button></a>
             </Link>
           </div>
-          
           <table className='table'>
             <thead>
             <tr>
@@ -74,10 +73,10 @@ const ListHealth = () => {
             {listMedical && listMedical.total ?
               listMedical.data.map( (row, idz) => (
                 <tr key={idz}>
-                  <td>{idz+1}</td>
-                  <td>{row.cyclic}</td>
-                  <td>{row.sespiratory}</td>
-                  <td>{row.digest}</td>
+                  <td className='text-center'>{idz+1}</td>
+                  <td className='text-center'>{row.cyclic}</td>
+                  <td className='text-center'>{row.sespiratory}</td>
+                  <td className='text-center'>{row.digest}</td>
                   <td>
                     <EyeIcon className="h-5 w-5 text-primary"/>
                   </td>

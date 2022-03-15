@@ -1,48 +1,99 @@
-import Input from "../../../components/form/input";
-import Table from "../../../components/table";
-import Layout from "../../../components/layout";
-import Select from "../../../components/form/select";
+import {useEffect, useState} from "react";
+import {useRouter} from "next/router";
+import _ from "lodash";
+import swal from "sweetalert";
+import Link from 'next/link'
 
-const theadData = [
-  'STT',
-  'Mã nhân viên',
-  'Thông tin nhân viên',
-  , '', ' '
-];
+import {memberService} from "@services";
+import Input from "@components/form/input";
+import {PencilIcon} from "@heroicons/react/outline";
+import Button from "@components/button";
 
+const Staff = () => {
+  const router = useRouter();
+  const [members, setMembers] = useState();
+  const [searchInfo, setSearchInfo] = useState()
 
-const tbodyData = [
-  {
-    id: "1",
-    items: ["1", '12', 'Nguyen B \n Niên khoá: 2021-2022', ],
-  },
-];
+  useEffect(() => {
+    if (!router.isReady) return;
+    loadInit();
+  }, [router.isReady]);
 
-const options = [
-  {value: '2009-2010', label: '2009-2010'},
-  {value: '2019-2012', label: '2009-2010'},
-  {value: '2009-2012', label: '2009-2010'},
-]
+  const loadInit = async () => {
+    const listMember = await memberService.list({type: 'staff'});
+    console.log('list-member', listMember);
+    setMembers(listMember);
+  }
 
-const StaffList = () => {
+  const handleSearch = async (e) => {
+    e.preventDefault();
+
+    router.push({
+        pathname: router.pathname,
+        query: _.pickBy({s: searchInfo}, _.identity),
+      },
+      undefined,
+      {shallow: true}
+    );
+
+    const listStaff = await memberService.list({s: searchInfo});
+    if (!listStaff) {
+      swal({
+        text: "Nội dung tìm kiếm ít nhất là 3 ký tự",
+        icon: "error"
+      });
+    }
+    setMembers(listStaff);
+  };
+
   return (
     <>
-      <h4>Nhân viên</h4>
-      <div className='grid-container'>
-        <Input placeholder='Tìm kiếm...'/>
-        <Select options={options} placeholder='Thời gian'/>
+      <h4>Danh sách nhân viên</h4>
+      <div className="grid-container">
+        <form onSubmit={handleSearch}>
+          <Input
+            label='Tìm kiếm'
+            placeholder='Tên nhân viên...' name="s"
+            onChange={(e) => setSearchInfo(e.target.value)}
+          />
+          <Button type='submit'>Tìm kiếm</Button>
+        </form>
       </div>
       <div className="mt-8 drop-shadow-2xl overflow-x-auto lg:overflow-x-visible">
-        <Table
-          pathLinkBtnAdd='/nhan-su/nhan-vien/them-nhan-vien'
-          titleTable='Nhân viên y tế'
-          theadData={theadData} tbodyData={tbodyData}
-        />
+        <div className='container-table'>
+          <table className='table'>
+            <thead>
+            <tr>
+              <th className="w-3">STT</th>
+              <th>Họ tên</th>
+              <th>Phone</th>
+              <th>Địa chỉ</th>
+              <th/>
+            </tr>
+            </thead>
+            <tbody>
+              {members?.total
+                ? members.data.map((row, idz) => (
+                  <tr key={idz}>
+                    <td>{idz + 1}</td>
+                    <td className='text-center'>{row.fullName}</td>
+                    <td className='text-center'>{row.phoneNumber}</td>
+                    <td className='text-center'>{row.address}</td>
+                    <td>
+                      <Link href={router.pathname + '/' + row._id}>
+                         <a><PencilIcon className='h-5 w-5 inline'/></a>
+                      </Link>
+                    </td>
+                  </tr>
+                ))
+                : (<tr><td colSpan='4'>Chưa có dữ liệu</td></tr>)
+              }
+            </tbody>
+          </table>
+        </div>
       </div>
     </>
   );
 }
 
-export default StaffList;
-
-StaffList.getLayout = (page) => <Layout>{page}</Layout>;
+export default Staff;

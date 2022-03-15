@@ -81,8 +81,9 @@ const AddTeacher = () => {
 
     const result = await memberService.createTeacher(bodyData);
     if(result){
+      console.log('result', result);
       swal('Cập nhật thành công', '', 'success')
-        // .then(() => Router.push('/nhan-su/giao-vien/'));
+        .then(() => Router.push('/nhan-su/giao-vien/'));
     }
     else {
       swal('Cập nhật không thành công', '', 'error');

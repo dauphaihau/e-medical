@@ -20,6 +20,7 @@ const SchoolList = () => {
   const [provinceOptions, setProvinceOptions] = useState([]);
   const [districtOptions, setDistrictOptions] = useState([])
   const [wardOptions, setWardOptions] = useState([])
+  const [isLoading, setIsLoading] = useState(false)
 
   const [selects, setSelect] = useState({
     s: '',
@@ -52,13 +53,6 @@ const SchoolList = () => {
   }, [router.isReady]);
 
   const loadInit = async () => {
-
-    const schools = await schoolService.list()
-    setSchools(schools.data)
-
-    const provinces = await locationService.listProvince();
-    setProvinceOptions(provinces);
-
     if (
       query &&
       query.s &&
@@ -69,10 +63,15 @@ const SchoolList = () => {
         dangerMode: true,
       });
     } else {
+      await setIsLoading(true);
       const res = await schoolService.list(_.pickBy(query, _.identity))
       setSchools(res.data);
 
+      const provinces = await locationService.listProvince();
+      setProvinceOptions(provinces);
+
       if (query.province) {
+        await setIsLoading(true)
         const provinceOption = _.find(provinces, (o) => o.code === query.province);
         setSelect({...selects, ...{province: provinceOption}});
         const districtOptions = await locationService.listDistrict(query.province);
@@ -90,6 +89,7 @@ const SchoolList = () => {
           }
         }
       }
+      await setIsLoading(false)
     }
   };
 
@@ -141,7 +141,7 @@ const SchoolList = () => {
       {shallow: true}
     );
 
-    const res = await schoolService.list(_.pickBy(filter, _.identity))
+    const res = await schoolService.list(filter)
 
     if (_.isEmpty(res)) {
       swal({
@@ -154,94 +154,109 @@ const SchoolList = () => {
 
   return (
     <>
-      <h4>Tổ chức</h4>
-      <form onSubmit={handleSubmitSearch}>
-        <div className='grid-container'>
-          <Input
-            label='Tìm kiếm'
-            placeholder='Tên trường...' name="s"
-            onChange={e => setFilter({...filter, s: e.target.value})}
-          />
-          <Select
-            label='Tỉnh/thành'
-            name='province'
-            placeholder='Chọn Tỉnh thành'
-            onChange={e => {
-              onChangeProvince(e);
-              setSelect({...selects, ...{province: e, district: null, ward: null}})
-              setFilter({...filter, province: e.code, district: '', ward: ''})
-            }}
-            value={selects.province}
-            options={provinceOptions}
-          />
-          <Select
-            placeholder='Chọn Quận'
-            label='Quận/huyện'
-            name='district'
-            value={selects.district}
-            onChange={e => {
-              onChangeDistrict(e)
-              setSelect({...selects, ...{district: e, ward: null}});
-              setFilter({...filter, district: e.code, ward: ''})
-            }}
-            options={districtOptions}
-          />
-          <Select
-            placeholder='Chọn Phường'
-            label='Phường/Xã'
-            name='ward'
-            value={selects.ward}
-            onChange={e => {
-              setSelect({...selects, ...{ward: e}})
-              setFilter({...filter, ward: e.code})
-            }}
-            options={wardOptions}
-          />
-        </div>
-        <Button type='submit'>Tìm kiếm</Button>
-      </form>
-      <div className="mt-8 overflow-x-auto lg:overflow-x-visible">
-        <div className='container-table'>
-          <h4>Danh sách trường</h4>
-          <table className='table'>
-            <thead>
-              <tr>
-                <th className='text-center'>STT</th>
-                <th className='text-left'>Tên trường</th>
-                <th className='text-left'>Địa chỉ</th>
-                <th className='text-left'>Tỉnh/thành</th>
-                <th className='text-left'>Quận/Huyện</th>
-                <th className='text-left'>Phường/Xã</th>
-                <th/>
-              </tr>
-            </thead>
-            <tbody>
-              {!_.isEmpty(schools)
-                ? schools?.map((school, index) => (
-                  <tr key={index}>
-                    <td>{skip + index + 1}</td>
-                    <td>{school.schoolname}</td>
-                    <td>{school.address}</td>
-                    <td>{school.province?.provinceName}</td>
-                    <td>{school.district?.districtName}</td>
-                    <td>{school.ward?.wardName}</td>
-                    <td>
-                       <Link href={`/to-chuc/truong/${school._id}`}>
-                         <a><PencilIcon className='h-5 w-5 inline'/></a>
-                       </Link>
-                       <TrashIcon
-                         className='h-5 w-5 inline ml-4 cursor-pointer'
-                         onClick={() => handleDelete(school._id)}
-                       />
-                    </td>
-                  </tr>
-                ))
-                : (<tr><td colSpan='6'>Chưa có dữ liệu</td></tr>)}
-            </tbody>
-          </table>
-          {/* <Pagination data={schools}/> */}
-        </div>
-      </div>
+      {isLoading ? (
+          <div className="flex flex-col items-center justify-center h-screen">
+            <svg className="animate-spin h-5 w-5 text-primary" xmlns="http:www.w3.org/2000/svg" fill="none"
+                 viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+              <path className="opacity-75" fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
+            </svg>
+          </div>
+        )
+        : (
+          <>
+            <h4>Tổ chức</h4>
+            <form onSubmit={handleSubmitSearch}>
+              <div className='grid-container'>
+                <Input
+                  label='Tìm kiếm'
+                  placeholder='Tên trường...' name="s"
+                  onChange={e => setFilter({...filter, s: e.target.value})}
+                />
+                <Select
+                  label='Tỉnh/thành'
+                  name='province'
+                  placeholder='Chọn Tỉnh thành'
+                  onChange={e => {
+                    onChangeProvince(e);
+                    setSelect({...selects, ...{province: e, district: null, ward: null}})
+                    setFilter({...filter, province: e.code, district: '', ward: ''})
+                  }}
+                  value={selects.province}
+                  options={provinceOptions}
+                />
+                <Select
+                  placeholder='Chọn Quận'
+                  label='Quận/huyện'
+                  name='district'
+                  value={selects.district}
+                  onChange={e => {
+                    onChangeDistrict(e)
+                    setSelect({...selects, ...{district: e, ward: null}});
+                    setFilter({...filter, district: e.code, ward: ''})
+                  }}
+                  options={districtOptions}
+                />
+                <Select
+                  placeholder='Chọn Phường'
+                  label='Phường/Xã'
+                  name='ward'
+                  value={selects.ward}
+                  onChange={e => {
+                    setSelect({...selects, ...{ward: e}})
+                    setFilter({...filter, ward: e.code})
+                  }}
+                  options={wardOptions}
+                />
+              </div>
+              <Button type='submit'>Tìm kiếm</Button>
+            </form>
+            <div className="mt-8 overflow-x-auto lg:overflow-x-visible">
+              <div className='container-table'>
+                <h4>Danh sách trường</h4>
+                <table className='table'>
+                  <thead>
+                    <tr>
+                      <th className='text-center'>STT</th>
+                      <th className='text-left'>Tên trường</th>
+                      <th className='text-left'>Địa chỉ</th>
+                      <th className='text-left'>Tỉnh/thành</th>
+                      <th className='text-left'>Quận/Huyện</th>
+                      <th className='text-left'>Phường/Xã</th>
+                      <th/>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {!_.isEmpty(schools)
+                      ? schools?.map((school, index) => (
+                        <tr key={index}>
+                          <td>{skip + index + 1}</td>
+                          <td>{school.schoolname}</td>
+                          <td>{school.address}</td>
+                          <td>{school.province?.provinceName}</td>
+                          <td>{school.district?.districtName}</td>
+                          <td>{school.ward?.wardName}</td>
+                          <td>
+                           <Link href={`/to-chuc/truong/${school._id}`}>
+                             <a><PencilIcon className='h-5 w-5 inline'/></a>
+                           </Link>
+                           <TrashIcon
+                             className='h-5 w-5 inline ml-4 cursor-pointer'
+                             onClick={() => handleDelete(school._id)}
+                           />
+                          </td>
+                        </tr>
+                      ))
+                      : (<tr><td colSpan='6'>Chưa có dữ liệu</td></tr>)}
+                  </tbody>
+                </table>
+                {/* <Pagination data={schools}/> */}
+              </div>
+            </div>
+          </>
+        )
+      }
     </>
   );
 }
