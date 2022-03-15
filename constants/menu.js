@@ -98,42 +98,36 @@ export const MENU = {
   ],
   staff_agent: [
     {
-      id: 1,
       title: "Tổng quan",
       link: "/",
       roles: ["agent", "manager", "admin"],
       icon: "icon-Layout-4-blocks",
     },
     {
-      id: 2,
       title: "Tổ chức",
       // link: "/to-chuc",
       roles: ["manager", "admin"],
       icon: "icon-Library",
       subNav: [
         {
-          id: 2.1,
           title: "Trường",
           link: "/to-chuc/truong",
           roles: ["agent", "manager", "admin"],
           icon: "mdi mdi-medical-bag",
         },
         {
-          id: 2.2,
           title: "Niên Khoá",
           link: "/to-chuc/nien-khoa",
           roles: ["agent", "manager", "admin"],
           icon: "mdi mdi-needle",
         },
         {
-          id: 2.3,
           title: "Khối",
           link: "/to-chuc/khoi",
           roles: ["agent", "manager", "admin"],
           icon: "mdi mdi-needle",
         },
         {
-          id: 2.4,
           title: "Lớp",
           link: "/to-chuc/lop",
           roles: ["agent", "manager", "admin"],
@@ -142,21 +136,18 @@ export const MENU = {
       ],
     },
     {
-      id: 3,
       title: "Quản lý hồ sơ học sinh",
       link: "/hoc-sinh",
       roles: ["agent", "manager", "admin"],
       icon: "icon-User",
       subNav: [
         {
-          id: 3.1,
           title: "Phụ Huynh",
           link: "/phu-huynh",
           roles: ["agent", "manager", "admin"],
           icon: "mdi mdi-medical-bag",
         },
         {
-          id: 3.1,
           title: "Học Sinh",
           link: "/hoc-sinh",
           roles: ["agent", "manager", "admin"],
@@ -165,14 +156,12 @@ export const MENU = {
       ],
     },
     {
-      id: 4,
       title: "Quản lý nhân sự trường",
       // link: "/nhan-su",
       roles: ["manager", "admin"],
       icon: "icon-File-plus",
       subNav: [
         {
-          id: 4.1,
           title: "Giáo viên",
           link: "/nhan-su/giao-vien",
           roles: ["agent", "manager", "admin"],
@@ -193,21 +182,18 @@ export const MENU = {
       ],
     },
     {
-      id: 5,
       title: "Phòng chống Covid-19",
       // link: "/protection",
       roles: ["manager", "admin"],
       icon: "mdi mdi-account-card-details",
     },
     {
-      id: 6,
       title: "Thông tin lan truyền",
       link: "/thong-tin",
       roles: ["manager", "admin"],
       icon: "mdi mdi-account-card-details",
     },
     {
-      id: 7,
       title: "Người dùng",
       link: "/nguoi-dung",
       roles: ["manager", "admin"],

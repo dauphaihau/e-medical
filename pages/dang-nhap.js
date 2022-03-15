@@ -8,8 +8,8 @@ import {Formik, Form} from "formik";
 import Cookie from "cookie-cutter";
 import * as Yup from "yup";
 
-import Input from "../components/form/input";
-import Button from "../components/button";
+import Input from "@components/form/input";
+import Button from "@components/button";
 import logo2 from "../public/images/logo2.png";
 import { accountService } from '@services';
 
@@ -98,7 +98,6 @@ export default function Login() {
         }}
       >
         {({
-            handleSubmit,
             handleChange,
             handleBlur,
           }) => (
@@ -118,7 +117,7 @@ export default function Login() {
               label='Số điện thoại'
               name='phoneNumber'
               onBlur={handleBlur}
-              // error={errors.soDienThoai && touched.soDienThoai ? errors.soDienThoai : null}
+              useFormik
               onChange={(e) => {
                 handleChange(e);
                 handlePhoneNumberChange(e.target.value);

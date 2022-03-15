@@ -9,6 +9,7 @@ const Input = (props) => {
     placeholder = '',
     className = '',
     classNameLabel = '',
+    type = 'text',
     useFormik = false,
     disable = false,
     ...others
@@ -21,7 +22,7 @@ const Input = (props) => {
         disabled={disable}
         placeholder={placeholder}
         name={name}
-        type="text"
+        type={type}
         className={`form-control-input ${className}`}
         {...others}
       />

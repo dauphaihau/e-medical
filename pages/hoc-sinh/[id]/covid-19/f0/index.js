@@ -12,7 +12,18 @@ import Select from "@components/form/select";
 import Checkbox from "@components/form/checkbox";
 import Textarea from "@components/form/textarea";
 
-const validationSchema = Yup.object().shape({});
+const phoneRegExp = /(([03+[2-9]|05+[6|8|9]|07+[0|6|7|8|9]|08+[1-9]|09+[1-4|6-9]]){3})+[0-9]{7}\b/
+
+const validationSchema = Yup.object().shape({
+  name: Yup.string().required('Họ Tên không được để trống').min(5, 'Họ Tên ít nhất là 5 ký tự').max(50, 'Họ Tên tối đa là 50 ký tự'),
+  phoneNumber: Yup.string()
+    .matches(phoneRegExp, 'Số điện thoại không hợp lệ')
+    .required('Số điện thoại không được để trống'),
+  address: Yup.string().required('Địa chỉ không được để trống'),
+  date: Yup.string().required('Ngày phát hiện không được để trống'),
+  date2: Yup.string().required('Ngày Test không được để trống'),
+  date3: Yup.string().required('Tiền sử tiếp xúc không được để trống'),
+});
 
 const F0Form = () => {
   const router = useRouter();
@@ -43,7 +54,7 @@ const F0Form = () => {
           setFieldValue
         }) => (
         <Form className='form lg:w-1/2'>
-          <h3>KHAI BÁO Y TẾ</h3>
+          <h3>KHAI BÁO F0, F1</h3>
           <p className='text-danger mb-4'>Khuyến cáo: Khai báo thông tin sai là vi phạm pháp luật Việt Nam và có thể xử
             lý hình sự</p>
           <div className='grid-container lg:grid-cols-2 gap-x-8 mb-4'>

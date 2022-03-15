@@ -53,7 +53,6 @@ const AddSchoolYear = () => {
         icon: "error"
       });
     }
-    
   };
 
   return (

@@ -5,7 +5,7 @@
     @apply flex items-center justify-end;
 
     &__item {
-      @apply inline-block mb-[6px] flex flex-row items-center;
+      @apply block mb-[6px] flex flex-row items-center;
 
       figure {
         @apply h-4 w-4;

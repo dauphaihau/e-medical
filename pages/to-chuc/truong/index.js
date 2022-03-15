@@ -1,23 +1,97 @@
 import {useEffect, useState} from "react";
 import Link from "next/link";
+import swal from "sweetalert";
 import {useRouter} from "next/router";
+import _ from "lodash";
+
 import {PencilIcon, TrashIcon} from "@heroicons/react/outline";
 import Input from "@components/form/input";
 import Pagination from "@components/pagination";
 import {schoolService} from "@services";
+import Button from "@components/button";
+import {locationService} from "@services";
+import Select from "@components/form/select";
 
 const SchoolList = () => {
-  const [schools, setSchools] = useState([])
   const router = useRouter();
+  const {query} = router;
+  const [schools, setSchools] = useState([])
+
+  const [provinceOptions, setProvinceOptions] = useState([]);
+  const [districtOptions, setDistrictOptions] = useState([])
+  const [wardOptions, setWardOptions] = useState([])
+
+  const [selects, setSelect] = useState({
+    s: '',
+    province: {
+      value: '',
+      label: ''
+    },
+    district: {
+      value: '',
+      label: ''
+    },
+    ward: {
+      value: '',
+      label: ''
+    },
+  })
+
+  const [filter, setFilter] = useState({
+    s: '',
+    province: '',
+    district: '',
+    ward: '',
+  })
+
   let skip = 0;
-  useEffect(async () => {
-    try {
-      const {...response} = await schoolService.list()
-      setSchools(response.data)
-    } catch (error) {
-      console.log({error})
+
+  useEffect(() => {
+    if (!router.isReady) return;
+    loadInit();
+  }, [router.isReady]);
+
+  const loadInit = async () => {
+
+    const schools = await schoolService.list()
+    setSchools(schools.data)
+
+    const provinces = await locationService.listProvince();
+    setProvinceOptions(provinces);
+
+    if (
+      query &&
+      query.s &&
+      query.s.length <= 3
+    ) {
+      swal("", "Số ký tự tìm kiếm phải lớn hơn 3", "warning", {
+        button: "Tôi đã hiểu",
+        dangerMode: true,
+      });
+    } else {
+      const res = await schoolService.list(_.pickBy(query, _.identity))
+      setSchools(res.data);
+
+      if (query.province) {
+        const provinceOption = _.find(provinces, (o) => o.code === query.province);
+        setSelect({...selects, ...{province: provinceOption}});
+        const districtOptions = await locationService.listDistrict(query.province);
+        setDistrictOptions(districtOptions);
+        if (query.district) {
+          const districts = await locationService.listDistrict(provinceOption.code);
+          const districtOption = _.find(districts, (o) => o.code === query.district);
+          setSelect({...selects, ...{district: districtOption, province: provinceOption}})
+          const wardOptions = await locationService.listWard(query.district);
+          setWardOptions(wardOptions);
+          if (query.ward) {
+            const wards = await locationService.listWard(districtOption.code);
+            const wardOption = _.find(wards, (o) => o.code === query.ward);
+            setSelect({...selects, ...{ward: wardOption, district: districtOption, province: provinceOption}})
+          }
+        }
+      }
     }
-  }, []);
+  };
 
   const handleDelete = async (id) => {
     swal({
@@ -29,21 +103,103 @@ const SchoolList = () => {
     }).then(async (willDelete) => {
       if (willDelete) {
         const result = await schoolService.delete(id);
-        if(result){
+        if (result) {
           router.reload();
-        }
-        else{
-          swal('Xóa không thành công!!', '', 'error');s
+        } else {
+          swal('Xóa không thành công!!', '', 'error');
+          s
         }
       }
     });
-  
+  };
+
+  const onChangeProvince = async (e) => {
+    const districts = await locationService.listDistrict(e.code);
+    setDistrictOptions(districts);
+  }
+
+  const onChangeDistrict = async (e) => {
+    const wards = await locationService.listWard(e.code);
+    setWardOptions(wards);
+  }
+
+  const handleSubmitSearch = async (values) => {
+
+    values.preventDefault();
+
+    if (values.s === '') delete values.s;
+    if (filter.s === '') delete filter.s;
+    if (filter.province === '') delete filter.province;
+    if (filter.district === '') delete filter.district;
+    if (filter.ward === '') delete filter.ward;
+
+    router.push({
+        pathname: router.pathname,
+        query: _.pickBy(filter, _.identity),
+      },
+      undefined,
+      {shallow: true}
+    );
+
+    const res = await schoolService.list(_.pickBy(filter, _.identity))
+
+    if (_.isEmpty(res)) {
+      swal({
+        text: "Nội dung tìm kiếm ít nhất là 3 ký tự",
+        icon: "error"
+      });
+    }
+    setSchools(res.data)
   };
 
   return (
     <>
       <h4>Tổ chức</h4>
-      <Input className='md:w-1/2 lg:w-1/4' placeholder='Tìm kiếm...' name="s"/>
+      <form onSubmit={handleSubmitSearch}>
+        <div className='grid-container'>
+          <Input
+            label='Tìm kiếm'
+            placeholder='Tên trường...' name="s"
+            onChange={e => setFilter({...filter, s: e.target.value})}
+          />
+          <Select
+            label='Tỉnh/thành'
+            name='province'
+            placeholder='Chọn Tỉnh thành'
+            onChange={e => {
+              onChangeProvince(e);
+              setSelect({...selects, ...{province: e, district: null, ward: null}})
+              setFilter({...filter, province: e.code, district: '', ward: ''})
+            }}
+            value={selects.province}
+            options={provinceOptions}
+          />
+          <Select
+            placeholder='Chọn Quận'
+            label='Quận/huyện'
+            name='district'
+            value={selects.district}
+            onChange={e => {
+              onChangeDistrict(e)
+              setSelect({...selects, ...{district: e, ward: null}});
+              setFilter({...filter, district: e.code, ward: ''})
+            }}
+            options={districtOptions}
+          />
+          <Select
+            placeholder='Chọn Phường'
+            label='Phường/Xã'
+            name='ward'
+            value={selects.ward}
+            onChange={e => {
+              setSelect({...selects, ...{ward: e}})
+              setFilter({...filter, ward: e.code})
+            }}
+            options={wardOptions}
+          />
+        </div>
+        <Button type='submit'>Tìm kiếm</Button>
+      </form>
       <div className="mt-8 overflow-x-auto lg:overflow-x-visible">
         <div className='container-table'>
           <h4>Danh sách trường</h4>
@@ -51,40 +207,41 @@ const SchoolList = () => {
             <thead>
               <tr>
                 <th className='text-center'>STT</th>
-                <th>Tên trường</th>
-                <th>Địa chỉ</th>
-                <th>Tỉnh/thành</th>
-                <th>Quận/Huyện</th>
-                <th>Phường/Xã</th>
+                <th className='text-left'>Tên trường</th>
+                <th className='text-left'>Địa chỉ</th>
+                <th className='text-left'>Tỉnh/thành</th>
+                <th className='text-left'>Quận/Huyện</th>
+                <th className='text-left'>Phường/Xã</th>
                 <th/>
               </tr>
             </thead>
             <tbody>
-              {schools?.map((school, index) => (
-                <tr key={index}>
-                  <td>{skip + index + 1}</td>
-                  <td>{school.schoolname}</td>
-                  <td>{school.address}</td>
-                  <td>{school.province?.provinceName}</td>
-                  <td>{school.district?.districtName}</td>
-                  <td>{school.ward?.wardName}</td>
-                  <td>
-                     <Link href={`/to-chuc/truong/${school._id}`}>
-                       <a><PencilIcon className='h-5 w-5 inline'/></a>
-                     </Link>
-                     <TrashIcon
-                       className='h-5 w-5 inline ml-4 cursor-pointer'
-                       onClick={() => handleDelete(school._id)}
-                     />
-                  </td>
-              </tr>
-              ))}
+              {!_.isEmpty(schools)
+                ? schools?.map((school, index) => (
+                  <tr key={index}>
+                    <td>{skip + index + 1}</td>
+                    <td>{school.schoolname}</td>
+                    <td>{school.address}</td>
+                    <td>{school.province?.provinceName}</td>
+                    <td>{school.district?.districtName}</td>
+                    <td>{school.ward?.wardName}</td>
+                    <td>
+                       <Link href={`/to-chuc/truong/${school._id}`}>
+                         <a><PencilIcon className='h-5 w-5 inline'/></a>
+                       </Link>
+                       <TrashIcon
+                         className='h-5 w-5 inline ml-4 cursor-pointer'
+                         onClick={() => handleDelete(school._id)}
+                       />
+                    </td>
+                  </tr>
+                ))
+                : (<tr><td colSpan='6'>Chưa có dữ liệu</td></tr>)}
             </tbody>
           </table>
           {/* <Pagination data={schools}/> */}
         </div>
       </div>
-
     </>
   );
 }

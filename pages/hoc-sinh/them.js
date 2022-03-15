@@ -1,18 +1,16 @@
 import {useEffect, useState} from "react";
 import {useRouter} from "next/router";
 import {Formik, Form} from "formik";
-import Link from "next/link";
-
 import * as Yup from "yup";
 import swal from "sweetalert";
+import AsyncSelect from 'react-select/async';
+
 import {classroomService, schoolService, schoolYearService, memberService} from "@services";
 
-import {CheckIcon, EyeIcon} from "@heroicons/react/outline";
 import Input from "@components/form/input";
 import Radio, {RadioGroup} from "@components/form/radio";
 import Button from "@components/button";
 import Select from "@components/form/select";
-import AsyncSelect from 'react-select/async';
 
 const validationSchema = Yup.object().shape({
   fullName: Yup.string()
@@ -187,9 +185,8 @@ const AddStudent = () => {
                 onChange={(e)=> setFieldValue('parent', e.map((v)=> ({parentId: v.value, fullName:v.fullName})))}
               />
             </div>
-            
             <div className='flex gap-x-4 mt-6'>
-              <Button type='submit'>Cập nhật thông tin</Button>
+              <Button type='submit'>Thêm</Button>
             </div>
           </Form>
         )}

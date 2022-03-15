@@ -1,31 +1,21 @@
 import Pagination from "./pagination";
 import {useState} from "react";
 
-const TableColumn = ({columns}) => {
-  return (
-    <>
-      {columns.map(column => (
-        <th key={column.id}>{column.title}</th>
-      ))}
-    </>
-  );
-};
-
-const TableRow = ({rows, columns}) => {
+const TableRow = ({rows, columns, handleAlign}) => {
 
   return (
     <>
-      {rows?.map(row => {
+      {rows?.map((row, index) => {
         return (
           <tr key={row._id}>
-              {columns.map((column, index) => {
+              {columns.map((column) => {
                 if (column.render) {
-                  return <td key={column.id}>{column.render(row)}</td>
+                  return <td key={column.id} className={handleAlign(column)}>{column.render(row)}</td>
                 }
                 if (column.key) {
-                  return <td key={column.id}>{++index}</td>
+                  return <td key={column.id} className={handleAlign(column)}>{index + 1}</td>
                 }
-                return <td key={column.id}>{row[column.id]}</td>
+                return <td key={column.id} className={handleAlign(column)}>{row[column.id]}</td>
               })}
             </tr>
         )
@@ -39,16 +29,20 @@ const Table = (props) => {
   const {
     columns = [],
     rows = [],
+    itemsPerPage = 10,
     titleTable = '',
     widthContainer = ''
   } = props;
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = rows.slice(indexOfFirstItem, indexOfLastItem);
+
+  const handleAlign = (props) => {
+    return props.align === 'center' ? 'text-center' : 'text-left'
+  };
 
   return (
     <div className="mt-8 overflow-x-auto lg:overflow-x-visible">
@@ -56,14 +50,17 @@ const Table = (props) => {
         <h4>{titleTable}</h4>
         <table className='table'>
           <thead>
-          <tr>
-            <TableColumn columns={columns}/>
+          <tr className='text-center'>
+            {columns.map(column => (
+              <th className={handleAlign(column)} key={column.id}>{column.title}</th>
+            ))}
           </tr>
           </thead>
           <tbody>
             <TableRow
               columns={columns}
               rows={currentItems}
+              handleAlign={value => handleAlign(value)}
             />
           </tbody>
         </table>
