@@ -18,6 +18,7 @@ let skip = 0;
 
 const SchoolYearList = () => {
   const router = useRouter();
+  const {query} = router;
   const [listSchoolYear, setListSchoolYear] = useState([])
   const [listSchool, setListSchool] = useState([]);
   const [schoolSelected, setSchoolSelected] = useState();
@@ -27,12 +28,7 @@ const SchoolYearList = () => {
     loadInit();
   }, [router.isReady]);
 
-  useEffect(() => {
-    setSchoolSelected(schoolSelected)
-  }, [schoolSelected])
-
   const loadInit = async () => {
-    const {query} = router;
     const res = await schoolYearService.list();
     setListSchoolYear(res.data);
 

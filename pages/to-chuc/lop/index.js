@@ -40,7 +40,6 @@ const ClassroomList = () => {
       label: ''
     },
   })
-
   const [filter, setFilter] = useState({
     s: '',
     schoolId: '',
@@ -75,9 +74,7 @@ const ClassroomList = () => {
         dangerMode: true,
       });
     } else {
-      const res = await classroomService.list(
-        _.pickBy({...query}, _.identity)
-      )
+      const res = await classroomService.list(_.pickBy({...query}, _.identity))
       setListClassroom(res);
 
       if (query.schoolId) {
@@ -97,7 +94,13 @@ const ClassroomList = () => {
             label: schoolYearOpts.data[0]?.schoolYearName
           };
           setSelect({...selects, ...{school: schoolOption, schoolYear: schoolYearOpts}});
-
+          const schoolYears = await schoolYearService.list({schoolId: query.schoolId})
+          if (schoolYears && schoolYears.total) {
+            setSchoolYearOptions(schoolYears.data.map((data) => ({
+              value: data._id,
+              label: data.schoolYearName,
+            })));
+          }
           if (query.parentId) {
             let groupOption = await classroomService.listGroup({schoolId: query.schoolId})
             groupOption = groupOption.data.map(group => ({
@@ -111,14 +114,6 @@ const ClassroomList = () => {
               }
             });
           }
-        }
-
-        const schoolYears = await schoolYearService.list({schoolId: query.schoolId})
-        if (schoolYears && schoolYears.total) {
-          setSchoolYearOptions(schoolYears.data.map((data) => ({
-            value: data._id,
-            label: data.schoolYearName,
-          })));
         }
       }
     }
@@ -179,9 +174,7 @@ const ClassroomList = () => {
       {shallow: true}
     );
 
-    const res = await classroomService.list(
-      _.pickBy(filter, _.identity)
-    )
+    const res = await classroomService.list(_.pickBy(filter, _.identity))
 
     if (_.isEmpty(res)) {
       swal({

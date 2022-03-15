@@ -20,8 +20,8 @@ export const schoolYearService = {
   },
   create: async (data) => {
     try {
-      const result = await api.post("/organization/schoolyear", data);
-      return result;
+      const res = await api.post("/organization/schoolyear", data);
+      return res;
     } catch (e) {
       return false;
     }
@@ -38,6 +38,5 @@ export const schoolYearService = {
     } catch (e) {
       return false;
     }
-
   },
 }
