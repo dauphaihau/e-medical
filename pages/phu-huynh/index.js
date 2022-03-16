@@ -48,22 +48,16 @@ const Parent = () => {
   }, [router.isReady]);
 
   const loadInit = async () => {
-    if (
-      query &&
-      query.s &&
-      query.s.length <= 3
-    ) {
-      swal("", "Số ký tự tìm kiếm phải lớn hơn 3", "warning", {
-        button: "Tôi đã hiểu",
-        dangerMode: true,
-      });
-    } else {
+    const provinces = await locationService.listProvince();
+    setProvinceOptions(provinces);
+
+    if (_.isEmpty(query)) {
       const listMember = await memberService.listParent();
-      console.log('list-member', listMember);
       setMembers(listMember);
 
-      const provinces = await locationService.listProvince();
-      setProvinceOptions(provinces);
+    } else {
+      const listMember = await memberService.listParent(query);
+      setMembers(listMember);
 
       if (query.province) {
         const provinceOption = _.find(provinces, (o) => o.code === query.province);
@@ -98,23 +92,18 @@ const Parent = () => {
 
   const handleSubmitSearch = async (values) => {
     values.preventDefault();
-
-    if (values.s === '') delete values.s;
-    if (filter.s === '') delete filter.s;
-    if (filter.province === '') delete filter.province;
-    if (filter.district === '') delete filter.district;
-    if (filter.ward === '') delete filter.ward;
+    const newFilter = _.omitBy(filter, _.isEmpty);
 
     router.push({
         pathname: router.pathname,
-        query: _.pickBy(filter, _.identity),
+        query: _.pickBy(newFilter, _.identity),
       },
       undefined,
       {shallow: true}
     );
 
     console.log('filter', filter);
-    const res = await memberService.listParent(filter)
+    const res = await memberService.listParent(newFilter)
     console.log('res', res);
     if (!res) {
       swal({
@@ -171,7 +160,6 @@ const Parent = () => {
             options={wardOptions}
           />
         </div>
-
         <Button type='submit'>Tìm kiếm</Button>
       </form>
       <div className="mt-8 drop-shadow-2xl overflow-x-auto lg:overflow-x-visible">

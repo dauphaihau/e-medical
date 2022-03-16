@@ -54,20 +54,22 @@ const GroupList = () => {
 
   const loadInit = async () => {
 
+    if (_.isEmpty(query)) {
+      const listGroup = await classroomService.listGroup();
+      setListGroup(listGroup);
 
-    if (
-      query &&
-      query.s &&
-      query.s.length <= 3
-    ) {
-      swal("", "Số ký tự tìm kiếm phải lớn hơn 3", "warning", {
-        button: "Tôi đã hiểu",
-        dangerMode: true,
-      });
+      const schools = await schoolService.list({limit: 100});
+      if (schools.total) {
+        setSchoolOptions(schools.data.map((data) => ({
+          value: data._id,
+          label: data.schoolname,
+        })));
+      }
+
     } else {
       await setIsLoading(true);
 
-      const listGroup = await classroomService.listGroup();
+      const listGroup = await classroomService.listGroup(query);
       if (filter.s) {
         const filteredData = listGroup.data?.filter((item) => {
           return Object.values(item.className)
@@ -148,20 +150,17 @@ const GroupList = () => {
 
   const handleSubmitSearch = async (values) => {
     values.preventDefault();
-
-    if (filter.s === '') delete filter.s;
-    if (filter.schoolId === '') delete filter.schoolId;
-    if (filter.schoolYearId === '') delete filter.schoolYearId;
+    const newFilter = _.omitBy(filter, _.isEmpty);
 
     router.push({
         pathname: router.pathname,
-        query: _.pickBy(filter, _.identity),
+        query: _.pickBy(newFilter, _.identity),
       },
       undefined,
       {shallow: true}
     );
 
-    let res = await classroomService.listGroup(_.pickBy(filter, _.identity))
+    let res = await classroomService.listGroup(_.pickBy(newFilter, _.identity))
 
     if (_.isEmpty(res)) {
       swal({

@@ -43,11 +43,6 @@ const Teacher = () => {
   }, [router.isReady]);
 
   const loadInit = async () => {
-    const listMember = await memberService.list({
-      type: 'teacher'
-    });
-    setMembers(listMember);
-
     const schools = await schoolService.list({limit: 100});
     if (schools.total) {
       setSchoolOptions(schools.data.map((data) => ({
@@ -56,26 +51,33 @@ const Teacher = () => {
       })));
     }
 
-    if (query.schoolId) {
-      let schoolOption = await schoolService.detail(query.schoolId);
-      schoolOption = {
-        value: schoolOption._id,
-        label: schoolOption.schoolname
-      };
-      setSelect({...selects, ...{school: schoolOption}});
+    if (_.isEmpty(query)) {
+      const listMember = await memberService.list({type: 'teacher'});
+      setMembers(listMember);
+    } else {
+      const listMember = await memberService.list({...query, type: 'teacher'});
+      setMembers(listMember);
+      if (query.schoolId) {
+        let schoolOption = await schoolService.detail(query.schoolId);
+        schoolOption = {
+          value: schoolOption._id,
+          label: schoolOption.schoolname
+        };
+        setSelect({...selects, ...{school: schoolOption}});
 
-      if (query.parentId) {
-        let groupOption = await classroomService.listGroup({schoolId: query.schoolId})
-        groupOption = groupOption.data.map(group => ({
-          value: group._id,
-          label: group.className,
-        }))
-        setSelect({
-          ...selects,
-          ...{school: schoolOption, parent: groupOption}});
+        if (query.parentId) {
+          let groupOption = await classroomService.listGroup({schoolId: query.schoolId})
+          groupOption = groupOption.data.map(group => ({
+            value: group._id,
+            label: group.className,
+          }))
+          setSelect({
+            ...selects,
+            ...{school: schoolOption, parent: groupOption}
+          });
+        }
       }
     }
-
   }
 
   const onChangeSchool = async (e) => {
@@ -90,21 +92,17 @@ const Teacher = () => {
 
   const handleSubmitSearch = async (e) => {
     e.preventDefault();
-
-    if (filter.s === '') delete filter.s;
-    if (filter.schoolId === '') delete filter.schoolId;
-    if (filter.schoolYearId === '') delete filter.schoolYearId;
-    if (filter.parentId === '') delete filter.parentId;
+    const newFilter = _.omitBy(filter, _.isEmpty);
 
     router.push({
         pathname: router.pathname,
-        query: _.pickBy(filter, _.identity),
+        query: _.pickBy(newFilter, _.identity),
       },
       undefined,
       {shallow: true}
     );
 
-    const res = await memberService.list({...filter, type: 'teacher'})
+    const res = await memberService.list({...newFilter, type: 'teacher'})
     console.log('res', res);
 
     if (!res) {

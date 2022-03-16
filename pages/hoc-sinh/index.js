@@ -48,21 +48,15 @@ const Student = () => {
   }, [router.isReady]);
 
   const loadInit = async () => {
-    if (
-      query &&
-      query.s &&
-      query.s.length <= 3
-    ) {
-      swal("", "Số ký tự tìm kiếm phải lớn hơn 3", "warning", {
-        button: "Tôi đã hiểu",
-        dangerMode: true,
-      });
-    } else {
+    const provinces = await locationService.listProvince();
+    setProvinceOptions(provinces);
+
+    if (_.isEmpty(query)) {
       const listMember = await memberService.listStudent();
       setMembers(listMember);
-
-      const provinces = await locationService.listProvince();
-      setProvinceOptions(provinces);
+    } else {
+      const listMember = await memberService.listStudent(query);
+      setMembers(listMember);
 
       if (query.province) {
         const provinceOption = _.find(provinces, (o) => o.code === query.province);
@@ -97,21 +91,17 @@ const Student = () => {
 
   const handleSubmitSearch = async (e) => {
     e.preventDefault();
-
-    if (filter.s === '') delete filter.s;
-    if (filter.province === '') delete filter.province;
-    if (filter.district === '') delete filter.district;
-    if (filter.ward === '') delete filter.ward;
+    const newFilter = _.omitBy(filter, _.isEmpty);
 
     router.push({
         pathname: router.pathname,
-        query: _.pickBy(filter, _.identity),
+        query: _.pickBy(newFilter, _.identity),
       },
       undefined,
       {shallow: true}
     );
 
-    const res = await memberService.listStudent(filter)
+    const res = await memberService.listStudent(newFilter)
     if (!res) {
       swal({
         text: "Nội dung tìm kiếm ít nhất là 3 ký tự",

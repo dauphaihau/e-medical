@@ -53,42 +53,56 @@ const SchoolList = () => {
   }, [router.isReady]);
 
   const loadInit = async () => {
-    if (
-      query &&
-      query.s &&
-      query.s.length <= 3
-    ) {
-      swal("", "Số ký tự tìm kiếm phải lớn hơn 3", "warning", {
-        button: "Tôi đã hiểu",
-        dangerMode: true,
-      });
+    const provinces = await locationService.listProvince();
+    setProvinceOptions(provinces);
+
+    if (_.isEmpty(query)) {
+      const res = await schoolService.list()
+      console.log('res', res);
+      setSchools(res.data);
     } else {
       await setIsLoading(true);
+
       const res = await schoolService.list(_.pickBy(query, _.identity))
       setSchools(res.data);
+      console.log('res', res);
 
-      const provinces = await locationService.listProvince();
-      setProvinceOptions(provinces);
-
+      let initDataSelected = {};
       if (query.province) {
         await setIsLoading(true)
         const provinceOption = _.find(provinces, (o) => o.code === query.province);
+        // initDataSelected.province = provinceOption
         setSelect({...selects, ...{province: provinceOption}});
         const districtOptions = await locationService.listDistrict(query.province);
         setDistrictOptions(districtOptions);
+
         if (query.district) {
+          console.log('district');
           const districts = await locationService.listDistrict(provinceOption.code);
           const districtOption = _.find(districts, (o) => o.code === query.district);
+          // initDataSelected.district = districtOption
           setSelect({...selects, ...{district: districtOption, province: provinceOption}})
           const wardOptions = await locationService.listWard(query.district);
           setWardOptions(wardOptions);
+
           if (query.ward) {
             const wards = await locationService.listWard(districtOption.code);
             const wardOption = _.find(wards, (o) => o.code === query.ward);
+            // initDataSelected.district = wardOption
             setSelect({...selects, ...{ward: wardOption, district: districtOption, province: provinceOption}})
           }
         }
+        console.log('render');
+        // setSelect({
+        //   ...selects,
+        //   ...{
+        //     province: initDataSelected.province ,
+        //     district: initDataSelected.district || {},
+        //     ward: initDataSelected.ward || {},
+        //   }
+        // })
       }
+
       await setIsLoading(false)
     }
   };
@@ -124,24 +138,18 @@ const SchoolList = () => {
   }
 
   const handleSubmitSearch = async (values) => {
-
     values.preventDefault();
-
-    if (values.s === '') delete values.s;
-    if (filter.s === '') delete filter.s;
-    if (filter.province === '') delete filter.province;
-    if (filter.district === '') delete filter.district;
-    if (filter.ward === '') delete filter.ward;
+    const newFilter = _.omitBy(filter, _.isEmpty);
 
     router.push({
         pathname: router.pathname,
-        query: _.pickBy(filter, _.identity),
+        query: _.pickBy(newFilter, _.identity),
       },
       undefined,
       {shallow: true}
     );
 
-    const res = await schoolService.list(filter)
+    const res = await schoolService.list(newFilter)
 
     if (_.isEmpty(res)) {
       swal({

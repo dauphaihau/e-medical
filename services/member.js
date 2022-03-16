@@ -80,7 +80,6 @@ export const memberService = {
         }
       };
       console.log('params', params);
-
       const response = await api.get("/member", {params});
       return response.data;
     } catch (e) {
