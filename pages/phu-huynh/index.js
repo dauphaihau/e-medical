@@ -174,7 +174,6 @@ const Parent = () => {
               <th className='text-left'>Quận</th>
               <th className='text-left'>Tỉnh</th>
               <th className='text-left'>Phường</th>
-              <th/>
               <th className="w-2"/>
             </tr>
             </thead>
@@ -189,7 +188,6 @@ const Parent = () => {
                       <td className='text-left'>{row.province.provinceName}</td>
                       <td className='text-left'>{row.district.districtName}</td>
                       <td className='text-left'>{row.ward.wardName}</td>
-                      <td>{(row.schoolWorking) ? row.schoolWorking?.className : ''}</td>
                       <td>
                         <Link href={router.pathname + '/' + row._id}>
                            <a><PencilIcon className='h-5 w-5 inline'/></a>

@@ -15,12 +15,12 @@ import Select from "@components/form/select";
 const SchoolList = () => {
   const router = useRouter();
   const {query} = router;
+  const [isLoading, setIsLoading] = useState(false)
   const [schools, setSchools] = useState([])
 
   const [provinceOptions, setProvinceOptions] = useState([]);
   const [districtOptions, setDistrictOptions] = useState([])
   const [wardOptions, setWardOptions] = useState([])
-  const [isLoading, setIsLoading] = useState(false)
 
   const [selects, setSelect] = useState({
     s: '',
@@ -37,7 +37,6 @@ const SchoolList = () => {
       label: ''
     },
   })
-
   const [filter, setFilter] = useState({
     s: '',
     province: '',
@@ -58,14 +57,12 @@ const SchoolList = () => {
 
     if (_.isEmpty(query)) {
       const res = await schoolService.list()
-      console.log('res', res);
       setSchools(res.data);
     } else {
       await setIsLoading(true);
 
-      const res = await schoolService.list(_.pickBy(query, _.identity))
+      const res = await schoolService.list(query)
       setSchools(res.data);
-      console.log('res', res);
 
       let initDataSelected = {};
       if (query.province) {
@@ -75,6 +72,7 @@ const SchoolList = () => {
         setSelect({...selects, ...{province: provinceOption}});
         const districtOptions = await locationService.listDistrict(query.province);
         setDistrictOptions(districtOptions);
+        console.log('province');
 
         if (query.district) {
           console.log('district');
@@ -150,7 +148,6 @@ const SchoolList = () => {
     );
 
     const res = await schoolService.list(newFilter)
-
     if (_.isEmpty(res)) {
       swal({
         text: "Nội dung tìm kiếm ít nhất là 3 ký tự",

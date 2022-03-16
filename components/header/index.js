@@ -9,7 +9,7 @@ import Button from "../button";
 import {useAuth} from "../../context/auth";
 
 const removeSession = (sKey, sPath, sDomain) => {
-  document.cookie =  encodeURIComponent(sKey) +
+  document.cookie = encodeURIComponent(sKey) +
     "=; expires=Thu, 01 Jan 1970 00:00:00 GMT" +
     (sDomain ? "; domain=" + sDomain : "") +
     (sPath ? "; path=" + sPath : "");
@@ -82,6 +82,25 @@ function renderButtonAddNew(pathname) {
   );
 };
 
+const handleRole = (role) => {
+  switch (role) {
+    case 'parent':
+      return 'Phụ huynh'
+      break;
+    case 'teacher':
+      return 'Giáo viên'
+      break;
+    case 'student':
+      return 'Học sinh'
+      break;
+    case 'staff':
+      return 'Nhân viên'
+      break;
+    default:
+      return 'Loading..'
+  }
+};
+
 const Header = ({stateSidebar, setStateSidebar}) => {
   const router = useRouter();
   const [dropdown, setDropdown] = useState(false)
@@ -128,7 +147,7 @@ const Header = ({stateSidebar, setStateSidebar}) => {
           <div className='navbar-right__info' ref={innerRef} onClick={() => setDropdown(!dropdown)}>
             <div>
               <p>{user?.fullName}</p>
-              <p>{user?.role}</p>
+              <p>{handleRole(user?.role)}</p>
             </div>
             <img src="https://i.pravatar.cc/300" alt='avatar'/>
           </div>
@@ -152,7 +171,7 @@ const Header = ({stateSidebar, setStateSidebar}) => {
               </div>
             </div>
           </div>
-          {/*Dropdown profile*/}
+          {/*end Dropdown profile*/}
         </div>
       </div>
     </div>
