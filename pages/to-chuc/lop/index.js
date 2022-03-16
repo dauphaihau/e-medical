@@ -116,6 +116,7 @@ const ClassroomList = () => {
           }
         }
       }
+
       await setIsLoading(false);
     }
   }

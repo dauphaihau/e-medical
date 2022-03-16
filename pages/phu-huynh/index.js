@@ -66,7 +66,6 @@ const Parent = () => {
       setProvinceOptions(provinces);
 
       if (query.province) {
-        // await setIsLoading(true)
         const provinceOption = _.find(provinces, (o) => o.code === query.province);
         setSelect({...selects, ...{province: provinceOption}});
         const districtOptions = await locationService.listDistrict(query.province);
@@ -113,8 +112,8 @@ const Parent = () => {
       undefined,
       {shallow: true}
     );
-    
-    console.log('-pick-by-filter-identity-', _.pickBy(filter, _.identity));
+
+    console.log('filter', filter);
     const res = await memberService.listParent(filter)
     console.log('res', res);
     if (!res) {
@@ -172,6 +171,7 @@ const Parent = () => {
             options={wardOptions}
           />
         </div>
+
         <Button type='submit'>Tìm kiếm</Button>
       </form>
       <div className="mt-8 drop-shadow-2xl overflow-x-auto lg:overflow-x-visible">
@@ -209,7 +209,7 @@ const Parent = () => {
                       </td>
                     </tr>
                 ))
-                : (<tr><td colSpan='4'>Chưa có dữ liệu</td></tr>)
+                : (<tr><td colSpan='9'>Chưa có dữ liệu</td></tr>)
               }
             </tbody>
           </table>

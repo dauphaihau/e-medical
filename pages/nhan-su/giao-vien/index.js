@@ -13,6 +13,7 @@ import {classroomService, schoolService} from "@services";
 
 const Teacher = () => {
   const router = useRouter();
+  const {query} = router;
   const [members, setMembers] = useState();
 
   const [schoolOptions, setSchoolOptions] = useState([]);
@@ -45,7 +46,6 @@ const Teacher = () => {
     const listMember = await memberService.list({
       type: 'teacher'
     });
-    console.log('list-member', listMember);
     setMembers(listMember);
 
     const schools = await schoolService.list({limit: 100});
@@ -55,28 +55,28 @@ const Teacher = () => {
         label: data.schoolname,
       })));
     }
-  }
 
-  const handleSearch = async (e) => {
-    e.preventDefault();
+    if (query.schoolId) {
+      let schoolOption = await schoolService.detail(query.schoolId);
+      schoolOption = {
+        value: schoolOption._id,
+        label: schoolOption.schoolname
+      };
+      setSelect({...selects, ...{school: schoolOption}});
 
-    router.push({
-        pathname: router.pathname,
-        query: _.pickBy({s: searchInfo}, _.identity),
-      },
-      undefined,
-      {shallow: true}
-    );
-
-    const listTeacher = await memberService.list({type: 'teacher', s: searchInfo});
-    if (!listTeacher) {
-      swal({
-        text: "Nội dung tìm kiếm ít nhất là 3 ký tự",
-        icon: "error"
-      });
+      if (query.parentId) {
+        let groupOption = await classroomService.listGroup({schoolId: query.schoolId})
+        groupOption = groupOption.data.map(group => ({
+          value: group._id,
+          label: group.className,
+        }))
+        setSelect({
+          ...selects,
+          ...{school: schoolOption, parent: groupOption}});
+      }
     }
-    setMembers(listTeacher);
-  };
+
+  }
 
   const onChangeSchool = async (e) => {
     const groups = await classroomService.listGroup({schoolId: e.value, limit: 10});
@@ -88,8 +88,8 @@ const Teacher = () => {
     }
   };
 
-  const handleSubmitSearch = async (values) => {
-    values.preventDefault();
+  const handleSubmitSearch = async (e) => {
+    e.preventDefault();
 
     if (filter.s === '') delete filter.s;
     if (filter.schoolId === '') delete filter.schoolId;
@@ -107,13 +107,13 @@ const Teacher = () => {
     const res = await memberService.list({...filter, type: 'teacher'})
     console.log('res', res);
 
-    if (_.isEmpty(res)) {
+    if (!res) {
       swal({
         text: "Nội dung tìm kiếm ít nhất là 3 ký tự",
         icon: "error"
       });
     }
-    // setMembers(res);
+    setMembers(res.data);
   };
 
   return (

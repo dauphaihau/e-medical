@@ -9,56 +9,166 @@ import Button from "@components/button";
 import {PencilIcon} from "@heroicons/react/outline";
 import _ from "lodash";
 import swal from "sweetalert";
+import {locationService} from "../../services";
 
 const Student = () => {
   const router = useRouter();
+  const {query} = router;
   const [members, setMembers] = useState();
-  const [searchInfo, setSearchInfo] = useState()
+  const [provinceOptions, setProvinceOptions] = useState([]);
+  const [districtOptions, setDistrictOptions] = useState([])
+  const [wardOptions, setWardOptions] = useState([])
+
+  const [selects, setSelect] = useState({
+    s: '',
+    province: {
+      value: '',
+      label: ''
+    },
+    district: {
+      value: '',
+      label: ''
+    },
+    ward: {
+      value: '',
+      label: ''
+    },
+  })
+
+  const [filter, setFilter] = useState({
+    s: '',
+    province: '',
+    district: '',
+    ward: '',
+  })
 
   useEffect(() => {
+    if (!router.isReady) return;
     loadInit();
-  }, []);
+  }, [router.isReady]);
 
   const loadInit = async () => {
-    const listMember = await memberService.listStudent();
-    console.log('list-member', listMember);
-    setMembers(listMember);
+    if (
+      query &&
+      query.s &&
+      query.s.length <= 3
+    ) {
+      swal("", "Số ký tự tìm kiếm phải lớn hơn 3", "warning", {
+        button: "Tôi đã hiểu",
+        dangerMode: true,
+      });
+    } else {
+      const listMember = await memberService.listStudent();
+      setMembers(listMember);
+
+      const provinces = await locationService.listProvince();
+      setProvinceOptions(provinces);
+
+      if (query.province) {
+        const provinceOption = _.find(provinces, (o) => o.code === query.province);
+        setSelect({...selects, ...{province: provinceOption}});
+        const districtOptions = await locationService.listDistrict(query.province);
+        setDistrictOptions(districtOptions);
+        if (query.district) {
+          const districts = await locationService.listDistrict(provinceOption.code);
+          const districtOption = _.find(districts, (o) => o.code === query.district);
+          setSelect({...selects, ...{district: districtOption, province: provinceOption}})
+          const wardOptions = await locationService.listWard(query.district);
+          setWardOptions(wardOptions);
+          if (query.ward) {
+            const wards = await locationService.listWard(districtOption.code);
+            const wardOption = _.find(wards, (o) => o.code === query.ward);
+            setSelect({...selects, ...{ward: wardOption, district: districtOption, province: provinceOption}})
+          }
+        }
+      }
+    }
   }
-  
-  const handleSearch = async (e) => {
+
+  const onChangeProvince = async (e) => {
+    const districts = await locationService.listDistrict(e.code);
+    setDistrictOptions(districts);
+  }
+
+  const onChangeDistrict = async (e) => {
+    const wards = await locationService.listWard(e.code);
+    setWardOptions(wards);
+  }
+
+  const handleSubmitSearch = async (e) => {
     e.preventDefault();
+
+    if (filter.s === '') delete filter.s;
+    if (filter.province === '') delete filter.province;
+    if (filter.district === '') delete filter.district;
+    if (filter.ward === '') delete filter.ward;
 
     router.push({
         pathname: router.pathname,
-        query: _.pickBy(e.target.value, _.identity),
+        query: _.pickBy(filter, _.identity),
       },
       undefined,
       {shallow: true}
     );
 
-    const listMember = await memberService.listStudent({s: searchInfo});
-    if (!listMember) {
+    const res = await memberService.listStudent(filter)
+    if (!res) {
       swal({
         text: "Nội dung tìm kiếm ít nhất là 3 ký tự",
         icon: "error"
       });
     }
-    setMembers(listMember);
+    setMembers(res.data)
   };
 
   return (
     <>
       <h4>Hồ sơ học sinh</h4>
-      <div className="grid-container">
-        <form onSubmit={handleSearch}>
+      <form onSubmit={handleSubmitSearch}>
+        <div className="grid-container">
           <Input
             label='Tìm kiếm'
-            placeholder='Tên học sinh...' name="s"
-            onChange={(e) => setSearchInfo(e.target.value)}
+            placeholder='Tên trường...' name="s"
+            onChange={e => setFilter({...filter, s: e.target.value})}
           />
-          <Button type='submit'>Tìm kiếm</Button>
-        </form>
-      </div>
+          <Select
+            label='Tỉnh/thành'
+            name='province'
+            placeholder='Chọn Tỉnh thành'
+            onChange={e => {
+              onChangeProvince(e);
+              setSelect({...selects, ...{province: e, district: null, ward: null}})
+              setFilter({...filter, province: e.code, district: '', ward: ''})
+            }}
+            value={selects.province}
+            options={provinceOptions}
+          />
+          <Select
+            placeholder='Chọn Quận'
+            label='Quận/huyện'
+            name='district'
+            value={selects.district}
+            onChange={e => {
+              onChangeDistrict(e)
+              setSelect({...selects, ...{district: e, ward: null}});
+              setFilter({...filter, district: e.code, ward: ''})
+            }}
+            options={districtOptions}
+          />
+          <Select
+            placeholder='Chọn Phường'
+            label='Phường/Xã'
+            name='ward'
+            value={selects.ward}
+            onChange={e => {
+              setSelect({...selects, ...{ward: e}})
+              setFilter({...filter, ward: e.code})
+            }}
+            options={wardOptions}
+          />
+        </div>
+        <Button type='submit'>Tìm kiếm</Button>
+      </form>
       <div className="mt-8 drop-shadow-2xl overflow-x-auto lg:overflow-x-visible">
         <div className="mt-8 overflow-x-auto lg:overflow-x-visible">
           <div className='container-table lg:w-full'>

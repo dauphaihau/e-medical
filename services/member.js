@@ -34,7 +34,21 @@ export const memberService = {
       return false;
     }
   },
+  listStaff: async (params) => {
+    try {
+      params = {
+        ...params, ...{
+          type: 'staff'
+        }
+      };
+      console.log('params', params);
 
+      const response = await api.get("/member", {params});
+      return response.data;
+    } catch (e) {
+      return false
+    }
+  },
   createStaff: async (data) => {
     try {
       const {...response} = await api.post("/member/", data);
