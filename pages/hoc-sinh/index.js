@@ -191,11 +191,8 @@ const Student = () => {
                     </td>
                   </tr>
                   ))
-                  : (
-                    <tr>
-                  <td colSpan='4'>Chưa có dữ liệu</td>
-                </tr>
-                  )}
+                  : (<tr><td colSpan='4'>Chưa có dữ liệu</td></tr>)
+                }
               </tbody>
             </table>
             {/* <Pagination

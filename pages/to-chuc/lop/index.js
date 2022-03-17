@@ -198,7 +198,6 @@ const ClassroomList = () => {
 
   return (
     <>
-
       {isLoading ? (
           <div className="flex flex-col items-center justify-center h-screen">
             <svg className="animate-spin h-5 w-5 text-primary" xmlns="http:www.w3.org/2000/svg" fill="none"

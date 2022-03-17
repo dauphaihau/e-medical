@@ -35,8 +35,6 @@ const AddStudent = () => {
   const [listClass, setListClass] = useState();
   const [parentSelect, setParentSelect] = useState({})
 
-  console.log('members', members);
-
   useEffect(() => {
     if (!router.isReady) return;
     loadInit();
@@ -83,7 +81,6 @@ const AddStudent = () => {
   };
 
   const handleSubmitForm = async (values) => {
-    console.log('values', values);
     const result = await memberService.createStudent(values);
     if (result) {
       swal({
@@ -181,7 +178,6 @@ const AddStudent = () => {
                 onChange={e => setFieldValue('classId', e.value)}
                 options={listClass}
               />
-
             </div>
             <div className='grid lg:grid-cols-2 gap-x-6'>
               <Input label='Họ và tên' name='fullName' useFormik onChange={handleChange}/>
@@ -203,7 +199,7 @@ const AddStudent = () => {
                   loadOptions={loadOptions}
                   defaultOptions
                   onChange={(e) => {
-                    handleShowTable(e)
+                    handleShowTable(e);
                     setFieldValue('parent', members.map((v)=> ({parentId: v.value, fullName:v.fullName})))
                   }}
                 />
@@ -214,12 +210,12 @@ const AddStudent = () => {
                 <div className='container-table w-[400px] lg:w-[49%]'>
                   <table className='table'>
                     <thead>
-                    <tr>
-                      <th className="w-3">STT</th>
-                      <th className='text-left'>Họ tên</th>
-                      <th className='text-left'>Phone</th>
-                      <th className="w-2"/>
-                    </tr>
+                      <tr>
+                        <th className="w-3">STT</th>
+                        <th className='text-left'>Họ tên</th>
+                        <th className='text-left'>Phone</th>
+                        <th className="w-2"/>
+                      </tr>
                     </thead>
                     <tbody>
                       {

@@ -102,9 +102,7 @@ const Parent = () => {
       {shallow: true}
     );
 
-    console.log('filter', filter);
     const res = await memberService.listParent(newFilter)
-    console.log('res', res);
     if (!res) {
       swal({
         text: "Nội dung tìm kiếm ít nhất là 3 ký tự",
