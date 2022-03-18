@@ -2,14 +2,14 @@ import {Formik, Form, Field} from "formik";
 import {useEffect, useState} from "react";
 import * as Yup from "yup";
 import swal from "sweetalert";
-import Router, {useRouter} from "next/router";
+import {useRouter} from "next/router";
+import _ from "lodash";
 
 import Button from "@components/button";
 import Input from "@components/form/input";
-import { memberService, locationService, schoolService, classroomService, schoolYearService } from "@services";
+import {memberService, locationService, schoolService, classroomService, schoolYearService} from "@services";
 import Select from "@components/form/select";
 import Region from "@components/form/region";
-import _ from "lodash";
 
 const phoneRegExp = /(([03+[2-9]|05+[6|8|9]|07+[0|6|7|8|9]|08+[1-9]|09+[1-4|6-9]]){3})+[0-9]{7}\b/
 const validationSchema = Yup.object().shape({
@@ -42,22 +42,22 @@ const AddStaff_Trash = () => {
   const [listProvince, setListProvince] = useState();
   const [addType, setAddType] = useState();
 
-  useEffect( () => {
+  useEffect(() => {
     if (!router.isReady) return;
-    let abortController = new AbortController();  
-    
-    if( router.pathname.includes('giao-vien') ){
+    let abortController = new AbortController();
+
+    if (router.pathname.includes('giao-vien')) {
       setAddType('giao-vien');
     }
     loadInit();
-    return () => abortController.abort(); 
+    return () => abortController.abort();
   }, [router.isReady]);
 
   const loadInit = async () => {
     const provinces = await locationService.listProvince();
     setListProvince(provinces);
-    const schools = await schoolService.list({limit:20});
-    if(schools.total){
+    const schools = await schoolService.list({limit: 20});
+    if (schools.total) {
       setListSchool(schools.data.map((data) => ({
         value: data._id,
         label: data.schoolname,
@@ -68,23 +68,22 @@ const AddStaff_Trash = () => {
   const handleSubmitForm = async (data, {resetForm}) => {
     //format data
     let bodyData = {};
-    if(data.province && !_.isEmpty(data.province)){
+    if (data.province && !_.isEmpty(data.province)) {
       bodyData.province = {code: data.province.code, provinceName: data.province.label}
     }
-    if(data.district && !_.isEmpty(data.district)){
+    if (data.district && !_.isEmpty(data.district)) {
       bodyData.district = {code: data.district.code, districtName: data.district.label}
     }
-    if(data.ward && !_.isEmpty(data.ward)){
+    if (data.ward && !_.isEmpty(data.ward)) {
       bodyData.ward = {code: data.ward.code, wardName: data.ward.label}
     }
     bodyData = {...data, ...bodyData};
 
     const result = await memberService.createTeacher(bodyData);
-    if(result){
+    if (result) {
       swal('Cập nhật thành công', '', 'success')
-        // .then(() => Router.push('/nhan-su/giao-vien/'));
-    }
-    else {
+      // .then(() => Router.push('/nhan-su/giao-vien/'));
+    } else {
       swal('Cập nhật không thành công', '', 'error');
     }
   };
@@ -207,7 +206,7 @@ const AddStaff_Trash = () => {
               listProvince={listProvince}
             />
           </div>
-          
+
           <Button type='submit' className='mr-4'>Thêm</Button>
         </Form>
       )}

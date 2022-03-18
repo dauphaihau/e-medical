@@ -157,7 +157,7 @@ const SchoolYearList = () => {
         )}
       </Formik>
       <div className="mt-8 overflow-x-auto lg:overflow-x-visible">
-        <div className='container-table'>
+        <div className='container-table w-[800px] lg:w-full'>
           <h4>Niên Khoá</h4>
           <table className='table'>
             <thead>

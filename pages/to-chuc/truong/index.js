@@ -218,7 +218,7 @@ const SchoolList = () => {
               <Button type='submit'>Tìm kiếm</Button>
             </form>
             <div className="mt-8 overflow-x-auto lg:overflow-x-visible">
-              <div className='container-table'>
+              <div className='container-table w-[1200px] lg:w-full'>
                 <h4>Danh sách trường</h4>
                 <table className='table'>
                   <thead>

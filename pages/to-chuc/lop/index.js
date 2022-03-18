@@ -257,7 +257,7 @@ const ClassroomList = () => {
       </form>
 
       <div className="mt-8 overflow-x-auto lg:overflow-x-visible">
-        <div className='container-table'>
+        <div className='container-table w-[700px] lg:w-full'>
           <table className='table'>
             <thead>
               <tr>

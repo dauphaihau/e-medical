@@ -229,7 +229,7 @@ const DetailStudent = () => {
     }
   };
 
-  const handleShowTable = (...newParent) => {
+  const handleParent = (...newParent) => {
 
     setParentSelect({
       value: '',
@@ -238,7 +238,6 @@ const DetailStudent = () => {
     const currentParent = member.parent;
 
     const result = {...member, parent: _.uniq([...currentParent, ...newParent])}
-
     setMember(result)
 
     return result.parent.map((v) => ({
@@ -346,10 +345,13 @@ const DetailStudent = () => {
                     value={initData.class}
                   />
                   <Input label='Họ và tên' name='fullName' useFormik onChange={handleChange} value={values.fullName}/>
-                  <Input label='Ngày sinh' name='dateOfBirth' useFormik onChange={handleChange} value={values.dateOfBirth}/>
+                  <Input label='Ngày sinh' name='dateOfBirth' useFormik onChange={handleChange}
+                         value={values.dateOfBirth}/>
                   <RadioGroup label='Giới Tính'>
-                    <Radio name='gender' onChange={handleChange} checked={parseInt(values.gender) === 1} value='1' labelName="Nam" id="sex-male"/>
-                    <Radio name='gender' onChange={handleChange} checked={parseInt(values.gender) === 2} value='2' labelName="Nữ" id='sex-female'/>
+                    <Radio name='gender' onChange={handleChange} checked={parseInt(values.gender) === 1} value='1'
+                           labelName="Nam" id="sex-male"/>
+                    <Radio name='gender' onChange={handleChange} checked={parseInt(values.gender) === 2} value='2'
+                           labelName="Nữ" id='sex-female'/>
                   </RadioGroup>
                   <div className="">
                     <div className="form-group">
@@ -358,17 +360,13 @@ const DetailStudent = () => {
                         id="parent"
                         instanceId="parent"
                         cacheOptions
-                        // isMulti
                         value={parentSelect}
                         loadOptions={loadOptions}
                         defaultOptions
-                        onChange={(e) => {
-                          setFieldValue('parent', handleShowTable(e))
-                        }}
+                        onChange={e => setFieldValue('parent', handleParent(e))}
                       />
                     </div>
                   </div>
-
                   {!_.isEmpty(member?.parent) ? (
                     <div className="mt-4 drop-shadow-2xl overflow-x-auto lg:overflow-x-visible">
                       <div className='container-table lg:w-full'>
@@ -459,3 +457,5 @@ const DetailStudent = () => {
   );
 }
 export default DetailStudent;
+
+

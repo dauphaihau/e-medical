@@ -161,7 +161,7 @@ const Student = () => {
       </form>
       <div className="mt-8 drop-shadow-2xl overflow-x-auto lg:overflow-x-visible">
         <div className="mt-8 overflow-x-auto lg:overflow-x-visible">
-          <div className='container-table lg:w-full'>
+          <div className='container-table w-[800px] lg:w-full'>
             <table className='table'>
               <thead>
               <tr>

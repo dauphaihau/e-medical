@@ -28,7 +28,7 @@ const validationSchema = Yup.object().shape({
 
 const AddStudent = () => {
   const router = useRouter();
-  const [members, setMembers] = useState([]);
+  const [parents, setParents] = useState([]);
   const [listSchool, setListSchool] = useState();
   const [listSchoolYear, setListSchoolYear] = useState();
   const [listGroup, setListGroup] = useState();
@@ -110,12 +110,13 @@ const AddStudent = () => {
     }
   };
 
-  const handleShowTable = (...e) => {
+  const handleParent = (...newParent) => {
     setParentSelect({
       value: '',
       label: ''
     })
-    setMembers(_.uniq([...members, ...e]))
+    setParents(_.uniq([...parents, ...newParent]))
+    return parents.map((v)=> ({parentId: v.value, fullName:v.fullName}))
   };
 
   return (
@@ -198,14 +199,11 @@ const AddStudent = () => {
                   value={parentSelect}
                   loadOptions={loadOptions}
                   defaultOptions
-                  onChange={(e) => {
-                    handleShowTable(e);
-                    setFieldValue('parent', members.map((v)=> ({parentId: v.value, fullName:v.fullName})))
-                  }}
+                  onChange={e => setFieldValue('parent', handleParent(e))}
                 />
               </div>
             </div>
-            {!_.isEmpty(members) ? (
+            {!_.isEmpty(parents) ? (
               <div className="mt-4 drop-shadow-2xl overflow-x-auto lg:overflow-x-visible">
                 <div className='container-table w-[400px] lg:w-[49%]'>
                   <table className='table'>
@@ -219,7 +217,7 @@ const AddStudent = () => {
                     </thead>
                     <tbody>
                       {
-                        members?.map((row, idz) => (
+                        parents?.map((row, idz) => (
                           <tr key={idz}>
                             <td>{idz + 1}</td>
                             <td className='text-left'>{row.fullName}</td>
@@ -227,8 +225,8 @@ const AddStudent = () => {
                             <td>
                                  <a
                                    onClick={() => {
-                                     const filtered = members.filter(e => e.value !== row.value);
-                                     setMembers(filtered)
+                                     const filtered = parents.filter(e => e.value !== row.value);
+                                     setParents(filtered)
                                    }}
                                  >
                                    <TrashIcon className='h-5 w-5 inline cursor-pointer'/>

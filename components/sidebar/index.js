@@ -5,16 +5,17 @@ import Link from "next/link";
 import {MENU} from "../../constants";
 
 const SubMenu = ({open, items}) => {
-  if(!items) return null;
+
+  if (!items) return null;
   const router = useRouter();
-  items.map( (item) => {
-    if( [item.link, item.link+"/them", item.link+"/[id]"].includes(router.pathname) ) open = true;
+  items.map((item) => {
+    if ([item.link, item.link + "/them", item.link + "/[id]"].includes(router.pathname)) open = true;
   })
   return (
     <ul className={`${!open ? 'hidden' : ''} sidebar-submenu`}>
       {items?.map((item) => (
-        <li key={item.title} className={router.pathname === item.link ? 'active' : ''}>
-          <Link passHref href={item.link}>
+        <Link passHref href={item.link}>
+          <li key={item.title} className={router.pathname === item.link ? 'active' : ''}>
             <a>
               <i className="icon-Commit pr-[20px] pl-[10px] relative top-[-2px]">
                 <span className="path1"/>
@@ -22,8 +23,8 @@ const SubMenu = ({open, items}) => {
               </i>
               {item.title}
             </a>
-          </Link>
-        </li>
+          </li>
+        </Link>
       ))}
     </ul>
   );
@@ -68,8 +69,11 @@ const Item = ({item, stateSidebar}) => {
           <a>
             <span className={`${stateSidebar ? 'md:hidden' : ''} ${handleActive(item)}`}>{item.title}</span>
           </a>
-          {item.subNav && <ArrowDropdown open={active}/>}
-          <SubMenu items={item.subNav} open={active}/>
+          {!stateSidebar && <>
+              {item.subNav && <ArrowDropdown open={active}/>}
+              <SubMenu items={item.subNav} open={active}/>
+            </>
+          }
         </div>
       </Link>
     </li>
@@ -81,7 +85,7 @@ const Sidebar = ({stateSidebar}) => {
     <aside className={`sidebar ${stateSidebar ? 'sidebar-open w-75 md:w-16' : 'sidebar-open'}`}>
       <ul className='sidebar-menu'>
         {MENU.staff_agent.map((item, idz) => (
-          <Item key={idz} item={item} />
+          <Item key={idz} item={item} stateSidebar={stateSidebar}/>
         ))}
       </ul>
       <div className={stateSidebar ? 'sidebar-copyright md:hidden' : 'sidebar-copyright hidden md:block'}>
