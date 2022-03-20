@@ -21,7 +21,7 @@ const validationSchema = Yup.object().shape({
     .max(50, 'Họ tên tối đa là 50 ký tự'),
   dateOfBirth: Yup.string().required('Ngày sinh không được để trống'),
   schoolYearId: Yup.string().required('Vui lòng chọn niên khóa'),
-  parent: Yup.array().min(1, 'Vui lòng chọn phụ huynh').required('Vui lòng chọn phụ huynh'),
+  parent: Yup.array().min(0, 'Vui lòng chọn phụ huynh').required('Vui lòng chọn phụ huynh'),
   schoolId: Yup.string().required('Vui lòng chọn trường.'),
   classId: Yup.string().required('Vui lòng chọn lớp.'),
 });
@@ -38,6 +38,7 @@ const AddStudent = () => {
   useEffect(() => {
     if (!router.isReady) return;
     loadInit();
+    return () => setListSchool({});
   }, [router.isReady])
 
   const loadInit = async () => {
@@ -81,6 +82,7 @@ const AddStudent = () => {
   };
 
   const handleSubmitForm = async (values) => {
+    console.log('values', values);
     const result = await memberService.createStudent(values);
     if (result) {
       swal({
@@ -111,12 +113,13 @@ const AddStudent = () => {
   };
 
   const handleParent = (...newParent) => {
-    setParentSelect({
-      value: '',
-      label: ''
-    })
-    setParents(_.uniq([...parents, ...newParent]))
-    return parents.map((v)=> ({parentId: v.value, fullName:v.fullName}))
+
+    const newArrParents = [...parents, ...newParent];
+
+    setParents(newArrParents)
+
+    const submitParents = _.uniq(newArrParents);
+    return submitParents.map((v)=> ({parentId: v.value, fullName:v.fullName}))
   };
 
   return (
@@ -217,7 +220,7 @@ const AddStudent = () => {
                     </thead>
                     <tbody>
                       {
-                        parents?.map((row, idz) => (
+                        _.uniq(parents)?.map((row, idz) => (
                           <tr key={idz}>
                             <td>{idz + 1}</td>
                             <td className='text-left'>{row.fullName}</td>

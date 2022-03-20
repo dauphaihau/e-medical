@@ -86,7 +86,6 @@ const SchoolYearList = () => {
     if (data.s === '') delete data.s;
     if (data.schoolId === '') delete data.schoolId;
 
-    console.log('data', data);
 
     await router.push({
         pathname: router.pathname,
@@ -97,7 +96,6 @@ const SchoolYearList = () => {
     );
 
     const res = await schoolYearService.list(_.pickBy(data, _.identity))
-    console.log('res', res);
     if (_.isEmpty(res)) {
       swal({
         text: "Tìm kiếm không thành công",

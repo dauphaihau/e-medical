@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {Formik, Form, Field} from "formik";
+import {Formik, Form, Field, ErrorMessage} from "formik";
 import Link from "next/link";
 import {useRouter} from "next/router";
 import * as Yup from "yup";
@@ -23,7 +23,7 @@ const validationSchema = Yup.object().shape({
     .max(50, 'Họ tên tối đa là 50 ký tự'),
   dateOfBirth: Yup.string().required('Ngày sinh không được để trống'),
   schoolYearId: Yup.string().required('Vui lòng chọn niên khóa'),
-  // parent: Yup.array().min(1, 'Vui lòng chọn phụ huynh').required(),
+  parent: Yup.array().min(1, 'Vui lòng chọn phụ huynh').required(),
   schoolId: Yup.string().required('Vui lòng chọn trường.'),
   classId: Yup.string().required('Vui lòng chọn lớp.'),
 });
@@ -231,10 +231,6 @@ const DetailStudent = () => {
 
   const handleParent = (...newParent) => {
 
-    setParentSelect({
-      value: '',
-      label: ''
-    })
     const currentParent = member.parent;
 
     const result = {...member, parent: _.uniq([...currentParent, ...newParent])}
@@ -365,6 +361,9 @@ const DetailStudent = () => {
                         defaultOptions
                         onChange={e => setFieldValue('parent', handleParent(e))}
                       />
+                      {/*<div className='text-danger mt-[5px]'>*/}
+                      {/*  <ErrorMessage name='parent'/>*/}
+                      {/*</div>*/}
                     </div>
                   </div>
                   {!_.isEmpty(member?.parent) ? (

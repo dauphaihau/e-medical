@@ -13,8 +13,8 @@ const SubMenu = ({open, items}) => {
   })
   return (
     <ul className={`${!open ? 'hidden' : ''} sidebar-submenu`}>
-      {items?.map((item) => (
-        <Link passHref href={item.link}>
+      {items?.map((item, idz) => (
+        <Link passHref href={item.link} key={idz}>
           <li key={item.title} className={router.pathname === item.link ? 'active' : ''}>
             <a>
               <i className="icon-Commit pr-[20px] pl-[10px] relative top-[-2px]">

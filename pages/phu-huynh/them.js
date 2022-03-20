@@ -35,9 +35,8 @@ const AddParent = () => {
 
   useEffect( () => {
     if (!router.isReady) return;
-    let abortController = new AbortController();  
     loadInit();
-    return () => abortController.abort(); 
+    return () => setListProvince({});
   }, [router.isReady]);
 
   const loadInit = async () => {

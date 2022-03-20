@@ -50,6 +50,7 @@ const GroupList = () => {
   useEffect(() => {
     if (!router.isReady) return;
     loadInit();
+    return () => setListGroup({})
   }, [router.isReady, router.asPath])
 
   const loadInit = async () => {
@@ -67,7 +68,7 @@ const GroupList = () => {
       }
 
     } else {
-      await setIsLoading(true);
+      // await setIsLoading(true);
 
       const listGroup = await classroomService.listGroup(query);
       if (filter.s) {
@@ -124,7 +125,7 @@ const GroupList = () => {
       }
       // endregion
 
-      await setIsLoading(false);
+      // await setIsLoading(false);
     }
   }
 

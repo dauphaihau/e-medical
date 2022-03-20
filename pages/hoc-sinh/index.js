@@ -45,6 +45,7 @@ const Student = () => {
   useEffect(() => {
     if (!router.isReady) return;
     loadInit();
+    return () => setMembers({});
   }, [router.isReady]);
 
   const loadInit = async () => {
