@@ -49,6 +49,7 @@ const SchoolList = () => {
   useEffect(() => {
     if (!router.isReady) return;
     loadInit();
+    return () => setSchools([]);
   }, [router.isReady]);
 
   const loadInit = async () => {

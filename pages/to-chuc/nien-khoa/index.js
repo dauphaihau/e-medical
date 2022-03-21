@@ -26,6 +26,7 @@ const SchoolYearList = () => {
   useEffect(() => {
     if (!router.isReady) return;
     loadInit();
+    return () => setListSchoolYear([])
   }, [router.isReady]);
 
   const loadInit = async () => {
