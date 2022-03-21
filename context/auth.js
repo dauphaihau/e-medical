@@ -22,16 +22,17 @@ export function AuthProvider({ children }) {
     if(Cookie.get('accessToken')){
       async function verifyAuth() {
         const userRes = await accountService.me();
+        console.log(userRes);
         if(userRes){
           setUser(userRes);
         }
         else{
-          // setUser({});
-          // Cookie.set("accessToken", "", {
-          //   path: "/",
-          //   expires: new Date(0),
-          // });
-          // Router.reload();
+          setUser({});
+          Cookie.set("accessToken", "", {
+            path: "/",
+            expires: new Date(0),
+          });
+          Router.reload();
         }
       }
       verifyAuth();

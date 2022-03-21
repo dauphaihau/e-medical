@@ -22,10 +22,13 @@ export const accountService = {
   },
   me: async () => {
     try{
-      const {...response} = await api.get("/member/me");
+      const {request, ...response} = await api.get("/member/me");
       return response.data;
     }
-    catch(e){
+    catch(error){
+      if(error.message === 'Network Error'){
+        return -1;
+      }
       return false;
     }
   }
