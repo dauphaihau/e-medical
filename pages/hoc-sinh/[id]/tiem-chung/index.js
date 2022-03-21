@@ -10,13 +10,14 @@ import {EyeIcon, PencilAltIcon} from "@heroicons/react/outline";
 import swal from "sweetalert";
 import moment from "moment";
 
-const Vaccination = () => { 
+const Vaccination = () => {
   const router = useRouter();
   const [member, setMember] = useState();
 
   useEffect(() => {
     if(!router.isReady) return;
     loadInit();
+    return () => setMember({});
   }, [router.isReady]);
 
   const loadInit = async () => {
@@ -47,17 +48,19 @@ const Vaccination = () => {
                 <li className="mr-2">
                   <a href={`/hoc-sinh/${router.query.id}/tiem-chung`} className="inline-block py-4 px-4 text-sm font-medium text-center rounded-t-lg border-b-2 active text-primary border-primary">Tiêm chủng</a>
                 </li>
-                
+
             </ul>
           </div>
           <div className='container-table lg:w-full mt-5'>
             <div className="flex justify-between">
               <h1>Thông tin tiêm chủng</h1>
-              <Link href={`${router.asPath}/them`}>
-                <Button>Khai báo tiêm chủng</Button>
+              <Link  href={`${router.asPath}/them`}>
+                  <a>
+                    <Button>Khai báo tiêm chủng</Button>
+                  </a>
               </Link>
             </div>
-            
+
             <table className='table'>
               <thead>
               <tr>

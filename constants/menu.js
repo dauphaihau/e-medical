@@ -69,7 +69,6 @@ export const MENU = {
       link: "/bac-si",
       roles: ["manager", "admin"],
       icon: "mdi mdi-account-card-details",
-
       subNav: [
         {
           title: "Thêm bác sĩ",
@@ -79,13 +78,11 @@ export const MENU = {
         },
       ],
     },
-
     {
       title: "Danh sách nhân viên",
       link: "/to-chuc",
       roles: ["manager", "admin"],
       icon: "mdi mdi-account-box",
-
       subNav: [
         {
           title: "Thêm nhân viên",
@@ -114,24 +111,40 @@ export const MENU = {
           link: "/to-chuc/truong",
           roles: ["agent", "manager", "admin"],
           icon: "mdi mdi-medical-bag",
+          features: {
+            add: '/to-chuc/truong/them',
+            id: '/to-chuc/truong/[id]',
+          }
         },
         {
           title: "Niên Khoá",
           link: "/to-chuc/nien-khoa",
           roles: ["agent", "manager", "admin"],
           icon: "mdi mdi-needle",
+          features: {
+            add: '/to-chuc/nien-khoa/them',
+            id: '/to-chuc/nien-khoa/[id]',
+          }
         },
         {
           title: "Khối",
           link: "/to-chuc/khoi",
           roles: ["agent", "manager", "admin"],
           icon: "mdi mdi-needle",
+          features: {
+            add: '/to-chuc/khoi/them',
+            id: '/to-chuc/khoi/[id]',
+          }
         },
         {
           title: "Lớp",
           link: "/to-chuc/lop",
           roles: ["agent", "manager", "admin"],
           icon: "mdi mdi-needle",
+          features: {
+            add: '/to-chuc/lop/them',
+            id: '/to-chuc/lop/[id]',
+          }
         },
       ],
     },
@@ -146,12 +159,23 @@ export const MENU = {
           link: "/phu-huynh",
           roles: ["agent", "manager", "admin"],
           icon: "mdi mdi-medical-bag",
+          features: {
+            add: '/phu-huynh/them',
+            id: '/phu-huynh/[id]',
+          }
         },
         {
           title: "Học Sinh",
           link: "/hoc-sinh",
           roles: ["agent", "manager", "admin"],
           icon: "mdi mdi-medical-bag",
+          features: {
+            add: '/hoc-sinh/them',
+            id: '/hoc-sinh/[id]',
+            medical: '/hoc-sinh/[id]/kham-suc-khoe',
+            declareMedical: '/hoc-sinh/[id]/khai-bao-y-te',
+            vaccine: '/hoc-sinh/[id]/tiem-chung',
+          }
         },
       ],
     },
@@ -166,6 +190,10 @@ export const MENU = {
           link: "/nhan-su/giao-vien",
           roles: ["agent", "manager", "admin"],
           icon: "mdi mdi-medical-bag",
+          features: {
+            add: '/nhan-su/giao-vien/them',
+            id: '/nhan-su/giao-vien/[id]',
+          }
         },
         // {
         //   title: "Cán bộ quản lý",
@@ -178,6 +206,10 @@ export const MENU = {
           link: "/nhan-su/nhan-vien",
           roles: ["agent", "manager", "admin"],
           icon: "mdi mdi-needle",
+          features: {
+            add: '/nhan-su/nhan-vien/them',
+            id: '/nhan-su/nhan-vien/[id]',
+          }
         },
       ],
     },

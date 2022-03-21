@@ -15,6 +15,7 @@ const HealthDeclaration = () => {
   useEffect(() => {
     if(!router.isReady) return;
     loadInit();
+    return () => setMember({});
   }, [router.isReady]);
 
   const loadInit = async () => {

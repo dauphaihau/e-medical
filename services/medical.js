@@ -4,7 +4,6 @@ const api = apiRequest.init("eschool");
 export const medicalService = {
   list: async (params) => {
     try{
-      console.log(params);
       const {...response} = await api.get("/medical-condition", {params});
       return response.data;
     }

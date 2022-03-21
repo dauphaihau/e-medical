@@ -4,6 +4,15 @@ import Link from "next/link";
 
 import {MENU} from "../../constants";
 
+const handleActive = (pathName, item) => {
+  if (pathName === item.link) return 'active';
+  if (pathName === item.features?.id) return 'active';
+  if (pathName === item.features?.add) return 'active';
+  if (pathName === item.features?.declareMedical) return 'active';
+  if (pathName === item.features?.vaccine) return 'active';
+  return ''
+}
+
 const SubMenu = ({open, items}) => {
 
   if (!items) return null;
@@ -15,7 +24,7 @@ const SubMenu = ({open, items}) => {
     <ul className={`${!open ? 'hidden' : ''} sidebar-submenu`}>
       {items?.map((item, idz) => (
         <Link passHref href={item.link} key={idz}>
-          <li key={item.title} className={router.pathname === item.link ? 'active' : ''}>
+          <li key={item.title} className={handleActive(router.pathname, item)}>
             <a>
               <i className="icon-Commit pr-[20px] pl-[10px] relative top-[-2px]">
                 <span className="path1"/>
@@ -70,9 +79,9 @@ const Item = ({item, stateSidebar}) => {
             <span className={`${stateSidebar ? 'md:hidden' : ''} ${handleActive(item)}`}>{item.title}</span>
           </a>
           {!stateSidebar && <>
-              {item.subNav && <ArrowDropdown open={active}/>}
-              <SubMenu items={item.subNav} open={active}/>
-            </>
+            {item.subNav && <ArrowDropdown open={active}/>}
+            <SubMenu items={item.subNav} open={active}/>
+          </>
           }
         </div>
       </Link>

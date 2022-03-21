@@ -17,6 +17,7 @@ const ListHealth = () => {
   useEffect(() => {
     if(!router.isReady) return;
     loadInit();
+    return () => setMember({});
   }, [router.isReady]);
 
   const loadInit = async () => {
@@ -29,7 +30,6 @@ const ListHealth = () => {
     setMember(memberRes);
 
     const listMedical = await medicalService.list({memberId: memberRes._id});
-    console.log(listMedical);
     setListMedical(listMedical);
   }
 

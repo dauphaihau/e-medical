@@ -25,7 +25,7 @@ const SchoolYearList = () => {
 
   useEffect(() => {
     if (!router.isReady) return;
-    loadInit();
+    loadInit()
     return () => setListSchoolYear([])
   }, [router.isReady]);
 
