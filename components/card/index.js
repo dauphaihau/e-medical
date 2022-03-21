@@ -2,12 +2,12 @@ const Card = (props) => {
 
   const {
     children,
-    css = '',
+    classes = '',
   } = props;
 
   return (
     <>
-      <div className={`card ${css}`}>
+      <div className={`card ${classes}`}>
         {children}
       </div>
     </>

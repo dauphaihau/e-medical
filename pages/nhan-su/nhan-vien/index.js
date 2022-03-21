@@ -10,6 +10,7 @@ import {PencilIcon} from "@heroicons/react/outline";
 import Button from "@components/button";
 import {locationService} from "../../../services";
 import Select from "../../../components/form/select";
+import {useAuth} from "../../../context/auth";
 
 const Staff = () => {
   const router = useRouter();
@@ -164,28 +165,33 @@ const Staff = () => {
         <div className='container-table'>
           <table className='table'>
             <thead>
-            <tr>
-              <th className="w-3">STT</th>
-              <th>Họ tên</th>
-              <th>Phone</th>
-              <th>Địa chỉ</th>
-              <th/>
-            </tr>
+                                                                                     <tr>
+                                                                                     <th className="w-3">STT</th>
+                                                                                     <th>Họ tên</th>
+                                                                                     <th>Phone</th>
+                                                                                     <th>Địa chỉ</th>
+                                                                                     <th/>
+                                                                                     </tr>
             </thead>
             <tbody>
               {members?.total
                 ? members.data.map((row, idz) => (
                   <tr key={idz}>
-                    <td>{idz + 1}</td>
-                    <td className='text-center'>{row.fullName}</td>
-                    <td className='text-center'>{row.phoneNumber}</td>
-                    <td className='text-center'>{row.address}</td>
-                    <td>
-                      <Link href={router.pathname + '/' + row._id}>
-                         <a><PencilIcon className='h-5 w-5 inline'/></a>
-                      </Link>
-                    </td>
-                  </tr>
+                                                                                     <td>{idz + 1}</td>
+                                                                                     <td
+                                                                                       className='text-center'>{row.fullName}</td>
+                                                                                     <td
+                                                                                       className='text-center'>{row.phoneNumber}</td>
+                                                                                     <td
+                                                                                       className='text-center'>{row.address}</td>
+                                                                                     <td>
+                                                                                     <Link
+                                                                                       href={router.pathname + '/' + row._id}>
+                                                                                     <a><PencilIcon
+                                                                                       className='h-5 w-5 inline'/></a>
+                                                                                     </Link>
+                                                                                     </td>
+                                                                                     </tr>
                 ))
                 : (<tr><td colSpan='5'>Chưa có dữ liệu</td></tr>)
               }

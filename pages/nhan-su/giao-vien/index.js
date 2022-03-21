@@ -10,6 +10,7 @@ import Button from "@components/button";
 import {PencilIcon} from "@heroicons/react/outline";
 import Select from "@components/form/select";
 import {classroomService, schoolService} from "@services";
+import {useAuth} from "../../../context/auth";
 
 const Teacher = () => {
   const router = useRouter();

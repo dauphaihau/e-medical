@@ -3,6 +3,7 @@ import {useRouter} from "next/router";
 import Link from "next/link";
 
 import {MENU} from "../../constants";
+import {useAuth} from "../../context/auth";
 
 const handleActive = (pathName, item) => {
   if (pathName === item.link) return 'active';
@@ -68,7 +69,7 @@ const Item = ({item, stateSidebar}) => {
   const handleActive = (item) => router.pathname == item.link ? 'active' : '';
 
   return (
-    <li className={handleActive(item)}>
+    <li className={`${handleActive(item)} handleRole(`}>
       <Link href={item.link ? item.link : '#'}>
         <div onClick={() => setActive(!active)}>
           <i className={`text-gray-400 ${item.icon} ${handleActive(item)}`}>
@@ -90,10 +91,13 @@ const Item = ({item, stateSidebar}) => {
 };
 
 const Sidebar = ({stateSidebar}) => {
+
+  const {user} = useAuth();
+
   return (
     <aside className={`sidebar ${stateSidebar ? 'sidebar-open w-75 md:w-16' : 'sidebar-open'}`}>
       <ul className='sidebar-menu'>
-        {MENU.staff_agent.map((item, idz) => (
+        {MENU[user?.role].map((item, idz) => (
           <Item key={idz} item={item} stateSidebar={stateSidebar}/>
         ))}
       </ul>
