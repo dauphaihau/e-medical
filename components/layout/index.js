@@ -12,6 +12,7 @@ const Layout = ({children}) => {
   const [stateSideBar, setStateSideBar] = useState(false)
   const {user, setUser} = useAuth();
 
+  console.log('user', user)
 
   return (
     <>

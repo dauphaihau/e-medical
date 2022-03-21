@@ -4,7 +4,7 @@ import Select from "@components/form/select";
 
 const cards = [
   {title: 'Tổng số lớp học', valueNumber: 48},
-  {title: 'Tổng số Giáo viên, Cán bộ, Nhân viên ', valueNumber: 89},
+  {title: 'Tổng số nhân sự', valueNumber: 89},
   {title: 'Tổng số Học sinh', valueNumber: 1000},
 ];
 
@@ -39,8 +39,12 @@ const Summary = () => {
           <div className='box-grid'>
             {cards.map((card, index) => (
               <Card key={index}>
-                <p className='card-title'>{card.title}</p>
-                <p className='card-body'>{card.valueNumber}</p>
+                <div className='flex justify-between'>
+                  <div>
+                    <p className='card-title'>{card.title}</p>
+                    <p className='card-body'>{card.valueNumber}</p>
+                  </div>
+                </div>
               </Card>
             ))}
           </div>
@@ -68,7 +72,7 @@ const Summary = () => {
           </div>
         </div>
         <div className='box'>
-          <h3>Thông tin mới cập nhật</h3>
+          <h3>Phòng thí nghiệm thử</h3>
           <Card>
             {students.map((sd, index) => (
               <div key={index} className='mb-4'>

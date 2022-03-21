@@ -1,34 +1,36 @@
-.card {
-  @apply rounded-xl m-0 relative w-full bg-white border-r-4
-  p-0 flex flex-col p-6;
-  transition: .5s;
-  box-shadow: 0 3px 5px 1px rgba(0, 0, 0, .05);
-  border: 1px solid #efeffd;
+@layer components {
+  .card {
+    @apply rounded-xl m-0 relative w-full bg-white border-r-4
+    p-0 flex flex-col p-6;
+    transition: .5s;
+    box-shadow: 0 3px 5px 1px rgba(0, 0, 0, .05);
+    border: 1px solid #efeffd;
 
-  &-title {
-    @apply inline-block m-0 font-normal text-base text-black text-xl z-auto leading-[1.2]
-  }
-
-  &-body {
-    @apply font-normal text-[2.8rem]
-  }
-}
-
-.box-container {
-  @apply grid gap-8;
-  .box {
-    h3 {
-      @apply text-[1.28rem] mb-3;
+    &-title {
+      @apply inline-block m-0 font-normal text-base text-black text-xl z-auto leading-[1.2]
     }
 
-    &-grid {
-      @apply grid md:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6;
+    &-body {
+      @apply font-normal text-[2.8rem]
     }
   }
-}
 
-.box-grid-custom {
-  display: grid;
-  grid-gap: 10px;
-  grid-template-columns: repeat(auto-fit, minmax(390px, 1fr));
+  .box-container {
+    @apply grid gap-8;
+    .box {
+      h3 {
+        @apply text-[1.28rem] mb-3;
+      }
+
+      &-grid {
+        @apply grid md:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6;
+      }
+    }
+  }
+
+  .box-grid-custom {
+    display: grid;
+    grid-gap: 10px;
+    grid-template-columns: repeat(auto-fit, minmax(390px, 1fr));
+  }
 }

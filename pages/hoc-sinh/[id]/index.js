@@ -80,6 +80,7 @@ const DetailStudent = () => {
       swal('Thông tin này không tồn tại!!', '', 'error')
         .then(() => router.push('/hoc-sinh'));
     }
+    console.log('member-res', memberRes)
     setMember(memberRes);
 
     const initDataState = {
