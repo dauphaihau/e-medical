@@ -3,10 +3,22 @@ import apiRequest from './request';
 const api = apiRequest.init("anhquoc");
 export const accountService = {
   requestPhonePin: async (phoneNumber) => {
-    const {request, ...response} = await api.get(
-      "/account/requestPhonePin",
-      {params: {phoneNumber}}
-    );
+    try{
+      const {request, ...response} = await api.get(
+        "/account/requestPhonePin",
+        {params: {phoneNumber}}
+      );
+      return {
+        status: true,
+        data: response.data
+      };
+    }
+    catch({response}){
+      return {
+        status: false,
+        message: 'Số điện thoại không hợp lệ'
+      };
+    }
   },
   register: async (data) => {
     await api.post("/account/register", data);

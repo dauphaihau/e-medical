@@ -114,7 +114,7 @@ export const memberService = {
       };
       const {...response} = await api.get("/member", {params});
       return response.data;
-    } catch (e) {
+    } catch ({response}) {
       return false
     }
   },

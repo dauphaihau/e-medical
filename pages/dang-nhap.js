@@ -82,7 +82,10 @@ export default function Login() {
           time: Moment(),
           phoneNumber,
         });
-        await accountService.requestPhonePin(phoneNumber);
+        const result = await accountService.requestPhonePin(phoneNumber);
+        if(!result.status){
+          swal(result.message, '', 'error');
+        }
       }
     }, 800);
   };
