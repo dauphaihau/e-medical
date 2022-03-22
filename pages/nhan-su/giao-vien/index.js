@@ -10,7 +10,6 @@ import Button from "@components/button";
 import {PencilIcon} from "@heroicons/react/outline";
 import Select from "@components/form/select";
 import {classroomService, schoolService} from "@services";
-import {useAuth} from "../../../context/auth";
 
 const Teacher = () => {
   const router = useRouter();
@@ -55,19 +54,12 @@ const Teacher = () => {
 
     if (_.isEmpty(query)) {
       const listMember = await memberService.list({type: 'teacher'});
-      console.log('list-member', listMember)
-      // const checkedSchoolWorking = _.filter(listMember, (e) => _.omitBy(e.schoolWorking?.schoolId, _.isNil))
-      const checkedSchoolWorking = listMember.filter((e) => !_.isNil(e.schoolWorking.schoolId))
+      setMembers(listMember);
 
-      console.log('checked-school-working', checkedSchoolWorking)
-
-      // setMembers(checkedSchoolWorking);
-      
     } else {
       const listMember = await memberService.list({...query, type: 'teacher'});
-      // const checkedSchoolWorking = _.filter(listMember, (e) => _.omitBy(e.schoolWorking?.schoolId, _.isNil))
-      // setMembers(checkedSchoolWorking);
-      
+      setMembers(listMember);
+
       if (query.schoolId) {
         let schoolOption = await schoolService.detail(query.schoolId);
         schoolOption = {
@@ -117,12 +109,12 @@ const Teacher = () => {
     console.log('res', res);
 
     if (!res) {
-      swal({
+      swal( {
         text: "Nội dung tìm kiếm ít nhất là 3 ký tự",
         icon: "error"
       });
     }
-    setMembers(res.data);
+    setMembers(res);
   };
 
   return (
@@ -174,8 +166,8 @@ const Teacher = () => {
             </tr>
             </thead>
             <tbody>
-              {members?.total
-                ? members.data.map((row, idz) => (
+              {!_.isEmpty(members)
+                ? members.data?.map((row, idz) => (
                   <tr key={idz}>
                         <td>{idz + 1}</td>
                         <td>{row.fullName}</td>

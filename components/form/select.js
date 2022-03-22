@@ -12,6 +12,7 @@ const Select = (props) => {
     error = '',
     placeholder ='',
     useFormik = false,
+    isDisable= false,
     ...others
   } = props;
 
@@ -19,6 +20,7 @@ const Select = (props) => {
     <div className={`form-group ${direction} ${width}`}>
       <label>{label}</label>
       <ReactSelect
+        isDisabled={isDisable}
         id={name}
         placeholder={placeholder}
         name={name}

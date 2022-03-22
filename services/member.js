@@ -139,6 +139,33 @@ export const memberService = {
       return false;
     }
   },
+  // manager
+  listManagers: async (params) => {
+    try {
+      params = {
+        ...params, ...{
+          type: 'manager'
+        }
+      };
+      const {...response} = await api.get("/member", {params});
+      return response.data;
+    } catch (e) {
+      return false
+    }
+  },
+  createManager: async (data) => {
+    try {
+      data = {
+        ...data, ...{
+          role: 'manager',
+        }
+      }
+      await api.post("/member/", data);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  },
   addVaccination: async (id, data) => {
     try {
       const {...response} = await api.post(`/member/${id}/vaccination`, data);

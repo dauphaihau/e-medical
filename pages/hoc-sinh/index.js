@@ -55,11 +55,18 @@ const Student = () => {
     setProvinceOptions(provinces);
 
     if (_.isEmpty(query)) {
+      // if (_.isNil(user.schoolWorking.schoolId)) {
+      //   setMembers([])
+      // } else {
+      //   const listMember = await memberService.listStudent({schoolId: user.schoolWorking.schoolId});
+      //   // const listMember = await memberService.listStudent();
+      //   setMembers(listMember);
+      // }
 
       const listMember = await memberService.listStudent();
       setMembers(listMember);
-    } else {
 
+    } else {
       const listMember = await memberService.listStudent(query);
       setMembers(listMember);
 
@@ -113,7 +120,7 @@ const Student = () => {
         icon: "error"
       });
     }
-    setMembers(res.data)
+    setMembers(res)
   };
 
   return (
@@ -178,8 +185,8 @@ const Student = () => {
               </tr>
               </thead>
               <tbody>
-                {members?.total
-                  ? members.data.map((row, idz) => (
+                {!_.isEmpty(members)
+                  ? members.data?.map((row, idz) => (
                     <tr key={idz}>
                     <td>{idz + 1}</td>
                     <td className='text-center'>{row.fullName}</td>

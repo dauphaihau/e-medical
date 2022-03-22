@@ -97,8 +97,7 @@ const Sidebar = ({stateSidebar}) => {
   return (
     <aside className={`sidebar ${stateSidebar ? 'sidebar-open w-75 md:w-16' : 'sidebar-open'}`}>
       <ul className='sidebar-menu'>
-        {/*{MENU[user?.role].map((item, idz) => (*/}
-        {MENU['admin'].map((item, idz) => (
+        {MENU[user?.role].map((item, idz) => (
           <Item key={idz} item={item} stateSidebar={stateSidebar}/>
         ))}
       </ul>

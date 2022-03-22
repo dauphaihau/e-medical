@@ -8,13 +8,15 @@ import {memberService} from "@services";
 import Input from "@components/form/input";
 import {PencilIcon} from "@heroicons/react/outline";
 import Button from "@components/button";
-import Select from "@components/form/select";
-import {locationService} from "@services";
+import {locationService} from "../../../services";
+import Select from "../../../components/form/select";
+import {useAuth} from "../../../context/auth";
 
-const Parent = () => {
+const Manager = () => {
   const router = useRouter();
   const {query} = router;
   const [members, setMembers] = useState();
+
   const [provinceOptions, setProvinceOptions] = useState([]);
   const [districtOptions, setDistrictOptions] = useState([])
   const [wardOptions, setWardOptions] = useState([])
@@ -34,7 +36,6 @@ const Parent = () => {
       label: ''
     },
   })
-
   const [filter, setFilter] = useState({
     s: '',
     province: '',
@@ -53,11 +54,10 @@ const Parent = () => {
     setProvinceOptions(provinces);
 
     if (_.isEmpty(query)) {
-      const listMember = await memberService.listParent();
+      const listMember = await memberService.listManagers();
       setMembers(listMember);
-
     } else {
-      const listMember = await memberService.listParent(query);
+      const listMember = await memberService.listManagers(query);
       setMembers(listMember);
 
       if (query.province) {
@@ -103,19 +103,19 @@ const Parent = () => {
       {shallow: true}
     );
 
-    const res = await memberService.listParent(newFilter)
+    const res = await memberService.listManagers(newFilter)
     if (!res) {
       swal({
         text: "Nội dung tìm kiếm ít nhất là 3 ký tự",
         icon: "error"
       });
     }
-    setMembers(res.data)
+    setMembers(res)
   };
 
   return (
     <>
-      <h4>Danh sách phụ huynh</h4>
+      <h4>Danh sách cán bộ quản lý</h4>
       <form onSubmit={handleSubmitSearch}>
         <div className="grid-container">
           <Input
@@ -162,39 +162,38 @@ const Parent = () => {
         <Button type='submit'>Tìm kiếm</Button>
       </form>
       <div className="mt-8 drop-shadow-2xl overflow-x-auto lg:overflow-x-visible">
-        <div className='container-table w-[1200px] lg:w-full'>
+        <div className='container-table'>
           <table className='table'>
             <thead>
-            <tr>
-              <th className="w-3">STT</th>
-              <th className='text-left'>Họ tên</th>
-              <th className='text-left'>Phone</th>
-              <th className='text-left'>Địa chỉ</th>
-              <th className='text-left'>Quận</th>
-              <th className='text-left'>Tỉnh</th>
-              <th className='text-left'>Phường</th>
-              <th className="w-2"/>
-            </tr>
+              <tr>
+                <th className="w-3">STT</th>
+                <th>Họ tên</th>
+                <th>Phone</th>
+                <th>Địa chỉ</th>
+                <th/>
+              </tr>
             </thead>
             <tbody>
               {!_.isEmpty(members)
                 ? members.data?.map((row, idz) => (
                   <tr key={idz}>
-                      <td>{idz + 1}</td>
-                      <td className='text-left'>{row.fullName}</td>
-                      <td className='text-left'>{row.phoneNumber}</td>
-                      <td className='text-left'>{row.address}</td>
-                      <td className='text-left'>{row.province.provinceName}</td>
-                      <td className='text-left'>{row.district.districtName}</td>
-                      <td className='text-left'>{row.ward.wardName}</td>
-                      <td>
-                        <Link href={router.pathname + '/' + row._id}>
-                           <a><PencilIcon className='h-5 w-5 inline'/></a>
-                        </Link>
-                      </td>
+                    <td>{idz + 1}</td>
+                    <td
+                      className='text-center'>{row.fullName}</td>
+                    <td
+                      className='text-center'>{row.phoneNumber}</td>
+                    <td
+                      className='text-center'>{row.address}</td>
+                    <td>
+                    <Link
+                      href={router.pathname + '/' + row._id}>
+                    <a><PencilIcon
+                      className='h-5 w-5 inline'/></a>
+                    </Link>
+                    </td>
                     </tr>
                 ))
-                : (<tr><td colSpan='9'>Chưa có dữ liệu</td></tr>)
+                : (<tr><td colSpan='5'>Chưa có dữ liệu</td></tr>)
               }
             </tbody>
           </table>
@@ -204,4 +203,4 @@ const Parent = () => {
   );
 }
 
-export default Parent;
+export default Manager;

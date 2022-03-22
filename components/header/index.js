@@ -7,6 +7,7 @@ import logo from "../../assets/images/logo.svg";
 import onlyLogo from "../../assets/images/onlylogo.png";
 import Button from "../button";
 import {useAuth} from "../../context/auth";
+import {schoolService} from "../../services";
 
 const removeSession = (sKey, sPath, sDomain) => {
   document.cookie = encodeURIComponent(sKey) +
@@ -74,6 +75,9 @@ function renderButtonAddNew(pathname) {
   if (pathname.includes('nhan-vien')) {
     addLink = '/nhan-su/nhan-vien/them';
   }
+  if (pathname.includes('can-bo')) {
+    addLink = '/nhan-su/can-bo/them';
+  }
 
   return (
     <Link href={addLink}>
@@ -82,27 +86,34 @@ function renderButtonAddNew(pathname) {
   );
 };
 
-const handleRole = (role) => {
+const handleRole = (role, school = '') => {
   const labelRoles = {
     parent: 'Phụ huynh',
     teacher: 'Giáo viên',
     student: 'Học sinh',
     staff: 'Nhân viên',
+    manager: 'Cán bộ quản lý',
     admin: 'Quản trị viên',
   };
-  return labelRoles[role] ? labelRoles[role]: '';
+  return labelRoles[role] ? `${labelRoles[role]}: ${school && school.schoolname}` : '';
 };
 
 const Header = ({stateSidebar, setStateSidebar}) => {
   const router = useRouter();
   const [dropdown, setDropdown] = useState(false)
   const {user} = useAuth();
+  const [school, setSchool] = useState()
   const innerRef = useOuterClick(() => {
     setDropdown(false)
   });
-  let addLink = '';
-  if (router.pathname.includes('to-chuc/truong')) {
-    addLink = '/to-chuc/truong/them';
+
+  useEffect(() => {
+    loadInit()
+  }, [user.role])
+
+  const loadInit = async () => {
+    const resSchool = await schoolService.detail(user.schoolWorking.schoolId);
+    setSchool(resSchool)
   }
 
   return (
@@ -139,7 +150,7 @@ const Header = ({stateSidebar, setStateSidebar}) => {
           <div className='navbar-right__info' ref={innerRef} onClick={() => setDropdown(!dropdown)}>
             <div>
               <p>{user?.fullName}</p>
-              <p>{handleRole(user?.role)}</p>
+              <p>{handleRole(user?.role, school)}</p>
             </div>
             <img src="https://i.pravatar.cc/300" alt='avatar'/>
           </div>

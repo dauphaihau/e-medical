@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import {useRouter} from "next/router";
-import {Formik, Form} from "formik";
+import {Formik, Form, Field} from "formik";
 import * as Yup from "yup";
 import swal from "sweetalert";
 import AsyncSelect from 'react-select/async';
@@ -13,6 +13,7 @@ import Radio, {RadioGroup} from "@components/form/radio";
 import Button from "@components/button";
 import Select from "@components/form/select";
 import {TrashIcon} from "@heroicons/react/outline";
+import {useAuth} from "../../context/auth";
 
 const validationSchema = Yup.object().shape({
   fullName: Yup.string()
@@ -21,8 +22,8 @@ const validationSchema = Yup.object().shape({
     .max(50, 'Họ tên tối đa là 50 ký tự'),
   dateOfBirth: Yup.string().required('Ngày sinh không được để trống'),
   schoolYearId: Yup.string().required('Vui lòng chọn niên khóa'),
-  parent: Yup.array().min(0, 'Vui lòng chọn phụ huynh').required('Vui lòng chọn phụ huynh'),
-  schoolId: Yup.string().required('Vui lòng chọn trường.'),
+  // parent: Yup.array().min(1, 'Vui lòng chọn phụ huynh').required('Vui lòng chọn phụ huynh'),
+  // schoolId: Yup.string().required('Vui lòng chọn trường.'),
   classId: Yup.string().required('Vui lòng chọn lớp.'),
 });
 
@@ -30,10 +31,12 @@ const AddStudent = () => {
   const router = useRouter();
   const [parents, setParents] = useState([]);
   const [listSchool, setListSchool] = useState();
+  const [school, setSchool] = useState()
   const [listSchoolYear, setListSchoolYear] = useState();
   const [listGroup, setListGroup] = useState();
   const [listClass, setListClass] = useState();
   const [parentSelect, setParentSelect] = useState({})
+  const {user: {schoolWorking: {schoolId} = {}}} = useAuth();
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -42,11 +45,15 @@ const AddStudent = () => {
   }, [router.isReady])
 
   const loadInit = async () => {
-    const schools = await schoolService.list({limit: 100});
-    if (schools.total) {
-      setListSchool(schools.data.map((data) => ({
+
+    const resSchool = await schoolService.detail(schoolId);
+    setSchool(resSchool)
+
+    const schoolYear = await schoolYearService.list({schoolId})
+    if (schoolYear.total) {
+      setListSchoolYear(schoolYear.data.map((data) => ({
         value: data._id,
-        label: data.schoolname,
+        label: data.schoolYearName,
       })));
     }
   }
@@ -113,15 +120,14 @@ const AddStudent = () => {
   };
 
   const handleParent = (...newParent) => {
-
     const newArrParents = [...parents, ...newParent];
-
     setParents(newArrParents)
 
     const submitParents = _.uniq(newArrParents);
-    return submitParents.map((v)=> ({parentId: v.value, fullName:v.fullName}))
+    return submitParents.map((v) => ({parentId: v.value, fullName: v.fullName}))
   };
 
+  console.log('list-school', listSchool)
   return (
     <>
       <h4>Thêm mới học sinh</h4>
@@ -130,12 +136,13 @@ const AddStudent = () => {
         onSubmit={handleSubmitForm}
         enableReinitialize
         initialValues={{
-          schoolId: '',
+          schoolId: school?._id,
           classId: '',
           parent: '',
           fullName: '',
           dateOfBirth: '',
           gender: '',
+          role: 'teacher'
         }}
       >
         {({
@@ -146,9 +153,10 @@ const AddStudent = () => {
             <h3>Thông tin cá nhân</h3>
             <div className='grid lg:grid-cols-2 gap-x-6'>
               <Select
+                value={{value: school?._id, label: school?.schoolname}}
+                isDisable={true}
                 label='Tên Trường'
                 name='schoolId'
-                useFormik='true'
                 onChange={e => {
                   onChangeSchool(e.value);
                   setFieldValue('schoolId', e.value)
@@ -188,8 +196,12 @@ const AddStudent = () => {
               <Input label='Ngày sinh' name='dateOfBirth' useFormik onChange={handleChange}/>
             </div>
             <RadioGroup label='Giới Tính'>
-              <Radio name='sex' value='male' labelName="Nam" id="sex-male"/>
-              <Radio name='sex' value='female' labelName="Nữ" id='sex-female'/>
+              <label className='mr-4'>
+                <Field className='mr-2' type="radio" name="gender" value="1"/>Nam
+              </label>
+              <label className='mr-4'>
+                <Field className='mr-2' type="radio" name="gender" value="2"/>Nữ
+              </label>
             </RadioGroup>
             <h3 className='mt-6'>Phụ Huynh</h3>
             <div className="grid lg:grid-cols-2 gap-x-6">
