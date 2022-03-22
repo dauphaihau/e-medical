@@ -1,26 +1,29 @@
 //template https://medical-admin-template.multipurposethemes.com/main/ui_badges.html
-.badge {
-  @apply inline-flex items-center justify-center px-4 py-2
-  text-xs leading-none text-white rounded bg-info;
 
-  .badge-primary {
-    @apply bg-primary;
+@layer components {
+  .badge {
+    @apply inline-flex items-center justify-center px-4 py-2
+    text-xs leading-none text-white rounded bg-info;
+
+    .badge-primary {
+      @apply bg-primary;
+    }
+
+    .badge-success {
+      @apply bg-success;
+    }
+
+    .badge-info {
+      @apply bg-info;
+    }
+
+    .badge-warning {
+      @apply bg-warning;
+    }
+
+    .badge-danger {
+      @apply bg-danger;
+    }
+
   }
-
-  .badge-success {
-    @apply bg-success;
-  }
-
-  .badge-info {
-    @apply bg-info;
-  }
-
-  .badge-warning {
-    @apply bg-warning;
-  }
-
-  .badge-danger {
-    @apply bg-danger;
-  }
-
 }

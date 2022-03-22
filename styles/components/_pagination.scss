@@ -5,7 +5,15 @@
     @apply flex items-center justify-end;
 
     &__item {
-      @apply inline-block mb-[6px] flex flex-row items-center;
+      @apply block mb-[6px] flex flex-row items-center;
+
+      figure {
+        @apply h-4 w-4;
+      }
+
+      figure.disabled {
+        @apply text-gray-300;
+      }
 
       p {
         @apply text-black cursor-pointer hover:bg-primary hover:text-white duration-300 transition ease-in-out rounded;
@@ -13,8 +21,16 @@
       }
 
       a {
-        @apply cursor-pointer mx-2 text-center rounded-sm text-white bg-primary;
+        @apply cursor-pointer mx-1 text-center rounded-sm text-black;
         padding: 7px 14px;
+      }
+
+      a.selected {
+        @apply bg-primary text-white;
+      }
+
+      a:hover {
+        @apply bg-primary text-white;
       }
     }
   }

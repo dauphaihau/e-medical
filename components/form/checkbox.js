@@ -1,14 +1,24 @@
-import React from "react";
+const Checkbox = (props) => {
 
-const Checkbox = ({label,value,name,id,title,color,types,fors}) => (
-  // {console.log(color)}
-    <div className={`form-group ${types=== "bgcheckbox" ? 'mb-0' : '' }`} >
-    <label>{label}</label>
-    <div className="form-switch pl-10">      
-      <input type="checkbox" className="pl-4 form-check-input" name={name} id={id}/>
-      <label className="form-check-label" for={fors} style={{color : `${color}`}}>{title}</label>
+  const {
+    value,
+    checked,
+    className = '',
+    defaultChecked = null,
+    label = '',
+    ...others
+  } = props;
+
+  return (
+    <div className="form-check-input">
+      <input
+        type="checkbox"
+        checked={value || defaultChecked}
+        {...others}
+      />
+      <label>{label}</label>
     </div>
-    </div>
-);
+  );
+}
 
 export default Checkbox;

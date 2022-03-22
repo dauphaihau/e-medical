@@ -1,39 +1,37 @@
-import {Formik, Form} from "formik";
-import * as Yup from "yup";
 import {useEffect, useState} from "react";
 import {useRouter} from "next/router";
+import * as Yup from "yup";
 import swal from "sweetalert";
 import Link from "next/link";
 
-import Input from "../../../../components/form/input";
-import Button from "../../../../components/button";
-import Select from "../../../../components/form/select";
-import Layout from "../../../../components/layout";
-import {classroomService, schoolService} from "../../../../services";
-import schoolYearService from "../../../../services/organize/school-year";
+import {Formik, Form} from "formik";
+import Input from "@components/form/input";
+import Button from "@components/button";
+import Select from "@components/form/select";
+import {classroomService, schoolService, schoolYearService} from "@services";
 
 const validationSchema = Yup.object().shape({
-  className: Yup.string().required('Tên khối không được để trống').max(50, 'Tên khối tối đa là 50 ký tự').min(5, 'Tên khối phải ít nhất 5 ký tự'),
+  className: Yup.string()
+    .required('Tên khối không được để trống')
+    .max(50, 'Tên khối tối đa là 50 ký tự')
+    .min(5, 'Tên khối phải ít nhất 5 ký tự'),
   schoolYearId: Yup.string().required('Niên khoá không được để trống'),
   schoolId: Yup.string().required('Tên trường không được để trống'),
 });
 
 const AddGroup = () => {
-
   const router = useRouter();
-  const [listSchool, setListSchool] = useState();
-  const [schoolYear, setSchoolYear] = useState([])
+  const [listSchool, setListSchool] = useState([]);
+  const [listSchoolYear, setListSchoolYear] = useState([])
+  const [schoolYearSelected, setSchoolYearSelected] = useState()
 
   useEffect(() => {
     if (!router.isReady) return;
-    let abortController = new AbortController();
-
     loadInit();
-    return () => abortController.abort();
-  }, [router.isReady, router.asPath]);
+  }, [router.isReady]);
 
   const loadInit = async () => {
-    const schools = await schoolService.list({limit: 20});
+    const schools = await schoolService.list({limit: 100});
     if (schools.total) {
       setListSchool(schools.data.map((data) => ({
         value: data._id,
@@ -42,37 +40,32 @@ const AddGroup = () => {
     }
   }
 
-  const handleSubmitForm = async (values) => {
-    console.log('values', values);
-    try {
-      await classroomService.create(values)
+  const handleSubmitForm = async (data) => {
+    const result = await classroomService.createGroup(data);
+    if (result) {
       swal({
-        text: "Tạo khối thành công",
+        text: "Thêm mới thành công",
         icon: "success"
       })
-      router.back()
-    } catch ({response}) {
-      console.log(response);
-      if (response.data.message) {
-        swal({
-          text: "Niên khoá này đã có khối, vui lòng tạo khối niên khoá khác",
-          icon: "error"
-        })
-      }
+        .then(() => router.push('/to-chuc/khoi/'));
+    } else {
+      swal({
+        text: "Thêm mới không thành công",
+        icon: "error"
+      });
     }
   };
 
   const onChangeSchool = async (idSchool) => {
-    console.log(idSchool);
-
-    const {...response} = await schoolYearService.list()
-    console.log('all-School-year', response.data);
-
-    const classroom = await classroomService.list({idSchool});
-    console.log('classroom', classroom);
-
-    // const schoolYear = await schoolYearService.detail(idSchool);
-    // console.log('school-year', schoolYear);
+    const schoolYears = await schoolYearService.list({schoolId: idSchool, limit: 100})
+    if (schoolYears && schoolYears.total) {
+      setListSchoolYear(schoolYears.data.map((data) => ({
+        value: data._id,
+        label: data.schoolYearName,
+      })));
+    } else {
+      setListSchoolYear();
+    }
   };
 
   return (
@@ -85,15 +78,15 @@ const AddGroup = () => {
         schoolId: '',
         schoolYearId: '',
         parentId: null,
-        status: '1'
+        status: 1
       }}
     >
       {({
           handleChange,
           setFieldValue
         }) => (
-        <Form className='form lg:w-1/4'>
-          <h3>Thiết lập khối</h3>
+        <Form className='form lg:w-1/2'>
+          <h3>Thêm khối</h3>
           <div>
             <Select
               label='Tên trường'
@@ -101,21 +94,29 @@ const AddGroup = () => {
               onChange={e => {
                 onChangeSchool(e.value);
                 setFieldValue('schoolId', e.value);
+                setSchoolYearSelected([]);
               }}
               options={listSchool}
               placeholder='Chọn trường'
+              useFormik
             />
             <Select
               label='Niên khoá'
               name='schoolYearId'
-              onChange={e => setFieldValue('schoolYearId', e.value)}
-              options={schoolYear}
+              value={schoolYearSelected}
+              onChange={e => {
+                setSchoolYearSelected(e);
+                setFieldValue('schoolYearId', e.value);
+              }}
+              options={listSchoolYear}
               placeholder='Chọn niên khoá'
+              useFormik
             />
             <Input
               name='className'
               label='Tên khối'
               onChange={handleChange}
+              useFormik
             />
           </div>
           <div className='py-4'>
@@ -131,5 +132,3 @@ const AddGroup = () => {
 }
 
 export default AddGroup;
-
-AddGroup.getLayout = (page) => <Layout>{page}</Layout>;

@@ -1,28 +1,45 @@
-export default function Pagination({data = []}) {
+import {ChevronRightIcon, ChevronLeftIcon} from "@heroicons/react/outline";
 
-  const handleCountPage = data => {
-    if (!data) return;
-    let numPage = [1];
-    for (let i = 1; i < data.length; i++) {
-      if (data.length > i * 10) {
-        numPage.push(i + 1)
-      }
-    }
-    return numPage;
-  };
+const Pagination = (props) => {
 
-  const numberPagination = handleCountPage(data);
+  const {
+    rows = [],
+    itemsPerPage ,
+    onPageChange,
+    currentPage
+  } = props;
+
+  const pageNumbers = [];
+
+  for (let i = 1; i <= Math.ceil(rows.length / itemsPerPage); i++) {
+    pageNumbers.push(i);
+  }
 
   return (
     <div className="pagination">
-      <p className='pagination__entries'>Hiển thị 1 đến {data.length} của danh sách</p>
+      <p className='pagination__entries'>Hiển thị 1 đến {rows.length} của danh sách</p>
       <div className="pagination__num">
         <div className="pagination__num__item">
-          <p>Trước</p>
-          <a>1</a>
-          <p>Tiếp</p>
+          <figure className={currentPage === 1? 'disabled':''}>
+            <ChevronLeftIcon/>
+          </figure>
+          {pageNumbers.map(pageNumber => (
+            <div key={pageNumber}>
+              <a
+                className={currentPage === pageNumber ? 'selected' : ''}
+                onClick={() => onPageChange(pageNumber)}
+              >
+                {pageNumber}
+              </a>
+            </div>
+          ))}
+          <figure className={currentPage === rows.length - 1? 'disabled':''}>
+            <ChevronRightIcon/>
+          </figure>
         </div>
       </div>
     </div>
   )
 }
+
+export default Pagination;

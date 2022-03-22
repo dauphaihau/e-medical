@@ -1,93 +1,202 @@
 import {useEffect, useState} from "react";
-import Link from "next/link";
 import {useRouter} from "next/router";
+import Link from "next/link";
+import swal from "sweetalert";
+import {Form, Formik} from "formik";
+import _ from "lodash";
+import * as Yup from "yup";
+
+import Input from "@components/form/input";
+import {schoolYearService} from "@services";
+import Pagination from "@components/table/pagination";
 import {PencilIcon, TrashIcon} from "@heroicons/react/outline";
+import {schoolService} from "@services";
+import Button from "@components/button";
+import Select from "@components/form/select";
 
-import Input from "../../../components/form/input";
-import Layout from "../../../components/layout";
-import Button from "../../../components/button";
-import schoolYearService from "../../../services/organize/school-year";
-import Pagination from "../../../components/table/pagination";
-
-const skip = 0;
+let skip = 0;
 
 const SchoolYearList = () => {
-
-  const [listSchoolYear, setListSchoolYear] = useState([])
   const router = useRouter();
+  const {query} = router;
+  const [listSchoolYear, setListSchoolYear] = useState([])
+  const [listSchool, setListSchool] = useState([]);
+  const [schoolSelected, setSchoolSelected] = useState();
 
-  useEffect(async () => {
-    try {
-      const {...response} = await schoolYearService.list()
-      setListSchoolYear(response.data)
-      console.log('response-data', response.data);
-    } catch (error) {
-      console.log({error})
+  useEffect(() => {
+    if (!router.isReady) return;
+    loadInit()
+    return () => setListSchoolYear([])
+  }, [router.isReady]);
+
+  const loadInit = async () => {
+
+    if (
+      query &&
+      query.s &&
+      query.s.length <= 3
+    ) {
+      swal("", "Số ký tự tìm kiếm phải lớn hơn 3", "warning", {
+        button: "Tôi đã hiểu",
+        dangerMode: true,
+      });
+    } else {
+      const res = await schoolYearService.list(_.pickBy({...query}, _.identity))
+      setListSchoolYear(res.data);
+
+      const schools = await schoolService.list({limit: 100});
+      if (schools.total) {
+        const schoolOptions = schools.data.map((data) => ({
+          value: data._id,
+          label: data.schoolname,
+        }));
+        setListSchool(schoolOptions);
+      }
+
+      if (query.schoolId) {
+        const schoolOption = await schoolService.detail(query.schoolId);
+        setSchoolSelected({
+          value: schoolOption._id,
+          label: schoolOption.schoolname
+        })
+      }
     }
-  }, []);
-
+  };
 
   const handleDelete = async (id) => {
-    try {
-      await schoolYearService.delete(id)
-      await swal('Xoá thành công');
-      router.reload();
-    } catch (error) {
-      console.log({error})
+    swal({
+      title: "Bạn chắc chắn muốn xóa?",
+      text: "",
+      icon: "warning",
+      buttons: true,
+      successMode: true,
+    }).then(async (willDelete) => {
+      if (willDelete) {
+        const result = await schoolYearService.delete(id)
+        if (result) {
+          router.reload();
+        } else {
+          swal('Xóa không thành công!!', '', 'error');
+        }
+      }
+    });
+  };
+
+  const handleSubmitSearch = async (data) => {
+
+    if (data.s === '') delete data.s;
+    if (data.schoolId === '') delete data.schoolId;
+
+
+    await router.push({
+        pathname: router.pathname,
+        query: _.pickBy(data, _.identity),
+      },
+      undefined,
+      {shallow: true}
+    );
+
+    const res = await schoolYearService.list(_.pickBy(data, _.identity))
+    if (_.isEmpty(res)) {
+      swal({
+        text: "Tìm kiếm không thành công",
+        icon: "error"
+      });
+    } else {
+      if (data.s) {
+        const filteredData = res.data?.filter((item) => {
+          return Object.values(item.schoolYearName)
+            .join("")
+            .toLowerCase()
+            .includes(data.s?.toLowerCase());
+        });
+        return setListSchoolYear(filteredData);
+      } else {
+        return setListSchoolYear(res.data);
+      }
     }
   };
 
   return (
     <>
       <h4>Tổ chức</h4>
-      <Input className='md:w-1/2 lg:w-1/4' placeholder='Tìm kiếm...'/>
-      <Link href='/to-chuc/nien-khoa/them-nien-khoa'>
-        <a><Button>Thêm mới</Button></a>
-      </Link>
-        <div className="mt-8 overflow-x-auto lg:overflow-x-visible">
-          <div className='container-table'>
-            <h4>Niên Khoá</h4>
-            <table className='table'>
-              <thead>
-              <tr>
-                <th className='text-center'>STT</th>
-                <th>Niên khoá</th>
-                <th>Số lớp</th>
-                <th>Số học sinh</th>
-                <th>Thời gian bắt đầu</th>
-                <th>Thời gian kết thúc</th>
-                <th/>
-              </tr>
-              </thead>
-              <tbody>
-                {listSchoolYear?.map((item, index) => (
-                  <tr key={index}>
-                  <td>{parseInt(skip) + index + 1}</td>
-                  <td>{item.schoolYearName}</td>
-                  <td/>
-                  <td/>
-                  <td/>
-                  <td/>
-                  <td>
-                     <Link href={`/to-chuc/nien-khoa/${item._id}`}>
-                       <a><PencilIcon className='h-5 w-5 inline'/></a>
-                     </Link>
-                     <TrashIcon
-                       className='h-5 w-5 inline ml-4 cursor-pointer'
-                       onClick={() => handleDelete(item._id)}
-                     />
-                  </td>
-              </tr>
-                ))}
-              </tbody>
-            </table>
-            <Pagination data={listSchoolYear}/>
-          </div>
+      <Formik
+        onSubmit={handleSubmitSearch}
+        enableReinitialize
+        validationSchema={Yup.object().shape({
+          s: Yup.string().min(3, 'Nội dung tìm kiếm ít nhất là 3 ký tự')
+        })}
+        initialValues={{s: '', schoolId: '',}}
+      >
+        {({handleChange, setFieldValue}) => (
+          <Form>
+            <div className='grid-container'>
+              <Input
+                label='Tìm kiếm'
+                useFormik
+                placeholder='Tên niên khoá...' name="s"
+                onChange={handleChange}
+              />
+              <Select
+                label='Tên trường'
+                name='schoolId'
+                id="schoolId"
+                instanceId="schoolId"
+                value={schoolSelected}
+                onChange={e => {
+                  setFieldValue('schoolId', e.value);
+                  setSchoolSelected(e)
+                }}
+                options={listSchool}
+                placeholder='Chọn trường'
+              />
+            </div>
+            <Button type='submit'>Tìm kiếm</Button>
+          </Form>
+        )}
+      </Formik>
+      <div className="mt-8 overflow-x-auto lg:overflow-x-visible">
+        <div className='container-table w-[800px] lg:w-full'>
+          <h4>Niên Khoá</h4>
+          <table className='table'>
+            <thead>
+            <tr>
+              <th className='w-2 text-center'>STT</th>
+              <th>Niên khoá</th>
+              <th>Số lớp</th>
+              <th>Số học sinh</th>
+              <th className="w-[100px]"/>
+            </tr>
+            </thead>
+            <tbody>
+              {!_.isEmpty(listSchoolYear)
+                ? listSchoolYear?.map((item, idz) => (
+                  <tr key={idz}>
+                    <td>{skip + idz + 1}</td>
+                    <td className='text-center'>{item.schoolYearName}</td>
+                    <td/>
+                    <td/>
+                    <td>
+                      <Link href={`/to-chuc/nien-khoa/${item._id}`}>
+                        <a><PencilIcon className='h-5 w-5 inline'/></a>
+                      </Link>
+                      <TrashIcon
+                        className='h-5 w-5 inline ml-4 cursor-pointer'
+                        onClick={() => handleDelete(item._id)}
+                      />
+                    </td>
+                  </tr>
+                ))
+                : (<tr><td colSpan='6'>Chưa có dữ liệu</td></tr>)
+              }
+            </tbody>
+          </table>
+          <Pagination data={listSchoolYear}/>
         </div>
+      </div>
     </>
   );
 }
-
 export default SchoolYearList;
 
-SchoolYearList.getLayout = (page) => <Layout>{page}</Layout>;
+

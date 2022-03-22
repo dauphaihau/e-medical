@@ -1,53 +1,36 @@
-.card {
-  @apply relative mb-[1.5rem] bg-gray-100 p-0 flex flex-col;
-  .card-title {
-    @apply text-black block relative py-4 px-2 text-center;
-    h4 {
-      @apply inline-block m-0 font-bold text-base text-black text-xl z-auto
+@layer components {
+  .card {
+    @apply rounded-xl m-0 relative w-full bg-white border-r-4
+    p-0 flex flex-col p-6;
+    transition: .5s;
+    box-shadow: 0 3px 5px 1px rgba(0, 0, 0, .05);
+    border: 1px solid #efeffd;
+
+    &-title {
+      @apply inline-block m-0 font-normal text-base text-black text-xl z-auto leading-[1.2]
+    }
+
+    &-body {
+      @apply font-normal text-[2.8rem]
     }
   }
 
-  .card-number {
-    @apply py-4 flex-auto text-center;
-    p {
-      @apply font-black text-4xl text-[#696969]
+  .box-container {
+    @apply grid gap-8;
+    .box {
+      h3 {
+        @apply text-[1.28rem] mb-3;
+      }
+
+      &-grid {
+        @apply grid md:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6;
+      }
     }
   }
-}
 
-
-.box {
-  @apply rounded-xl m-0 relative mb-6 w-full bg-white border-r-4
-  p-0 flex flex-col px-8 py-4;
-  transition: .5s;
-  box-shadow: 0 3px 5px 1px rgba(0, 0, 0, .05);
-  border: 1px solid #efeffd;
-
-  h3 {
-    @apply mb-4 p-4 font-black text-xl;
+  .box-grid-custom {
+    display: grid;
+    grid-gap: 10px;
+    grid-template-columns: repeat(auto-fit, minmax(390px, 1fr));
   }
-
-}
-
-.box-header {
-  @apply block p-6 relative;
-  color: #172b4c;
-  border-bottom: 1px solid #efeffd;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
-}
-
-.box-body {
-  @apply p-6 rounded-xl;
-  flex: 1 1 auto;
-}
-
-.box-grid {
-  @apply grid md:grid-cols-2 lg:grid-cols-3 gap-4;
-}
-
-.box-grid-custom {
-  display: grid;
-  grid-gap: 10px;
-  grid-template-columns: repeat(auto-fit, minmax(390px, 1fr));
 }

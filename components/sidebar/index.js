@@ -3,14 +3,29 @@ import {useRouter} from "next/router";
 import Link from "next/link";
 
 import {MENU} from "../../constants";
+import {useAuth} from "../../context/auth";
+
+const handleActive = (pathName, item) => {
+  if (pathName === item.link) return 'active';
+  if (pathName === item.features?.id) return 'active';
+  if (pathName === item.features?.add) return 'active';
+  if (pathName === item.features?.declareMedical) return 'active';
+  if (pathName === item.features?.vaccine) return 'active';
+  return ''
+}
 
 const SubMenu = ({open, items}) => {
+
+  if (!items) return null;
   const router = useRouter();
+  items.map((item) => {
+    if ([item.link, item.link + "/them", item.link + "/[id]"].includes(router.pathname)) open = true;
+  })
   return (
     <ul className={`${!open ? 'hidden' : ''} sidebar-submenu`}>
-      {items?.map((item) => (
-        <li key={item.title} className={router.pathname == item.link ? 'active' : ''}>
-          <Link passHref href={item.link}>
+      {items?.map((item, idz) => (
+        <Link passHref href={item.link} key={idz}>
+          <li key={item.title} className={handleActive(router.pathname, item)}>
             <a>
               <i className="icon-Commit pr-[20px] pl-[10px] relative top-[-2px]">
                 <span className="path1"/>
@@ -18,8 +33,8 @@ const SubMenu = ({open, items}) => {
               </i>
               {item.title}
             </a>
-          </Link>
-        </li>
+          </li>
+        </Link>
       ))}
     </ul>
   );
@@ -54,7 +69,7 @@ const Item = ({item, stateSidebar}) => {
   const handleActive = (item) => router.pathname == item.link ? 'active' : '';
 
   return (
-    <li className={handleActive(item)}>
+    <li className={`${handleActive(item)} handleRole(`}>
       <Link href={item.link ? item.link : '#'}>
         <div onClick={() => setActive(!active)}>
           <i className={`text-gray-400 ${item.icon} ${handleActive(item)}`}>
@@ -64,8 +79,11 @@ const Item = ({item, stateSidebar}) => {
           <a>
             <span className={`${stateSidebar ? 'md:hidden' : ''} ${handleActive(item)}`}>{item.title}</span>
           </a>
-          {item.subNav && <ArrowDropdown stateSidebar={stateSidebar} open={active}/>}
-          {stateSidebar ? '' : <SubMenu items={item.subNav} open={active}/>}
+          {!stateSidebar && <>
+            {item.subNav && <ArrowDropdown open={active}/>}
+            <SubMenu items={item.subNav} open={active}/>
+          </>
+          }
         </div>
       </Link>
     </li>
@@ -73,10 +91,13 @@ const Item = ({item, stateSidebar}) => {
 };
 
 const Sidebar = ({stateSidebar}) => {
+
+  const {user} = useAuth();
+
   return (
     <aside className={`sidebar ${stateSidebar ? 'sidebar-open w-75 md:w-16' : 'sidebar-open'}`}>
       <ul className='sidebar-menu'>
-        {MENU.staff_agent.map((item, idz) => (
+        {MENU[user?.role].map((item, idz) => (
           <Item key={idz} item={item} stateSidebar={stateSidebar}/>
         ))}
       </ul>

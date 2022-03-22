@@ -1,17 +1,27 @@
-import React, {useState} from "react";
+import {useState} from "react";
 
-import Layout from "../../components/layout";
-import Input from "../../components/form/input";
-import Button from "../../components/button";
-import Radio from "../../components/form/radio";
-import Textarea from "../../components/form/textarea";
+import Layout from "@components/layout";
+import Input from "@components/form/input";
+import Button from "@components/button";
+import Radio from "@components/form/radio";
+import Textarea from "@components/form/textarea";
 
 const KhamSucKhoeForm = () => {
 
-  const ContentOne = (title) => {
+  const renderButton = (id) => {
+    return (
+      <div className='flex justify-end'>
+        <Button
+          // onClick={() => setCurrentTab(id)}
+        >Lưu</Button>
+      </div>
+    )
+  };
+
+  const ContentOne = () => {
     return (
       <div>
-        <div className='w-1/2'>
+        <div className='lg:w-1/2'>
           <Input classNameLabel='font-medium' label='Ngày' useFormik='true'/>
           <Input classNameLabel='font-medium' label='Thời gian' useFormik='true'/>
         </div>
@@ -19,10 +29,10 @@ const KhamSucKhoeForm = () => {
       </div>
     );
   };
-  const ContentTwo = (title) => {
+  const ContentTwo = () => {
     return (
       <div>
-        <div className='grid grid-cols-2 gap-x-4'>
+        <div className='grid-container'>
           <Input classNameLabel='font-medium' label='Tuần hoàn :' useFormik='true'/>
           <Input classNameLabel='font-medium' label='Hô hấp :' useFormik='true'/>
           <Input classNameLabel='font-medium' label='Tiêu hóa :' useFormik='true'/>
@@ -34,7 +44,7 @@ const KhamSucKhoeForm = () => {
       </div>
     );
   };
-  const ContentThree = (title) => {
+  const ContentThree = () => {
     return (
       <div>
         <Radio
@@ -42,7 +52,7 @@ const KhamSucKhoeForm = () => {
           name='hoTen'
           value='Không kính'
         />
-        <div className='grid grid-cols-2 gap-x-4'>
+        <div className='grid-container'>
           <Input classNameLabel='font-medium' label='Mắt phải' useFormik='true'/>
           <Input classNameLabel='font-medium' label='Mắt trái' useFormik='true'/>
         </div>
@@ -51,7 +61,7 @@ const KhamSucKhoeForm = () => {
           name='hoTen'
           value='Có kính'
         />
-        <div className='grid grid-cols-2 gap-x-4'>
+        <div className='grid-container'>
           <Input classNameLabel='font-medium' label='Mắt phải' useFormik='true'/>
           <Input classNameLabel='font-medium' label='Mắt trái' useFormik='true'/>
         </div>
@@ -63,16 +73,16 @@ const KhamSucKhoeForm = () => {
       </div>
     );
   };
-  const ContentFour = (title) => {
+  const ContentFour = () => {
     return (
       <div className='w-full'>
         <h4>Tai trái</h4>
-        <div className='grid grid-cols-2 gap-x-4'>
+        <div className='grid-container'>
           <Input classNameLabel='font-medium' label='Nói thường' useFormik='true'/>
           <Input classNameLabel='font-medium' label='Nói thầm' useFormik='true'/>
         </div>
         <h4 className='mt-4'>Tai phải</h4>
-        <div className='grid grid-cols-2 gap-x-4'>
+        <div className='grid-container'>
           <Input classNameLabel='font-medium' label='Nói thường' useFormik='true'/>
           <Input classNameLabel='font-medium' label='Nói thầm' useFormik='true'/>
         </div>
@@ -84,10 +94,10 @@ const KhamSucKhoeForm = () => {
       </div>
     );
   };
-  const ContentFive = (title) => {
+  const ContentFive = () => {
     return (
       <div>
-        <div className='grid grid-cols-2 gap-x-4'>
+        <div className='grid-container'>
           <Input classNameLabel='font-medium' label='Hàm trên' useFormik='true'/>
           <Input classNameLabel='font-medium' label='Hàm dưới' useFormik='true'/>
         </div>
@@ -99,39 +109,20 @@ const KhamSucKhoeForm = () => {
       </div>
     );
   };
-  const ContentSix = (title) => {
+  const ContentSix = () => {
     return (
       <div>
-        <Radio
-          className='mb-4'
-          name='hoTen'
-          value='Bình thường'
+        <Radio className='mb-4' name='hoTen' value='Bình thường'
         />
         <p className='mb-2 mt-4 font-medium'>Cong cột sống:</p>
         <div className='flex'>
-          <Radio
-            className='mb-4'
-            name='hoTen'
-            value='Gù'
-          />
-          <Radio
-            className='mb-4'
-            name='hoTen'
-            value='Ưỡn'
-          />
+          <Radio name='hoTen' value='Gù'/>
+          <Radio name='hoTen' value='Ưỡn'/>
         </div>
         <p className='mb-2 mt-4 font-medium'>Vẹo cột sống:</p>
         <div className='flex'>
-          <Radio
-            className='mb-4'
-            name='hoTen'
-            value='Hình chữ S'
-          />
-          <Radio
-            className='mb-4'
-            name='hoTen'
-            value='Hình chữ C'
-          />
+          <Radio name='type' value='Hình chữ S'/>
+          <Radio name='type' value='Hình chữ C'/>
         </div>
         <Textarea
           classNameLabel='font-medium'
@@ -147,43 +138,37 @@ const KhamSucKhoeForm = () => {
       id: 1,
       // heading: 'Thời gian khám sức khỏe định kỳ',
       heading: '1 Thời gian ',
-      content: heading => <ContentOne title={heading}/>,
+      content: () => <ContentOne/>,
     },
     {
       id: 2,
       heading: '2 Nhi khoa',
-      content: heading => <ContentTwo title={heading}/>
+      content: () => <ContentTwo/>
     },
     {
       id: 3,
       heading: '3 Thị lực',
-      content: heading => <ContentThree title={heading}/>
+      content: () => <ContentThree/>
     },
     {
       id: 4,
       heading: '4 Tai mũi họng',
-      content: heading => <ContentFour title={heading}/>
+      content: () => <ContentFour/>
     },
     {
       id: 5,
       heading: '5 Răng Hàm Mặt',
-      content: heading => <ContentFive title={heading}/>
+      content: () => <ContentFive/>
     },
     {
       id: 6,
       heading: '6 Cơ xương khớp',
-      content: heading => <ContentSix title={heading}/>
+      content: () => <ContentSix/>
     },
   ];
 
   const [activeTab, setActiveTab] = useState(1);
   const [currentTab, setCurrentTab] = useState(tabContent[0]);
-
-  const renderButton = () => {
-    return <div className='flex justify-end'>
-      <Button onClick={() => setActiveTab(activeTab + 1)}>Tiếp tục</Button>
-    </div>
-  };
 
   const handleTabClick = (currentTab) => {
     setActiveTab(currentTab);
@@ -191,11 +176,9 @@ const KhamSucKhoeForm = () => {
     setCurrentTab(currentTabContent[0]);
   };
 
-  console.log(currentTab.content(currentTab.heading))
-
   return (
     <div className="form">
-      <h3 className="">Khám sức khoẻ định kỳ</h3>
+      <h3>Khám sức khoẻ định kỳ</h3>
       <div className="form-kskdk">
         <div className="form-kskdk__tabs">
           {tabContent.map(item => {

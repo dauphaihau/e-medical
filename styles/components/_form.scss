@@ -15,10 +15,11 @@
 .form-kskdk {
   @apply w-full p-4;
   &__tabs {
-    @apply grid grid-cols-6 gap-x-4;
+    @apply grid lg:grid-cols-6 gap-y-4 gap-x-4;
     div {
       @apply rounded-[5px] cursor-pointer border border-gray-100;
       padding: 0.5rem 0.5rem;
+
       p {
         @apply my-auto mx-auto text-center;
       }
@@ -66,18 +67,31 @@
 }
 
 .form-radio-input {
-  @apply mb-8 ;
-  p {
-    @apply mb-2
+  @apply mr-4 ;
+  input {
+    @apply mr-2;
   }
 
-  div {
-    @apply flex
+  label {
+    @apply inline-flex items-center;
+  }
+}
+
+.form-check-input {
+  @apply mb-4;
+  input {
+    @apply appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white
+    checked:bg-info checked:border-info focus:outline-none transition duration-200
+    align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer;
+  }
+
+  label {
+    @apply inline-block;
   }
 }
 
 .form-textarea-input {
-  @apply mb-3 xl:w-96;
+  @apply mb-3;
   label {
     @apply inline-block mb-2 text-black;
   }

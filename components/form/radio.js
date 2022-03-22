@@ -1,27 +1,57 @@
-import React from 'react';
+import {ErrorMessage} from "formik";
 
 const Radio = (props) => {
+
   const {
-    children, value,
-    onChange,
-    checked = false,
-    label = '',
+    value = '',
+    checked,
     className = '',
+    labelName = '',
+    name = '',
+    useFormik = false,
+    id = '',
+    ...others
   } = props;
 
   return (
-    <div className={`${className} mr-4` }>
-      <label className="inline-flex items-center">
-        <input
-          onChange={onChange}
-          type="radio"
-          className='form-radio' name="accountType"
-          value={value}
-        />
-        <span className="ml-2">{value}</span>
-      </label>
+    <div className={`${className} form-radio-input`}>
+      <input
+        id={id}
+        type="radio"
+        name={name}
+        value={value}
+        checked={checked}
+        {...others}
+      />
+      <label htmlFor={id}>{labelName}</label>
+      {useFormik && (
+        <div className='text-danger mt-[5px]'>
+          {(name) && <ErrorMessage name={name}/>}
+        </div>
+      )}
     </div>
   );
 }
 
 export default Radio;
+
+export const RadioGroup = (props) => {
+
+  const {
+    direction='',
+    children,
+    className = '',
+    label='',
+  } = props;
+
+  return (
+    <div className={`mb-4 ${className}`}>
+      <p className='mb-2 text-base font-medium'>{label}</p>
+      <div className={`flex ${direction}`}>
+        {children}
+      </div>
+    </div>
+  )
+};
+
+

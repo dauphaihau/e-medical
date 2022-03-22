@@ -18,15 +18,25 @@
 
 @layer base {
 
-  body {
-    @apply text-black;
-    font-size: 14px;
-  }
+  // body {
+  //   @apply text-black;
+  //   font-family: 'IBM Plex Sans', sans-serif;
+  //   font-size: 14px;
+  // }
 
-  h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
-    font-family: 'IBM Plex Sans', sans-serif;
-    font-weight: 400;
-    line-height: 1.2;
+  // h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+  //   font-weight: 400;
+  //   line-height: 1.5;
+  // }
+
+  h1 {
+    @apply text-2xl;
+  }
+  h2 {
+    @apply text-xl;
+  }
+  h3 {
+    @apply text-lg;
   }
 
   .content {

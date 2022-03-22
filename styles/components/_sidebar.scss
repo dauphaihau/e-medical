@@ -12,6 +12,7 @@
         > i {
           @apply w-8.5 leading-7 text-xl inline-block align-middle text-center rounded-xl mr-2.5 ;
         }
+
         i.active {
           @apply text-primary;
         }
@@ -21,19 +22,22 @@
             @apply relative top-[3px] text-base
             text-[#5C607B] duration-300 ease-in transition-all hover:text-primary ;
           }
+
           span.active {
             @apply text-primary;
           }
         }
 
         .sidebar-submenu {
+          @apply duration-300 transition-all;
+
           li {
-            @apply h-[35px] text-gray-400;
+            @apply h-[35px] text-gray-400 ;
             padding: 5px 5px 5px 25px;
           }
 
           li.active {
-            @apply text-primary;
+            @apply text-primary ;
           }
         }
       }
@@ -56,7 +60,7 @@
 
 
 .sidebar-dropdown {
-  @apply h-4 w-4 inline absolute top-[1.2rem] right-0 lg:right-[0.6rem]
+  @apply h-4 w-4 inline absolute top-[1.2rem] right-[10px] lg:right-[0.6rem]
   hover:text-primary transition duration-500 text-[#5C607B] ;
 }
 

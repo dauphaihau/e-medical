@@ -9,6 +9,7 @@ const Input = (props) => {
     placeholder = '',
     className = '',
     classNameLabel = '',
+    type = 'text',
     useFormik = false,
     disable = false,
     ...others
@@ -21,13 +22,13 @@ const Input = (props) => {
         disabled={disable}
         placeholder={placeholder}
         name={name}
-        type="text"
+        type={type}
         className={`form-control-input ${className}`}
         {...others}
       />
       {useFormik && (
         <div className='text-danger mt-[5px]'>
-          {(name) && <ErrorMessage name={name}/>}      
+          {(name) && <ErrorMessage name={name}/>}
         </div>
       )}
     </div>
