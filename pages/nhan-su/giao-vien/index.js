@@ -55,10 +55,19 @@ const Teacher = () => {
 
     if (_.isEmpty(query)) {
       const listMember = await memberService.list({type: 'teacher'});
-      setMembers(listMember);
+      console.log('list-member', listMember)
+      // const checkedSchoolWorking = _.filter(listMember, (e) => _.omitBy(e.schoolWorking?.schoolId, _.isNil))
+      const checkedSchoolWorking = listMember.filter((e) => !_.isNil(e.schoolWorking.schoolId))
+
+      console.log('checked-school-working', checkedSchoolWorking)
+
+      // setMembers(checkedSchoolWorking);
+      
     } else {
       const listMember = await memberService.list({...query, type: 'teacher'});
-      setMembers(listMember);
+      // const checkedSchoolWorking = _.filter(listMember, (e) => _.omitBy(e.schoolWorking?.schoolId, _.isNil))
+      // setMembers(checkedSchoolWorking);
+      
       if (query.schoolId) {
         let schoolOption = await schoolService.detail(query.schoolId);
         schoolOption = {

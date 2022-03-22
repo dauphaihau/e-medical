@@ -10,6 +10,7 @@ import {PencilIcon} from "@heroicons/react/outline";
 import _ from "lodash";
 import swal from "sweetalert";
 import {locationService} from "../../services";
+import {useAuth} from "../../context/auth";
 
 const Student = () => {
   const router = useRouter();
@@ -18,6 +19,7 @@ const Student = () => {
   const [provinceOptions, setProvinceOptions] = useState([]);
   const [districtOptions, setDistrictOptions] = useState([])
   const [wardOptions, setWardOptions] = useState([])
+  const {user} = useAuth();
 
   const [selects, setSelect] = useState({
     s: '',
@@ -53,9 +55,11 @@ const Student = () => {
     setProvinceOptions(provinces);
 
     if (_.isEmpty(query)) {
+
       const listMember = await memberService.listStudent();
       setMembers(listMember);
     } else {
+
       const listMember = await memberService.listStudent(query);
       setMembers(listMember);
 

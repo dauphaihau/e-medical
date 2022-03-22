@@ -11,6 +11,7 @@ import {schoolService} from "@services";
 import Button from "@components/button";
 import {locationService} from "@services";
 import Select from "@components/form/select";
+import {useAuth} from "../../../context/auth";
 
 const SchoolList = () => {
   const router = useRouter();
