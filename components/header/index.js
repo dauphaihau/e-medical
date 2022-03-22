@@ -83,22 +83,14 @@ function renderButtonAddNew(pathname) {
 };
 
 const handleRole = (role) => {
-  switch (role) {
-    case 'parent':
-      return 'Phụ huynh'
-      break;
-    case 'teacher':
-      return 'Giáo viên'
-      break;
-    case 'student':
-      return 'Học sinh'
-      break;
-    case 'staff':
-      return 'Nhân viên'
-      break;
-    default:
-      return 'Loading..'
-  }
+  const labelRoles = {
+    parent: 'Phụ huynh',
+    teacher: 'Giáo viên',
+    student: 'Học sinh',
+    staff: 'Nhân viên',
+    admin: 'Quản trị viên',
+  };
+  return labelRoles[role] ? labelRoles[role]: '';
 };
 
 const Header = ({stateSidebar, setStateSidebar}) => {

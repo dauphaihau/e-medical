@@ -6,7 +6,7 @@ export function middleware(req) {
   const ignoreExt = ["jpg", "ico"];
   const ext = pathname.split(".").pop();
   const accessToken = req.cookies?.accessToken;
-  const url = req.nextUrl.clone()
+  const url = req.nextUrl.clone();
   if (
     !accessToken &&
     !publicPaths.includes(pathname) &&
