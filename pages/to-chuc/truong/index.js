@@ -178,7 +178,7 @@ const SchoolList = () => {
               <div className='grid-container'>
                 <Input
                   label='Tìm kiếm'
-                  placeholder='Tên trường...' name="s"
+                  placeholder='Tên trường' name="s"
                   onChange={e => setFilter({...filter, s: e.target.value})}
                 />
                 <Select

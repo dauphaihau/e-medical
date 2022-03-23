@@ -120,7 +120,7 @@ const Manager = () => {
         <div className="grid-container">
           <Input
             label='Tìm kiếm'
-            placeholder='Tên trường...' name="s"
+            placeholder='Tên cán bộ quản lý' name="s"
             onChange={e => setFilter({...filter, s: e.target.value})}
           />
           <Select

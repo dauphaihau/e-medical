@@ -64,7 +64,6 @@ const AddParent = () => {
       bodyData.ward = {code: data.ward.code, wardName: data.ward.label}
     }
     bodyData = {...data, ...bodyData};
-    console.log('body-data', bodyData);
     const result = await memberService.createParent(bodyData);
     if(result){
       swal('Thêm thành công', '', 'success')

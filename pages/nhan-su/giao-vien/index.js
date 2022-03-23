@@ -124,7 +124,7 @@ const Teacher = () => {
         <div className='grid-container'>
           <Input
             label='Tìm kiếm'
-            placeholder='Tìm kiếm giáo viên..'
+            placeholder='Tên giáo viên'
             name="s"
             onChange={e => setFilter({...filter, s: e.target.value})}
           />

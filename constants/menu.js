@@ -507,5 +507,4 @@ export const MENU = {
       icon: "mdi mdi-account-card-details",
     },
   ],
-
 };

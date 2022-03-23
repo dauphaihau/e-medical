@@ -134,7 +134,7 @@ const SchoolYearList = () => {
               <Input
                 label='Tìm kiếm'
                 useFormik
-                placeholder='Tên niên khoá...' name="s"
+                placeholder='Tên niên khoá' name="s"
                 onChange={handleChange}
               />
               <Select

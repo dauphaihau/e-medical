@@ -27,7 +27,7 @@ const validationSchema = Yup.object().shape({
   ward: Yup.object().shape({}),
 });
 
-const AddStaff = () => {
+const AddManager = () => {
   const router = useRouter();
   const [listSchool, setListSchool] = useState();
   const [listProvince, setListProvince] = useState();
@@ -151,4 +151,4 @@ const AddStaff = () => {
     </Formik>
   )
 }
-export default AddStaff
+export default AddManager

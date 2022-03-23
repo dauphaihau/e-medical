@@ -110,7 +110,7 @@ const Staff = () => {
         icon: "error"
       });
     }
-    setMembers(res.data)
+    setMembers(res)
   };
 
   return (
@@ -120,7 +120,7 @@ const Staff = () => {
         <div className="grid-container">
           <Input
             label='Tìm kiếm'
-            placeholder='Tên trường...' name="s"
+            placeholder='Tên nhân viên' name="s"
             onChange={e => setFilter({...filter, s: e.target.value})}
           />
           <Select
@@ -174,8 +174,8 @@ const Staff = () => {
               </tr>
             </thead>
             <tbody>
-              {members?.total
-                ? members.data.map((row, idz) => (
+              {!_.isEmpty(members)
+                ? members.data?.map((row, idz) => (
                   <tr key={idz}>
                     <td>{idz + 1}</td>
                     <td
