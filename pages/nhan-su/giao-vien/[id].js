@@ -74,6 +74,7 @@ const UpdateTeacher = () => {
     const { id } = router.query;
     if( id ){
       const memberRes = await memberService.detail(id);
+      console.log('member-res', memberRes)
       if(memberRes && !_.isEmpty(memberRes)){
         setMember(memberRes);
       }

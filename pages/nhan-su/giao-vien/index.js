@@ -10,7 +10,6 @@ import Button from "@components/button";
 import {PencilIcon} from "@heroicons/react/outline";
 import Select from "@components/form/select";
 import {classroomService, schoolService} from "@services";
-import {useAuth} from "../../../context/auth";
 
 const Teacher = () => {
   const router = useRouter();
@@ -56,9 +55,11 @@ const Teacher = () => {
     if (_.isEmpty(query)) {
       const listMember = await memberService.list({type: 'teacher'});
       setMembers(listMember);
+
     } else {
       const listMember = await memberService.list({...query, type: 'teacher'});
       setMembers(listMember);
+
       if (query.schoolId) {
         let schoolOption = await schoolService.detail(query.schoolId);
         schoolOption = {
@@ -108,12 +109,12 @@ const Teacher = () => {
     console.log('res', res);
 
     if (!res) {
-      swal({
+      swal( {
         text: "Nội dung tìm kiếm ít nhất là 3 ký tự",
         icon: "error"
       });
     }
-    setMembers(res.data);
+    setMembers(res);
   };
 
   return (
@@ -123,7 +124,7 @@ const Teacher = () => {
         <div className='grid-container'>
           <Input
             label='Tìm kiếm'
-            placeholder='Tìm kiếm giáo viên..'
+            placeholder='Tên giáo viên'
             name="s"
             onChange={e => setFilter({...filter, s: e.target.value})}
           />
@@ -165,8 +166,8 @@ const Teacher = () => {
             </tr>
             </thead>
             <tbody>
-              {members?.total
-                ? members.data.map((row, idz) => (
+              {!_.isEmpty(members)
+                ? members.data?.map((row, idz) => (
                   <tr key={idz}>
                         <td>{idz + 1}</td>
                         <td>{row.fullName}</td>

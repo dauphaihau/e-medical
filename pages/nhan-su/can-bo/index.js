@@ -12,7 +12,7 @@ import {locationService} from "../../../services";
 import Select from "../../../components/form/select";
 import {useAuth} from "../../../context/auth";
 
-const Staff = () => {
+const Manager = () => {
   const router = useRouter();
   const {query} = router;
   const [members, setMembers] = useState();
@@ -54,10 +54,10 @@ const Staff = () => {
     setProvinceOptions(provinces);
 
     if (_.isEmpty(query)) {
-      const listMember = await memberService.listStaff();
+      const listMember = await memberService.listManagers();
       setMembers(listMember);
     } else {
-      const listMember = await memberService.listStaff(query);
+      const listMember = await memberService.listManagers(query);
       setMembers(listMember);
 
       if (query.province) {
@@ -103,7 +103,7 @@ const Staff = () => {
       {shallow: true}
     );
 
-    const res = await memberService.listStaff(newFilter)
+    const res = await memberService.listManagers(newFilter)
     if (!res) {
       swal({
         text: "Nội dung tìm kiếm ít nhất là 3 ký tự",
@@ -115,12 +115,12 @@ const Staff = () => {
 
   return (
     <>
-      <h4>Danh sách nhân viên</h4>
+      <h4>Danh sách cán bộ quản lý</h4>
       <form onSubmit={handleSubmitSearch}>
         <div className="grid-container">
           <Input
             label='Tìm kiếm'
-            placeholder='Tên nhân viên' name="s"
+            placeholder='Tên cán bộ quản lý' name="s"
             onChange={e => setFilter({...filter, s: e.target.value})}
           />
           <Select
@@ -203,4 +203,4 @@ const Staff = () => {
   );
 }
 
-export default Staff;
+export default Manager;

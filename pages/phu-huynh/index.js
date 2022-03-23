@@ -91,8 +91,8 @@ const Parent = () => {
     setWardOptions(wards);
   }
 
-  const handleSubmitSearch = async (values) => {
-    values.preventDefault();
+  const handleSubmitSearch = async (e) => {
+    e.preventDefault();
     const newFilter = _.omitBy(filter, _.isEmpty);
 
     router.push({
@@ -110,7 +110,7 @@ const Parent = () => {
         icon: "error"
       });
     }
-    setMembers(res.data)
+    setMembers(res)
   };
 
   return (
@@ -120,7 +120,7 @@ const Parent = () => {
         <div className="grid-container">
           <Input
             label='Tìm kiếm'
-            placeholder='Tên trường...' name="s"
+            placeholder='Tên trường' name="s"
             onChange={e => setFilter({...filter, s: e.target.value})}
           />
           <Select
@@ -177,8 +177,8 @@ const Parent = () => {
             </tr>
             </thead>
             <tbody>
-              {members?.total
-                ? members.data.map((row, idz) => (
+              {!_.isEmpty(members)
+                ? members.data?.map((row, idz) => (
                   <tr key={idz}>
                       <td>{idz + 1}</td>
                       <td className='text-left'>{row.fullName}</td>

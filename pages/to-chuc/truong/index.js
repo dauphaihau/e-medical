@@ -11,6 +11,7 @@ import {schoolService} from "@services";
 import Button from "@components/button";
 import {locationService} from "@services";
 import Select from "@components/form/select";
+import {useAuth} from "../../../context/auth";
 
 const SchoolList = () => {
   const router = useRouter();
@@ -177,7 +178,7 @@ const SchoolList = () => {
               <div className='grid-container'>
                 <Input
                   label='Tìm kiếm'
-                  placeholder='Tên trường...' name="s"
+                  placeholder='Tên trường' name="s"
                   onChange={e => setFilter({...filter, s: e.target.value})}
                 />
                 <Select

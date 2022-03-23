@@ -216,7 +216,7 @@ const ClassroomList = () => {
         <div className='grid-container'>
           <Input
             label='Tìm kiếm'
-            placeholder='Tìm kiếm..'
+            placeholder='Tên lớp'
             name="s"
             onChange={e => setFilter({...filter, s: e.target.value})}
           />
