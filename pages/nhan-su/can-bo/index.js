@@ -121,7 +121,8 @@ const Manager = () => {
       {shallow: true}
     );
 
-    const res = await memberService.listManagers(newFilter)
+    const res = await memberService.list({...newFilter, type: 'manager'})
+    console.log('res', res)
     if (!res) {
       swal({
         text: "Nội dung tìm kiếm ít nhất là 3 ký tự",

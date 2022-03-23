@@ -111,6 +111,10 @@ export const MENU = {
           link: "/nhan-su/can-bo",
           roles: ["agent", "manager", "admin"],
           icon: "mdi mdi-needle",
+          features: {
+            add: '/nhan-su/can-bo/them',
+            id: '/nhan-su/can-bo/[id]',
+          }
         },
         {
           title: "Nhân Viên",
@@ -132,16 +136,9 @@ export const MENU = {
       icon: "mdi mdi-account-card-details",
     },
     {
-      title: "Thông tin lan truyền",
+      title: "Thông tin tuyên truyền",
       id: 'news',
       link: "/thong-tin",
-      roles: ["manager", "admin"],
-      icon: "mdi mdi-account-card-details",
-    },
-    {
-      title: "Người dùng",
-      id: 'users',
-      link: "/nguoi-dung",
       roles: ["manager", "admin"],
       icon: "mdi mdi-account-card-details",
     },
@@ -258,6 +255,10 @@ export const MENU = {
           link: "/nhan-su/can-bo",
           roles: ["agent", "manager", "admin"],
           icon: "mdi mdi-needle",
+          features: {
+            add: '/nhan-su/can-bo/them',
+            id: '/nhan-su/can-bo/[id]',
+          }
         },
         {
           title: "Nhân Viên",
@@ -279,7 +280,7 @@ export const MENU = {
       icon: "mdi mdi-account-card-details",
     },
     {
-      title: "Thông tin lan truyền",
+      title: "Thông tin tuyên truyền",
       id: 'news',
       link: "/thong-tin",
       roles: ["manager", "admin"],
@@ -377,7 +378,7 @@ export const MENU = {
       icon: "mdi mdi-account-card-details",
     },
     {
-      title: "Thông tin lan truyền",
+      title: "Thông tin tuyên truyền",
       id: 'news',
       link: "/thong-tin",
       roles: ["manager", "admin"],
@@ -430,7 +431,7 @@ export const MENU = {
       icon: "mdi mdi-account-card-details",
     },
     {
-      title: "Thông tin lan truyền",
+      title: "Thông tin tuyên truyền",
       id: 'news',
       link: "/thong-tin",
       roles: ["manager", "admin"],
@@ -493,7 +494,7 @@ export const MENU = {
       icon: "mdi mdi-account-card-details",
     },
     {
-      title: "Thông tin lan truyền",
+      title: "Thông tin tuyên truyền",
       id: 'news',
       link: "/thong-tin",
       roles: ["manager", "admin"],

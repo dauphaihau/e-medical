@@ -87,6 +87,7 @@ const UpdateStaff = () => {
         initDataSelected.school = initSchool;
     
         setInitData(initDataSelected);
+        console.log('init-data', initData)
       }
     }
     else{

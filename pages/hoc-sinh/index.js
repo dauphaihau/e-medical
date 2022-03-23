@@ -10,7 +10,6 @@ import {PencilIcon, TrashIcon} from "@heroicons/react/outline";
 import _ from "lodash";
 import swal from "sweetalert";
 import {locationService} from "../../services";
-import {useAuth} from "../../context/auth";
 
 const Student = () => {
   const router = useRouter();
@@ -19,7 +18,6 @@ const Student = () => {
   const [provinceOptions, setProvinceOptions] = useState([]);
   const [districtOptions, setDistrictOptions] = useState([])
   const [wardOptions, setWardOptions] = useState([])
-  const {user} = useAuth();
 
   const [selects, setSelect] = useState({
     s: '',
@@ -56,6 +54,9 @@ const Student = () => {
     if (_.isEmpty(query)) {
       const listMember = await memberService.listStudent();
       setMembers(listMember);
+
+      // const provinceOption = _.find(provinces, (o) => o.code === query.province);
+      // setSelect({...selects, ...{province: provinceOption}});
 
     } else {
       const listMember = await memberService.listStudent(query);
@@ -141,7 +142,7 @@ const Student = () => {
         <div className="grid-container">
           <Input
             label='Tìm kiếm'
-            placeholder='Tên trường' name="s"
+            placeholder='Tên học sinh' name="s"
             onChange={e => setFilter({...filter, s: e.target.value})}
           />
           <Select
