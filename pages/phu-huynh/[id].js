@@ -49,13 +49,12 @@ const UpdateStaff = () => {
 
   useEffect( () => {
     if (!router.isReady) return;
-    let abortController = new AbortController();  
-    
+
     if( router.pathname.includes('giao-vien') ){
       setAddType('giao-vien');
     }
     loadInit();
-    return () => abortController.abort(); 
+    return () => setMember({})
   }, [router.isReady]);
 
   useEffect( () => {

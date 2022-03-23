@@ -6,7 +6,7 @@ import {memberService} from "@services";
 import Input from "@components/form/input";
 import Select from "@components/form/select";
 import Button from "@components/button";
-import {PencilIcon} from "@heroicons/react/outline";
+import {PencilIcon, TrashIcon} from "@heroicons/react/outline";
 import _ from "lodash";
 import swal from "sweetalert";
 import {locationService} from "../../services";
@@ -36,7 +36,6 @@ const Student = () => {
       label: ''
     },
   })
-
   const [filter, setFilter] = useState({
     s: '',
     province: '',
@@ -55,14 +54,6 @@ const Student = () => {
     setProvinceOptions(provinces);
 
     if (_.isEmpty(query)) {
-      // if (_.isNil(user.schoolWorking.schoolId)) {
-      //   setMembers([])
-      // } else {
-      //   const listMember = await memberService.listStudent({schoolId: user.schoolWorking.schoolId});
-      //   // const listMember = await memberService.listStudent();
-      //   setMembers(listMember);
-      // }
-
       const listMember = await memberService.listStudent();
       setMembers(listMember);
 
@@ -100,6 +91,26 @@ const Student = () => {
     const wards = await locationService.listWard(e.code);
     setWardOptions(wards);
   }
+
+
+  const handleDelete = async (id) => {
+    swal({
+      title: "Bạn chắc chắn muốn xóa?",
+      text: "",
+      icon: "warning",
+      buttons: true,
+      successMode: true,
+    }).then(async (willDelete) => {
+      if (willDelete) {
+        const result = await memberService.remove(id);
+        if (result) {
+          router.reload();
+        } else {
+          swal('Xóa không thành công!!', '', 'error');
+        }
+      }
+    });
+  };
 
   const handleSubmitSearch = async (e) => {
     e.preventDefault();
@@ -200,10 +211,14 @@ const Student = () => {
                       <Link href={router.pathname + '/' + row._id}>
                          <a><PencilIcon className='h-5 w-5 inline'/></a>
                       </Link>
+                      <TrashIcon
+                        className='h-5 w-5 inline ml-4 cursor-pointer'
+                        onClick={() => handleDelete(row._id)}
+                      />
                     </td>
                   </tr>
                   ))
-                  : (<tr><td colSpan='4'>Chưa có dữ liệu</td></tr>)
+                  : (<tr><td colSpan='5'>Chưa có dữ liệu</td></tr>)
                 }
               </tbody>
             </table>
