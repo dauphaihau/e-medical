@@ -28,8 +28,8 @@ export const memberService = {
   remove: async (id) => {
     if (!id) return false;
     try {
-      const {...response} = await api.delete("/member/" + id);
-      return response.data;
+      await api.delete("/member/" + id);
+      return true
     } catch (e) {
       return false;
     }

@@ -7,7 +7,7 @@ import swal from "sweetalert";
 import {memberService} from "@services";
 import Input from "@components/form/input";
 import Button from "@components/button";
-import {PencilIcon} from "@heroicons/react/outline";
+import {PencilIcon, TrashIcon} from "@heroicons/react/outline";
 import Select from "@components/form/select";
 import {classroomService, schoolService} from "@services";
 
@@ -93,6 +93,25 @@ const Teacher = () => {
     }
   };
 
+  const handleDelete = async (id) => {
+    swal({
+      title: "Bạn chắc chắn muốn xóa?",
+      text: "",
+      icon: "warning",
+      buttons: true,
+      successMode: true,
+    }).then(async (willDelete) => {
+      if (willDelete) {
+        const result = await memberService.remove(id);
+        if (result) {
+          router.reload();
+        } else {
+          swal('Xóa không thành công!!', '', 'error');
+        }
+      }
+    });
+  };
+
   const handleSubmitSearch = async (e) => {
     e.preventDefault();
     const newFilter = _.omitBy(filter, _.isEmpty);
@@ -162,7 +181,7 @@ const Teacher = () => {
               <th className="text-left">Nhân viên</th>
               <th className="text-left">Phone</th>
               <th className="text-left">Lớp CN</th>
-              <th className="w-2"/>
+              <th/>
             </tr>
             </thead>
             <tbody>
@@ -173,10 +192,14 @@ const Teacher = () => {
                         <td>{row.fullName}</td>
                         <td>{row.phoneNumber}</td>
                         <td>{(row.schoolWorking) ? row.schoolWorking?.className : ''}</td>
-                        <td>
+                        <td className='text-center'>
                           <Link href={router.pathname + '/' + row._id}>
                                <a><PencilIcon className='h-5 w-5 inline'/></a>
                           </Link>
+                          <TrashIcon
+                            className='h-5 w-5 inline ml-4 cursor-pointer'
+                            onClick={() => handleDelete(row._id)}
+                          />
                         </td>
                     </tr>
                 ))

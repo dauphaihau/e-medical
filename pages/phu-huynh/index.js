@@ -6,7 +6,7 @@ import Link from 'next/link'
 
 import {memberService} from "@services";
 import Input from "@components/form/input";
-import {PencilIcon} from "@heroicons/react/outline";
+import {PencilIcon, TrashIcon} from "@heroicons/react/outline";
 import Button from "@components/button";
 import Select from "@components/form/select";
 import {locationService} from "@services";
@@ -91,6 +91,25 @@ const Parent = () => {
     setWardOptions(wards);
   }
 
+  const handleDelete = async (id) => {
+    swal({
+      title: "Bạn chắc chắn muốn xóa?",
+      text: "",
+      icon: "warning",
+      buttons: true,
+      successMode: true,
+    }).then(async (willDelete) => {
+      if (willDelete) {
+        const result = await memberService.remove(id);
+        if (result) {
+          router.reload();
+        } else {
+          swal('Xóa không thành công!!', '', 'error');
+        }
+      }
+    });
+  };
+
   const handleSubmitSearch = async (e) => {
     e.preventDefault();
     const newFilter = _.omitBy(filter, _.isEmpty);
@@ -173,7 +192,7 @@ const Parent = () => {
               <th className='text-left'>Quận</th>
               <th className='text-left'>Tỉnh</th>
               <th className='text-left'>Phường</th>
-              <th className="w-2"/>
+              <th/>
             </tr>
             </thead>
             <tbody>
@@ -191,6 +210,10 @@ const Parent = () => {
                         <Link href={router.pathname + '/' + row._id}>
                            <a><PencilIcon className='h-5 w-5 inline'/></a>
                         </Link>
+                        <TrashIcon
+                           className='h-5 w-5 inline ml-4 cursor-pointer'
+                           onClick={() => handleDelete(row._id)}
+                        />
                       </td>
                     </tr>
                 ))

@@ -6,7 +6,7 @@ import Link from 'next/link'
 
 import {memberService} from "@services";
 import Input from "@components/form/input";
-import {PencilIcon} from "@heroicons/react/outline";
+import {PencilIcon, TrashIcon} from "@heroicons/react/outline";
 import Button from "@components/button";
 import {locationService} from "../../../services";
 import Select from "../../../components/form/select";
@@ -90,6 +90,25 @@ const Staff = () => {
     const wards = await locationService.listWard(e.code);
     setWardOptions(wards);
   }
+
+  const handleDelete = async (id) => {
+    swal({
+      title: "Bạn chắc chắn muốn xóa?",
+      text: "",
+      icon: "warning",
+      buttons: true,
+      successMode: true,
+    }).then(async (willDelete) => {
+      if (willDelete) {
+        const result = await memberService.remove(id);
+        if (result) {
+          router.reload();
+        } else {
+          swal('Xóa không thành công!!', '', 'error');
+        }
+      }
+    });
+  };
 
   const handleSubmitSearch = async (e) => {
     e.preventDefault();
@@ -178,18 +197,17 @@ const Staff = () => {
                 ? members.data?.map((row, idz) => (
                   <tr key={idz}>
                     <td>{idz + 1}</td>
-                    <td
-                      className='text-center'>{row.fullName}</td>
-                    <td
-                      className='text-center'>{row.phoneNumber}</td>
-                    <td
-                      className='text-center'>{row.address}</td>
-                    <td>
-                    <Link
-                      href={router.pathname + '/' + row._id}>
-                    <a><PencilIcon
-                      className='h-5 w-5 inline'/></a>
-                    </Link>
+                    <td className='text-center'>{row.fullName}</td>
+                    <td className='text-center'>{row.phoneNumber}</td>
+                    <td className='text-center'>{row.address}</td>
+                    <td className='text-center'>
+                      <Link href={router.pathname + '/' + row._id}>
+                        <a><PencilIcon className='h-5 w-5 inline'/></a>
+                      </Link>
+                      <TrashIcon
+                        className='h-5 w-5 inline ml-4 cursor-pointer'
+                        onClick={() => handleDelete(row._id)}
+                      />
                     </td>
                     </tr>
                 ))
