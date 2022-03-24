@@ -1,20 +1,18 @@
 import {useEffect, useState} from "react";
-import {Formik, Form, Field, ErrorMessage} from "formik";
-import Link from "next/link";
+import {Form, Formik} from "formik";
 import {useRouter} from "next/router";
 import * as Yup from "yup";
+import _ from "lodash";
 import swal from "sweetalert";
 
 import Input from "@components/form/input";
 import Radio, {RadioGroup} from "@components/form/radio";
 import Button from "@components/button";
-import Textarea from "@components/form/textarea";
 import Select from "@components/form/select";
 import AsyncSelect from 'react-select/async';
-
-import {classroomService, schoolService, schoolYearService, memberService} from "@services";
-import _ from "lodash";
+import {classroomService, memberService, schoolService, schoolYearService} from "@services";
 import {TrashIcon} from "@heroicons/react/outline";
+import {useAuth} from "../../../context/auth";
 
 const validationSchema = Yup.object().shape({
   fullName: Yup.string()
@@ -39,14 +37,11 @@ const bodyMassSchema = Yup.object().shape({
 const DetailStudent = () => {
   const router = useRouter();
   const [member, setMember] = useState();
-  const [arrParent, setArrParent] = useState([])
-  const [parentSelect, setParentSelect] = useState({})
   const [listSchool, setListSchool] = useState();
+  const {school} = useAuth();
   const [listSchoolYear, setListSchoolYear] = useState();
   const [listGroup, setListGroup] = useState();
   const [listClass, setListClass] = useState();
-
-  console.log('member', member);
   const [initData, setInitData] = useState({
     school: {
       value: "",
@@ -80,7 +75,6 @@ const DetailStudent = () => {
       swal('Thông tin này không tồn tại!!', '', 'error')
         .then(() => router.push('/hoc-sinh'));
     }
-    console.log('member-res', memberRes)
     setMember(memberRes);
 
     const initDataState = {
@@ -201,7 +195,6 @@ const DetailStudent = () => {
   };
 
   const handleSubmitFormBodyMass = async (values) => {
-    console.log('values', values);
     const {id} = router.query;
     const result = await memberService.update(id, {bodyMass: values});
 
@@ -286,6 +279,7 @@ const DetailStudent = () => {
                 fullName: member ? member.fullName : '',
                 dateOfBirth: member ? member.dateOfBirth : '',
                 gender: member ? member.gender : 1,
+                role: 'student'
               }}
             >
               {({
@@ -297,14 +291,14 @@ const DetailStudent = () => {
                   <h3>Thông tin cá nhân</h3>
                   <Select
                     label='Tên Trường'
+                    isDisable={true}
                     name='schoolId'
-                    useFormik='true'
                     onChange={e => {
                       onChangeSchool(e.value);
                       setFieldValue('schoolId', e.value);
                       setInitData({...initData, ...{school: e}});
                     }}
-                    value={initData.school}
+                    value={{value: school?._id, label: school?.schoolname}}
                     options={listSchool}
                   />
                   <Select
@@ -358,7 +352,6 @@ const DetailStudent = () => {
                         id="parent"
                         instanceId="parent"
                         cacheOptions
-                        value={parentSelect}
                         loadOptions={loadOptions}
                         defaultOptions
                         onChange={e => setFieldValue('parent', handleParent(e))}

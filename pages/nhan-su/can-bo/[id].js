@@ -10,11 +10,11 @@ import Input from "@components/form/input";
 import {memberService, schoolService} from "@services";
 import Select from "@components/form/select";
 import Region from "@components/form/region";
-import {useAuth} from "../../../context/auth";
 import {locationService} from "../../../services";
 
 const phoneRegExp = /(([03+[2-9]|05+[6|8|9]|07+[0|6|7|8|9]|08+[1-9]|09+[1-4|6-9]]){3})+[0-9]{7}\b/
 const validationSchema = Yup.object().shape({
+  schoolId: Yup.string().required(),
   fullName: Yup.string()
     .min(5, 'Tên trường ít nhất là 5 ký tự')
     .max(50, 'Tên trường tối đa là 50 ký tự')
@@ -22,7 +22,7 @@ const validationSchema = Yup.object().shape({
   phoneNumber: Yup.string()
     .required('Vui lòng nhập số điện thoại')
     .matches(phoneRegExp, 'Số điện thoại không hợp lệ'),
-  address: Yup.string().required('Địa chỉ không được để trống'),
+  // address: Yup.string().required('Địa chỉ không được để trống'),
   province: Yup.object().shape({}),
   district: Yup.object().shape({}),
   ward: Yup.object().shape({}),
@@ -31,7 +31,6 @@ const validationSchema = Yup.object().shape({
 const UpdateStaff = () => {
   const router = useRouter();
   const [member, setMember] = useState();
-  const {user, school} = useAuth();
   const [listSchool, setListSchool] = useState([]);
   const [provinceOptions, setProvinceOptions] = useState([]);
   const [initData, setInitData] = useState({
@@ -46,16 +45,17 @@ const UpdateStaff = () => {
 
   useEffect(() => {
     if (!router.isReady) return;
+
     loadInit();
-    return () => {};
+    return () => setMember({})
   }, [router.isReady]);
 
   const loadInit = async () => {
-    const provinces = await locationService.listProvince();
-    setProvinceOptions(provinces);
     const {id} = router.query;
     if (id) {
       const memberRes = await memberService.detail(id);
+      const provinces = await locationService.listProvince();
+      setProvinceOptions(provinces);
       let initDataSelected = {};
       if (memberRes && !_.isEmpty(memberRes) && memberRes.province !== undefined) {
         initDataSelected.province = _.find(provinces, (o) => o.code === memberRes.province.code);
@@ -86,25 +86,12 @@ const UpdateStaff = () => {
     }
   }
 
-
   const handleSubmitForm = async (data) => {
     const {id} = router.query;
-    let bodyData = {};
-    if (data.province && !_.isEmpty(data.province)) {
-      bodyData.province = {code: data.province.code, provinceName: data.province.label}
-    }
-    if (data.district && !_.isEmpty(data.district)) {
-      bodyData.district = {code: data.district.code, districtName: data.district.label}
-    }
-    if (data.ward && !_.isEmpty(data.ward)) {
-      bodyData.ward = {code: data.ward.code, wardName: data.ward.label}
-    }
-    bodyData = {...data, ...bodyData};
-
     try {
-      await memberService.update(id, bodyData);
+      await memberService.update(id, data);
       swal('Cập nhật thành công', '', 'success')
-        .then(() => Router.push('/nhan-su/nhan-vien/'));
+        .then(() => Router.push('/nhan-su/can-bo/'));
     } catch (error) {
       swal('Cập nhật không thành công.', 'Vui lòng thử lại.', 'error');
     }
@@ -117,10 +104,11 @@ const UpdateStaff = () => {
       onSubmit={handleSubmitForm}
       enableReinitialize
       initialValues={{
-        schoolId: member && member.schoolWorking.schoolId,
+        schoolId: member && member.schoolWorking?.schoolId,
         fullName: member?.fullName ?? '',
         address: member?.address ?? '',
         phoneNumber: member?.phoneNumber ?? '',
+        role: member?.role,
         province: initData.province,
         district: initData.district,
         ward: initData.ward,
@@ -133,11 +121,13 @@ const UpdateStaff = () => {
         }) => (
         <Form className='form py-8'>
           <h3>Cập nhật thông tin</h3>
+
           <Select
             label='Tên trường'
             name='schoolId'
+            options={listSchool}
+            value={initData.school && !_.isEmpty(initData.school) ? initData.school : ''}
             isDisable={true}
-            value={{value: school?._id, label: school?.schoolname}}
             onChange={(e) => {
               setFieldValue('schoolId', e.value);
               setInitData({
@@ -177,22 +167,20 @@ const UpdateStaff = () => {
             <Select
               label='Phân quyền'
               name='role'
+              value={values.role === 'manager' ? {value: 'manager', label: 'Cán bộ quản lý'} : {
+                value: 'staff',
+                label: 'Nhân viên'
+              }}
               options={[
                 {value: 'staff', label: 'Nhân viên'},
                 {value: 'manager', label: 'Cán bộ quản lý'},
-              ].filter((option) => {
-                if (user.role === 'manager' || user.role === 'admin') {
-                  return option
-                }
-                return option.value === 'staff'
-              })}
+              ]}
               onChange={(e) => {
                 setFieldValue('role', e.value);
               }}
-              defaultValue={{value: 'staff', label: 'Nhân viên'}}
             />
           </div>
-          {user.role !== 'staff' && <Button type='submit' className='mr-4'>Cập nhật</Button>}
+          <Button type='submit' className='mr-4'>Cập nhật</Button>
         </Form>
       )}
     </Formik>

@@ -8,6 +8,7 @@ import Button from "@components/button";
 import Input from "@components/form/input";
 import Region from "@components/form/region";
 import { schoolService, locationService } from "@services";
+import {useAuth} from "../../../context/auth";
 
 const validationSchema = Yup.object().shape({
   schoolname: Yup.string()
@@ -28,6 +29,7 @@ const validationSchema = Yup.object().shape({
 
 const AddSchool = () => {
   const router = useRouter();
+  const {school} = useAuth();
   const [listProvince, setListProvince] = useState([]);
 
   useEffect(() => {
@@ -53,7 +55,7 @@ const AddSchool = () => {
     }
     bodyData = {...data, ...bodyData};
     try {
-      const result = await schoolService.create(bodyData)
+      await schoolService.create(bodyData)
       swal({
         title: "Thêm trường thành công",
         icon: "success"
@@ -63,18 +65,14 @@ const AddSchool = () => {
       console.log({error})
     }
   }
-  const defaultSelectValue = {
-    value: "",
-    label: "",
-    code: "",
-  };
+
   return (
     <Formik
       validationSchema={validationSchema}
       onSubmit={handleSubmitForm}
       enableReinitialize
       initialValues={{
-        schoolname: '',
+        schoolname: school?._id || '',
         address: '',
         province: {},
         district: {},
@@ -87,16 +85,15 @@ const AddSchool = () => {
           <Input
             label='Tên trường'
             name='schoolname'
-            onChange={handleChange}
-            value={values.schoolname}
-            useFormik={true}
+            disable={true}
+            value={school?.schoolname}
           />
           <Input
             label='Địa chỉ'
             name='address'
             onChange={handleChange}
             value={values.address}
-            useFormik={true}
+            useFormik
           />
           <Field
             component={Region}

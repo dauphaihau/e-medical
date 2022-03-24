@@ -54,7 +54,7 @@
 
 .form-control-input {
   @apply
-  h-[33.5px]
+  h-[38.5px]
   border border-[#8d8d8d]
   text-black text-base font-medium
   rounded-[5px]
@@ -109,6 +109,11 @@
 .css-1s2u09g-control {
   @apply rounded-md h-[39px] ;
   min-height: 0 !important;
-  height: 34px;
+  //height: 34px;
   border: 1px solid #8d8d8d !important;
+}
+
+.css-1insrsq-control {
+  height: 40px !important;
+  min-height: 38px !important;
 }

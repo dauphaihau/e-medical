@@ -1,20 +1,24 @@
 import {useEffect, useState} from "react";
 import {useRouter} from "next/router";
-import Link from "next/link";
+import _ from "lodash";
+import swal from "sweetalert";
+import Link from 'next/link'
 
 import {memberService} from "@services";
 import Input from "@components/form/input";
-import Select from "@components/form/select";
-import Button from "@components/button";
 import {PencilIcon, TrashIcon} from "@heroicons/react/outline";
-import _ from "lodash";
-import swal from "sweetalert";
-import {locationService} from "../../services";
+import Button from "@components/button";
+import {locationService, schoolService} from "../../../services";
+import Select from "../../../components/form/select";
+import {useAuth} from "../../../context/auth";
 
-const Student = () => {
+const Manager = () => {
   const router = useRouter();
   const {query} = router;
+  const {user} = useAuth()
   const [members, setMembers] = useState();
+
+  const [schoolOptions, setSchoolOptions] = useState([]);
   const [provinceOptions, setProvinceOptions] = useState([]);
   const [districtOptions, setDistrictOptions] = useState([])
   const [wardOptions, setWardOptions] = useState([])
@@ -51,15 +55,22 @@ const Student = () => {
     const provinces = await locationService.listProvince();
     setProvinceOptions(provinces);
 
+    if (user.role === 'admin') {
+      const schools = await schoolService.list({limit: 100});
+      if (schools.total) {
+        const schoolOptions = schools.data.map((data) => ({
+          value: data._id,
+          label: data.schoolname,
+        }));
+        setSchoolOptions(schoolOptions);
+      }
+    }
+
     if (_.isEmpty(query)) {
-      const listMember = await memberService.listStudent();
+      const listMember = await memberService.listManagers();
       setMembers(listMember);
-
-      // const provinceOption = _.find(provinces, (o) => o.code === query.province);
-      // setSelects({...selects, ...{province: provinceOption}});
-
     } else {
-      const listMember = await memberService.listStudent(query);
+      const listMember = await memberService.listManagers(query);
       setMembers(listMember);
 
       if (query.province) {
@@ -93,7 +104,6 @@ const Student = () => {
     setWardOptions(wards);
   }
 
-
   const handleDelete = async (id) => {
     swal({
       title: "Bạn chắc chắn muốn xóa?",
@@ -125,7 +135,8 @@ const Student = () => {
       {shallow: true}
     );
 
-    const res = await memberService.listStudent(newFilter)
+    const res = await memberService.list({...newFilter, type: 'manager'})
+    console.log('res', res)
     if (!res) {
       swal({
         text: "Nội dung tìm kiếm ít nhất là 3 ký tự",
@@ -137,12 +148,12 @@ const Student = () => {
 
   return (
     <>
-      <h4>Hồ sơ học sinh</h4>
+      <h4>Danh sách cán bộ quản lý</h4>
       <form onSubmit={handleSubmitSearch}>
         <div className="grid-container">
           <Input
             label='Tìm kiếm'
-            placeholder='Tên học sinh' name="s"
+            placeholder='Tên cán bộ quản lý' name="s"
             onChange={e => setFilter({...filter, s: e.target.value})}
           />
           <Select
@@ -180,60 +191,61 @@ const Student = () => {
             }}
             options={wardOptions}
           />
+          {user.role === 'admin' &&
+            <>
+              <Select
+                label='Tên trường'
+                name='schoolId'
+                onChange={e => {
+                  setSelects({...selects, ...{school: e}})
+                  setFilter({...filter, schoolId: e.value})
+                }}
+                options={schoolOptions}
+              />
+            </>
+          }
         </div>
         <Button type='submit'>Tìm kiếm</Button>
       </form>
       <div className="mt-8 drop-shadow-2xl overflow-x-auto lg:overflow-x-visible">
-        <div className="mt-8 overflow-x-auto lg:overflow-x-visible">
-          <div className='container-table w-[800px] lg:w-full'>
-            <table className='table'>
-              <thead>
+        <div className='container-table'>
+          <table className='table'>
+            <thead>
               <tr>
-                <th className="w-2">STT</th>
-                <th>Họ và tên</th>
-                <th>Tên lớp</th>
-                <th>Phụ Huynh</th>
-                <th className="w-[100px]"/>
+                <th className="w-3">STT</th>
+                <th>Họ tên</th>
+                <th>Phone</th>
+                <th>Địa chỉ</th>
+                <th/>
               </tr>
-              </thead>
-              <tbody>
-                {!_.isEmpty(members)
-                  ? members.data?.map((row, idz) => (
-                    <tr key={idz}>
+            </thead>
+            <tbody>
+              {!_.isEmpty(members)
+                ? members.data?.map((row, idz) => (
+                  <tr key={idz}>
                     <td>{idz + 1}</td>
                     <td className='text-center'>{row.fullName}</td>
-                    <td className='text-center'>{(row.schoolWorking) ? row.schoolWorking?.className : ''}</td>
+                    <td className='text-center'>{row.phoneNumber}</td>
+                    <td className='text-center'>{row.address}</td>
                     <td className='text-center'>
-                      <Link href={`/phu-huynh/${row.parent[0]?.parentId}`}>
-                        <a>{row.parent && row.parent[0]?.fullName}</a>
-                      </Link>
-                    </td>
-                    <td>
                       <Link href={router.pathname + '/' + row._id}>
-                         <a><PencilIcon className='h-5 w-5 inline'/></a>
+                        <a><PencilIcon className='h-5 w-5 inline'/></a>
                       </Link>
                       <TrashIcon
                         className='h-5 w-5 inline ml-4 cursor-pointer'
                         onClick={() => handleDelete(row._id)}
                       />
                     </td>
-                  </tr>
-                  ))
-                  : (<tr><td colSpan='5'>Chưa có dữ liệu</td></tr>)
-                }
-              </tbody>
-            </table>
-            {/* <Pagination
-              itemsPerPage={itemsPerPage}
-              currentPage={currentPage}
-              rows={rows}
-              onPageChange={page => setCurrentPage(page)}
-            /> */}
-          </div>
+                    </tr>
+                ))
+                : (<tr><td colSpan='4'>Chưa có dữ liệu</td></tr>)
+              }
+            </tbody>
+          </table>
         </div>
       </div>
     </>
-  )
+  );
 }
-export default Student
 
+export default Manager;

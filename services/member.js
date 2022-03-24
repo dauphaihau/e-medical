@@ -28,8 +28,8 @@ export const memberService = {
   remove: async (id) => {
     if (!id) return false;
     try {
-      const {...response} = await api.delete("/member/" + id);
-      return response.data;
+      await api.delete("/member/" + id);
+      return true
     } catch (e) {
       return false;
     }
@@ -134,6 +134,33 @@ export const memberService = {
   updateStudent: async (id, data) => {
     try {
       const {...response} = await api.patch(`/member/${id}`, data);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  },
+  // manager
+  listManagers: async (params) => {
+    try {
+      params = {
+        ...params, ...{
+          type: 'manager'
+        }
+      };
+      const {...response} = await api.get("/member", {params});
+      return response.data;
+    } catch (e) {
+      return false
+    }
+  },
+  createManager: async (data) => {
+    try {
+      data = {
+        ...data, ...{
+          role: 'manager',
+        }
+      }
+      await api.post("/member/", data);
       return true;
     } catch (e) {
       return false;

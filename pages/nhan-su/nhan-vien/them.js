@@ -10,6 +10,7 @@ import Input from "@components/form/input";
 import { memberService, locationService, schoolService } from "@services";
 import Select from "@components/form/select";
 import Region from "@components/form/region";
+import {useAuth} from "../../../context/auth";
 
 const phoneRegExp = /(([03+[2-9]|05+[6|8|9]|07+[0|6|7|8|9]|08+[1-9]|09+[1-4|6-9]]){3})+[0-9]{7}\b/
 const validationSchema = Yup.object().shape({
@@ -21,7 +22,7 @@ const validationSchema = Yup.object().shape({
   phoneNumber: Yup.string()
     .required('Vui lòng nhập số điện thoại')
     .matches(phoneRegExp, 'Số điện thoại không hợp lệ'),
-  // address: Yup.string().required('Địa chỉ không được để trống'),
+  address: Yup.string().required('Địa chỉ không được để trống'),
   province: Yup.object().shape({}),
   district: Yup.object().shape({}),
   ward: Yup.object().shape({}),
@@ -29,15 +30,14 @@ const validationSchema = Yup.object().shape({
 
 const AddStaff = () => {
   const router = useRouter();
+  const {school} = useAuth();
   const [listSchool, setListSchool] = useState();
   const [listProvince, setListProvince] = useState();
 
   useEffect( () => {
     if (!router.isReady) return;
-    let abortController = new AbortController();  
-    
     loadInit();
-    return () => abortController.abort(); 
+    return () => {};
   }, [router.isReady]);
 
   const loadInit = async () => {
@@ -53,6 +53,7 @@ const AddStaff = () => {
   }
 
   const handleSubmitForm = async (data, {resetForm}) => {
+    console.log('data', data)
     //format data
     let bodyData = {};
     if(data.province && !_.isEmpty(data.province)){
@@ -83,14 +84,14 @@ const AddStaff = () => {
       onSubmit={handleSubmitForm}
       enableReinitialize
       initialValues={{
-        schoolId: '',
+        schoolId: school?._id,
         fullName: '',
         address: '',
         phoneNumber: '',
         province: {},
         district: {},
         ward: {},
-        role: 'staff'
+        role: 'staff',
       }}
     >
       {({
@@ -103,6 +104,8 @@ const AddStaff = () => {
           <Select
             label='Tên trường'
             name='schoolId'
+            isDisable={true}
+            value={{value: school?._id, label: school?.schoolname}}
             options={listSchool}
             onChange={(e) => {
               setFieldValue('schoolId', e.value);
@@ -113,18 +116,21 @@ const AddStaff = () => {
             name='fullName'
             onChange={handleChange}
             value={values.fullName}
+            useFormik
           />
           <Input
             label='Phone'
             name='phoneNumber'
             onChange={handleChange}
             value={values.phoneNumber}
+            useFormik
           />
           <Input
             label='Địa chỉ'
             name='address'
             onChange={handleChange}
             value={values.address}
+            useFormik
           />
           <div className='grid lg:grid-cols-2 gap-x-4'>
             <Field
@@ -136,7 +142,7 @@ const AddStaff = () => {
               name='role'
               options={[
                 {value:'staff', label:'Nhân viên'},
-                {value:'manger', label:'Cán bộ quản lý'},
+                {value:'manager', label:'Cán bộ quản lý'},
               ]}
               onChange={(e) => {
                 setFieldValue('role', e.value);
@@ -144,7 +150,6 @@ const AddStaff = () => {
               defaultValue={{value:'staff', label:'Nhân viên'}}
             />
           </div>
-          
           <Button type='submit' className='mr-4'>Thêm</Button>
         </Form>
       )}

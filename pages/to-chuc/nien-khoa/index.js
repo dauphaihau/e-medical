@@ -26,7 +26,7 @@ const SchoolYearList = () => {
   useEffect(() => {
     if (!router.isReady) return;
     loadInit()
-    return () => setListSchoolYear([])
+    return () => {};
   }, [router.isReady]);
 
   const loadInit = async () => {
@@ -134,7 +134,7 @@ const SchoolYearList = () => {
               <Input
                 label='Tìm kiếm'
                 useFormik
-                placeholder='Tên niên khoá...' name="s"
+                placeholder='Tên niên khoá' name="s"
                 onChange={handleChange}
               />
               <Select
@@ -180,10 +180,6 @@ const SchoolYearList = () => {
                       <Link href={`/to-chuc/nien-khoa/${item._id}`}>
                         <a><PencilIcon className='h-5 w-5 inline'/></a>
                       </Link>
-                      <TrashIcon
-                        className='h-5 w-5 inline ml-4 cursor-pointer'
-                        onClick={() => handleDelete(item._id)}
-                      />
                     </td>
                   </tr>
                 ))

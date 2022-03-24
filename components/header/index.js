@@ -1,25 +1,26 @@
 import {useEffect, useRef, useState} from "react";
-import {useRouter} from "next/router";
+import Router, {useRouter} from "next/router";
 import Image from 'next/image'
 import Link from 'next/link'
+import Cookie from "cookie-cutter";
 
 import logo from "../../assets/images/logo.svg";
 import onlyLogo from "../../assets/images/onlylogo.png";
 import Button from "../button";
 import {useAuth} from "../../context/auth";
 
-const removeSession = (sKey, sPath, sDomain) => {
-  document.cookie = encodeURIComponent(sKey) +
-    "=; expires=Thu, 01 Jan 1970 00:00:00 GMT" +
-    (sDomain ? "; domain=" + sDomain : "") +
-    (sPath ? "; path=" + sPath : "");
-  window.location.reload();
+const logout = () => {
+  Cookie.set("accessToken", "", {
+    path: "/",
+    expires: new Date(0),
+  });
+  Router.reload();
 }
 
 const navigation = [
-  {name: 'Trang cá nhân', href: '/'},
+  {name: 'Trang cá nhân', href: '/trang-ca-nhan'},
   {name: 'Cài đặt', href: '/'},
-  {name: 'Đăng xuất', href: '/dang-nhap', logout: () => removeSession('accessToken')},
+  {name: 'Đăng xuất', href: '/dang-nhap', logout: () => logout()},
 ]
 
 function useOuterClick(callback) {
@@ -48,8 +49,18 @@ function useOuterClick(callback) {
   return innerRef;
 }
 
-function renderButtonAddNew(pathname) {
+function renderButtonAddNew(pathname, role) {
   let addLink = '/to-chuc/truong/them';
+  let isBtnShow = true;
+
+  if (pathname) {
+    if (role === 'parent') {
+      isBtnShow = false;
+    }
+  }
+  if (pathname.includes('trang-ca-nhan')) {
+    isBtnShow = false;
+  }
   if (pathname.includes('to-chuc/truong')) {
     addLink = '/to-chuc/truong/them';
   }
@@ -64,6 +75,9 @@ function renderButtonAddNew(pathname) {
   }
   if (pathname.includes('hoc-sinh')) {
     addLink = '/hoc-sinh/them';
+    if (role === 'parent') {
+      isBtnShow = false;
+    }
   }
   if (pathname.includes('phu-huynh')) {
     addLink = '/phu-huynh/them';
@@ -73,37 +87,44 @@ function renderButtonAddNew(pathname) {
   }
   if (pathname.includes('nhan-vien')) {
     addLink = '/nhan-su/nhan-vien/them';
+    if (role === 'staff') {
+      isBtnShow = false;
+    }
+  }
+  if (pathname.includes('can-bo')) {
+    addLink = '/nhan-su/can-bo/them';
   }
 
   return (
-    <Link href={addLink}>
-      <a><Button className='ml-4 rounded-[11px] hidden lg:block'>Thêm mới</Button></a>
-    </Link>
+    <>
+      {isBtnShow &&
+        <Link href={addLink}>
+          <a><Button className='ml-4 rounded-[11px] hidden lg:block'>Thêm mới</Button></a>
+        </Link>
+      }
+    </>
   );
 };
 
-const handleRole = (role) => {
+const handleRole = (role, school = '') => {
   const labelRoles = {
-    parent: 'Phụ huynh',
-    teacher: 'Giáo viên',
-    student: 'Học sinh',
-    staff: 'Nhân viên',
+    parent: 'Phụ huynh: ',
+    teacher: 'Giáo viên: ',
+    student: 'Học sinh: ',
+    staff: 'Nhân viên: ',
+    manager: 'Cán bộ quản lý: ',
     admin: 'Quản trị viên',
   };
-  return labelRoles[role] ? labelRoles[role]: '';
+  return labelRoles[role] ? `${labelRoles[role]} ${school && school.schoolname}` : '';
 };
 
 const Header = ({stateSidebar, setStateSidebar}) => {
   const router = useRouter();
   const [dropdown, setDropdown] = useState(false)
-  const {user} = useAuth();
+  const {user, school} = useAuth();
   const innerRef = useOuterClick(() => {
     setDropdown(false)
   });
-  let addLink = '';
-  if (router.pathname.includes('to-chuc/truong')) {
-    addLink = '/to-chuc/truong/them';
-  }
 
   return (
     <div className="header">
@@ -133,13 +154,13 @@ const Header = ({stateSidebar, setStateSidebar}) => {
               />
             </svg>
           </button>
-          {renderButtonAddNew(router.pathname)}
+          {renderButtonAddNew(router.pathname, user?.role)}
         </div>
         <div className='navbar-right'>
           <div className='navbar-right__info' ref={innerRef} onClick={() => setDropdown(!dropdown)}>
             <div>
               <p>{user?.fullName}</p>
-              <p>{handleRole(user?.role)}</p>
+              <p>{handleRole(user?.role, school)}</p>
             </div>
             <img src="https://i.pravatar.cc/300" alt='avatar'/>
           </div>

@@ -24,7 +24,7 @@ const GroupList = () => {
   const [schoolOptions, setSchoolOptions] = useState([]);
   const [schoolYearOptions, setSchoolYearOptions] = useState([])
 
-  const [selects, setSelect] = useState({
+  const [selects, setSelects] = useState({
     s: '',
     school: {
       value: '',
@@ -50,7 +50,7 @@ const GroupList = () => {
   useEffect(() => {
     if (!router.isReady) return;
     loadInit();
-    return () => setListGroup({})
+    return () => {};
   }, [router.isReady, router.asPath])
 
   const loadInit = async () => {
@@ -103,7 +103,7 @@ const GroupList = () => {
           value: schoolOption._id,
           label: schoolOption.schoolname
         };
-        setSelect({...selects, ...{school: schoolOption}});
+        setSelects({...selects, ...{school: schoolOption}});
 
         if (query.schoolYearId) {
           let schoolYearOpts = await schoolYearService.list(
@@ -113,7 +113,7 @@ const GroupList = () => {
             value: schoolYearOpts.data[0]?._id,
             label: schoolYearOpts.data[0]?.schoolYearName
           };
-          setSelect({...selects, ...{school: schoolOption, schoolYear: schoolYearOpts}});
+          setSelects({...selects, ...{school: schoolOption, schoolYear: schoolYearOpts}});
         }
         const schoolYears = await schoolYearService.list({schoolId: query.schoolId})
         if (schoolYears && schoolYears.total) {
@@ -124,7 +124,6 @@ const GroupList = () => {
         }
       }
       // endregion
-
       // await setIsLoading(false);
     }
   }
@@ -143,7 +142,6 @@ const GroupList = () => {
           router.reload();
         } else {
           swal('Xóa không thành công!!', '', 'error');
-          s
         }
       }
     });
@@ -212,7 +210,7 @@ const GroupList = () => {
               <div className='grid-container'>
                 <Input
                   label='Tìm kiếm'
-                  placeholder='Tìm kiếm..'
+                  placeholder='Tên khối'
                   name="s"
                   onChange={e => setFilter({...filter, s: e.target.value})}
                 />
@@ -222,7 +220,7 @@ const GroupList = () => {
                   name='schoolId'
                   onChange={e => {
                     onChangeSchool(e);
-                    setSelect({...selects, ...{school: e, schoolYear: null, parent: null}})
+                    setSelects({...selects, ...{school: e, schoolYear: null, parent: null}})
                     setFilter({...filter, schoolId: e.value, schoolYearId: '', parentId: ''})
                   }}
                   value={selects.school}
@@ -233,7 +231,7 @@ const GroupList = () => {
                   name='schoolYearId'
                   value={selects.schoolYear}
                   onChange={e => {
-                    setSelect({...selects, schoolYear: e});
+                    setSelects({...selects, schoolYear: e});
                     setFilter({...filter, schoolYearId: e.value})
                   }}
                   options={schoolYearOptions}
@@ -263,10 +261,6 @@ const GroupList = () => {
                           <Link href={`/to-chuc/khoi/${group._id}`}>
                             <a><PencilIcon className='h-5 w-5 inline'/></a>
                           </Link>
-                          <TrashIcon
-                            className='h-5 w-5 inline ml-4 cursor-pointer'
-                            onClick={() => handleDelete(group._id)}
-                          />
                         </td>
                     </tr>
                       ))
