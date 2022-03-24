@@ -68,7 +68,6 @@ const Manager = () => {
 
     if (_.isEmpty(query)) {
       const listMember = await memberService.listManagers();
-      console.log('list-member', listMember)
       setMembers(listMember);
     } else {
       const listMember = await memberService.listManagers(query);

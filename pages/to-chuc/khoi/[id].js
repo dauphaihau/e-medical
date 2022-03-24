@@ -33,8 +33,6 @@ const DetailGroup = () => {
       label: "",
     }
   })
-  console.log('list-school-year', listSchoolYear)
-  console.log('class-group', classGroup)
 
   useEffect(() => {
     if (!router.isReady) return;

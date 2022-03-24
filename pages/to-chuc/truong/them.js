@@ -29,7 +29,7 @@ const validationSchema = Yup.object().shape({
 
 const AddSchool = () => {
   const router = useRouter();
-  const {school, user} = useAuth();
+  const {schoolName, user} = useAuth();
   const [listProvince, setListProvince] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false)
 
@@ -43,7 +43,7 @@ const AddSchool = () => {
   const loadInit = async () => {
     const provinces = await locationService.listProvince();
     setListProvince(provinces);
-    if (user.role !== 'admin') {
+    if (user.role === 'admin') {
       setIsAdmin(true)
     }
   }
@@ -61,7 +61,7 @@ const AddSchool = () => {
     }
     bodyData = {...data, ...bodyData};
     try {
-      await schoolService.create(bodyData)
+      // await schoolService.create(bodyData)
       swal({
         title: "Thêm trường thành công",
         icon: "success"
@@ -78,7 +78,7 @@ const AddSchool = () => {
       onSubmit={handleSubmitForm}
       enableReinitialize
       initialValues={{
-        schoolname: isAdmin ? '' : school?._id,
+        schoolname: isAdmin ? '' : schoolName,
         address: '',
         province: {},
         district: {},
@@ -91,9 +91,9 @@ const AddSchool = () => {
           <Input
             label='Tên trường'
             name='schoolname'
-            disable={isAdmin}
+            disable={!isAdmin}
             onChange={handleChange}
-            value={school?.schoolname}
+            value={values.schoolname}
           />
           <Input
             label='Địa chỉ'

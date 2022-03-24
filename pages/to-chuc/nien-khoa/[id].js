@@ -15,7 +15,6 @@ import {useAuth} from "../../../context/auth";
 
 const validationSchema = Yup.object().shape({
   schoolYearName: Yup.string().required('Tên niên khoá trường không được để trống'),
-  // schoolId: Yup.string().required('Vui lòng chọn trường.'),
 });
 
 const DetailSchoolYear = () => {

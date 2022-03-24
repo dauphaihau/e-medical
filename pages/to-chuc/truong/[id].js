@@ -37,9 +37,9 @@ const defaultSelectValue = {
 
 const UpdateSchool = () => {
   const router = useRouter();
-  const {school, user} = useAuth();
+  const {school: schoolFormProfile, user} = useAuth();
   const [listProvince, setListProvince] = useState([]);
-  const [schoolSelected, setSchoolSelected] = useState()
+  const [school, setSchool] = useState()
   const [isAdminOrManager, setIsAdminOrManager] = useState(false)
 
   useEffect(() => {
@@ -48,22 +48,20 @@ const UpdateSchool = () => {
   }, [router.isReady])
 
   const loadInit = async () => {
-    if (user.role === 'admin' || user.role === 'manager') {
-      setIsAdminOrManager(true)
-    }
     const provinces = await locationService.listProvince();
     setListProvince(provinces);
 
-    if (user.role === 'admin') {
+    if (user.role === 'admin' || user.role === 'manager') {
+      setIsAdminOrManager(true)
       const {id} = router.query;
-      const school = await schoolService.detail(id);
-      if (!school) {
-        swal('Truờng này không tồn tại', '', 'error')
-          .then(Router.push('/to-chuc/truong'))
+      if (id) {
+        const school = await schoolService.detail(id);
+        if (!school) {
+          swal('Truờng này không tồn tại', '', 'error')
+            .then(Router.push('/to-chuc/truong'))
+        }
+        setSchool(school);
       }
-      setSchoolSelected(school);
-    } else {
-      setSchoolSelected(school)
     }
   }
 
@@ -102,7 +100,7 @@ const UpdateSchool = () => {
       onSubmit={handleSubmitForm}
       enableReinitialize
       initialValues={{
-        schoolname: isAdminOrManager ? schoolSelected?.schoolname : school?.schoolname,
+        schoolname: isAdminOrManager ? school?.schoolname : schoolFormProfile?.schoolname,
         address: school ? school.address : '',
         province: school && school.province ? {
           value: school.province.code,
@@ -121,7 +119,7 @@ const UpdateSchool = () => {
         } : defaultSelectValue,
       }}
     >
-      {({handleChange, values, errors}) => (
+      {({handleChange, values}) => (
         <Form className='form'>
           <h3>Cập nhật thông tin trường</h3>
           {isAdminOrManager ? <>
@@ -137,7 +135,7 @@ const UpdateSchool = () => {
                 label='Tên trường'
                 name='schoolId'
                 isDisable={true}
-                value={{value: school?._id, label: school?.schoolname}}
+                value={{value: schoolFormProfile?._id, label: schoolFormProfile?.schoolname}}
               />
             </>
           }

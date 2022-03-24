@@ -133,8 +133,6 @@ const Parent = () => {
     setMembers(res)
   };
 
-  console.log('members', members)
-
   return (
     <>
       <h4>Danh sách phụ huynh</h4>

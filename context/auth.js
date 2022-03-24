@@ -19,18 +19,17 @@ export function useAuth() {
 export function AuthProvider({children}) {
   const [user, setUser] = useState({});
   const [school, setSchool] = useState()
-  const schoolId = user.schoolWorking?.schoolId
+  const schoolId = user.schoolWorking?.schoolId;
+  const schoolName = school?.schoolname
 
   useEffect(() => {
     if (Cookie.get('accessToken')) {
       async function verifyAuth() {
         const userRes = await accountService.me();
         if (userRes) {
-          console.log('get data profile on Auth', userRes)
           setUser(userRes);
           if (userRes.role !== 'admin') {
             const res = await schoolService.detail(userRes.schoolWorking.schoolId);
-            console.log('get fullname from schoolId', res)
             setSchool(res)
           }
         } else {
@@ -47,7 +46,7 @@ export function AuthProvider({children}) {
   }, [])
 
   return (
-    <AuthContext.Provider value={{user, setUser, school, schoolId}}>
+    <AuthContext.Provider value={{user, setUser, school, schoolId, schoolName}}>
       {children}
     </AuthContext.Provider>
   );
