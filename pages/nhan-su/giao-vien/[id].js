@@ -39,23 +39,6 @@ const UpdateTeacher = () => {
   const [listClass, setListClass] = useState([]);
   const [provinceOptions, setProvinceOptions] = useState([]);
   const [addType, setAddType] = useState();
-  const [selects, setSelect] = useState({
-    province: {
-      value: '',
-      label: '',
-      code: '',
-    },
-    district: {
-      value: '',
-      label: '',
-      code: '',
-    },
-    ward: {
-      value: '',
-      label: '',
-      code: '',
-    },
-  })
   const [initData, setInitData] = useState({
     school: {},
     schoolYear: {},
@@ -89,17 +72,20 @@ const UpdateTeacher = () => {
       const memberRes = await memberService.detail(id);
       setMember(memberRes);
 
-      if (memberRes && !_.isEmpty(memberRes) && memberRes.province?.code !== undefined) {
-        const provinceOption = _.find(provinces, (o) => o.code === memberRes.province.code);
-        const districts = await locationService.listDistrict(memberRes.province.code);
-        const districtOption = _.find(districts, (o) => o.code === memberRes.district.code);
-        const wards = await locationService.listWard(memberRes.district.code);
-        const wardOption = _.find(wards, (o) => o.code === memberRes.ward.code);
-        setSelect({...selects, ...{ward: wardOption, district: districtOption, province: provinceOption}})
+      let initDataSelected = {};
+      if (memberRes && !_.isEmpty(memberRes) && memberRes.province !== undefined) {
+        initDataSelected.province = _.find(provinces, (o) => o.code === memberRes.province.code);
+        if (memberRes.district !== undefined) {
+          const districts = await locationService.listDistrict(memberRes.province.code);
+          initDataSelected.district = _.find(districts, (o) => o.code === memberRes.district.code);
+          if (memberRes.ward !== undefined) {
+            const wards = await locationService.listWard(memberRes.district.code);
+            initDataSelected.ward = _.find(wards, (o) => o.code === memberRes.ward.code);
+          }
+        }
       }
       setMember(memberRes);
 
-      let initDataSelected = {};
       const schools = await schoolService.list({limit: 20});
       if (schools.total) {
         const schoolSelect = schools.data.map((data) => ({
@@ -118,9 +104,6 @@ const UpdateTeacher = () => {
               label: data.schoolYearName,
             }));
             setListSchoolYear(schoolYearSelect);
-
-            console.log('list-school-year', listSchoolYear)
-            console.log('school-year-select', schoolYearSelect)
 
             const initYear = _.find(schoolYearSelect, {value: memberRes.schoolWorking?.schoolYearId});
             initDataSelected.schoolYear = initYear;
@@ -219,9 +202,9 @@ const UpdateTeacher = () => {
         fullName: member?.fullName ?? '',
         address: member?.address ?? '',
         phoneNumber: member?.phoneNumber ?? '',
-        province: selects.province,
-        district: selects.district,
-        ward: selects.ward,
+        province: initData.province,
+        district: initData.district,
+        ward: initData.ward,
       }}
     >
       {({
