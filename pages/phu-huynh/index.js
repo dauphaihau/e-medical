@@ -139,7 +139,7 @@ const Parent = () => {
         <div className="grid-container">
           <Input
             label='Tìm kiếm'
-            placeholder='Tên trường' name="s"
+            placeholder='Tên phụ huynh' name="s"
             onChange={e => setFilter({...filter, s: e.target.value})}
           />
           <Select
@@ -189,8 +189,8 @@ const Parent = () => {
               <th className='text-left'>Họ tên</th>
               <th className='text-left'>Phone</th>
               <th className='text-left'>Địa chỉ</th>
-              <th className='text-left'>Quận</th>
               <th className='text-left'>Tỉnh</th>
+              <th className='text-left'>Quận</th>
               <th className='text-left'>Phường</th>
               <th/>
             </tr>

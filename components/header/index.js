@@ -8,9 +8,8 @@ import logo from "../../assets/images/logo.svg";
 import onlyLogo from "../../assets/images/onlylogo.png";
 import Button from "../button";
 import {useAuth} from "../../context/auth";
-import {schoolService} from "../../services";
 
-const removeSession = () => {
+const logout = () => {
   Cookie.set("accessToken", "", {
     path: "/",
     expires: new Date(0),
@@ -19,9 +18,9 @@ const removeSession = () => {
 }
 
 const navigation = [
-  {name: 'Trang cá nhân', href: '/'},
+  {name: 'Trang cá nhân', href: '/trang-ca-nhan'},
   {name: 'Cài đặt', href: '/'},
-  {name: 'Đăng xuất', href: '/dang-nhap', logout: () => removeSession()},
+  {name: 'Đăng xuất', href: '/dang-nhap', logout: () => logout()},
 ]
 
 function useOuterClick(callback) {
@@ -59,7 +58,9 @@ function renderButtonAddNew(pathname, role) {
       isBtnShow = false;
     }
   }
-
+  if (pathname.includes('trang-ca-nhan')) {
+    isBtnShow = false;
+  }
   if (pathname.includes('to-chuc/truong')) {
     addLink = '/to-chuc/truong/them';
   }
@@ -120,22 +121,10 @@ const handleRole = (role, school = '') => {
 const Header = ({stateSidebar, setStateSidebar}) => {
   const router = useRouter();
   const [dropdown, setDropdown] = useState(false)
-  const {user, schoolId} = useAuth();
-  const [school, setSchool] = useState()
+  const {user, school} = useAuth();
   const innerRef = useOuterClick(() => {
     setDropdown(false)
   });
-
-  useEffect(() => {
-    loadInit()
-  }, [user])
-
-  const loadInit = async () => {
-    if (user.role !== 'admin') {
-      const resSchool = await schoolService.detail(schoolId);
-      setSchool(resSchool)
-    }
-  }
 
   return (
     <div className="header">

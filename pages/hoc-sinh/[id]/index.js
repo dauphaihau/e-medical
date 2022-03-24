@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {Formik, Form} from "formik";
+import {Form, Formik} from "formik";
 import {useRouter} from "next/router";
 import * as Yup from "yup";
 import _ from "lodash";
@@ -10,7 +10,7 @@ import Radio, {RadioGroup} from "@components/form/radio";
 import Button from "@components/button";
 import Select from "@components/form/select";
 import AsyncSelect from 'react-select/async';
-import {classroomService, schoolService, schoolYearService, memberService} from "@services";
+import {classroomService, memberService, schoolService, schoolYearService} from "@services";
 import {TrashIcon} from "@heroicons/react/outline";
 
 const validationSchema = Yup.object().shape({

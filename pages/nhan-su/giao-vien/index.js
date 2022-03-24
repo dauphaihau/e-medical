@@ -10,13 +10,15 @@ import Button from "@components/button";
 import {PencilIcon, TrashIcon} from "@heroicons/react/outline";
 import Select from "@components/form/select";
 import {classroomService, schoolService} from "@services";
+import {useAuth} from "../../../context/auth";
 
 const Teacher = () => {
   const router = useRouter();
   const {query} = router;
   const [members, setMembers] = useState();
+  const {schoolId} = useAuth();
+  const [searchInput, setSearchInput] = useState("");
 
-  const [schoolOptions, setSchoolOptions] = useState([]);
   const [groupOptions, setGroupOptions] = useState([])
 
   const [selects, setSelect] = useState({
@@ -32,7 +34,6 @@ const Teacher = () => {
   })
   const [filter, setFilter] = useState({
     s: '',
-    schoolId: '',
     schoolYearId: '',
     parentId: '',
   })
@@ -44,11 +45,11 @@ const Teacher = () => {
   }, [router.isReady]);
 
   const loadInit = async () => {
-    const schools = await schoolService.list({limit: 100});
-    if (schools.total) {
-      setSchoolOptions(schools.data.map((data) => ({
+    const groups = await classroomService.listGroup({schoolId, limit: 10});
+    if (groups.total) {
+      setGroupOptions(groups.data?.map((data) => ({
         value: data._id,
-        label: data.schoolname,
+        label: data.className,
       })));
     }
 
@@ -83,16 +84,6 @@ const Teacher = () => {
     }
   }
 
-  const onChangeSchool = async (e) => {
-    const groups = await classroomService.listGroup({schoolId: e.value, limit: 10});
-    if (groups.total) {
-      setGroupOptions(groups.data?.map((data) => ({
-        value: data._id,
-        label: data.className,
-      })));
-    }
-  };
-
   const handleDelete = async (id) => {
     swal({
       title: "Bạn chắc chắn muốn xóa?",
@@ -125,16 +116,30 @@ const Teacher = () => {
     );
 
     const res = await memberService.list({...newFilter, type: 'teacher'})
-    console.log('res', res);
 
     if (!res) {
-      swal( {
+      swal({
         text: "Nội dung tìm kiếm ít nhất là 3 ký tự",
         icon: "error"
       });
     }
     setMembers(res);
   };
+
+  // const searchItems = (searchValue) => {
+  //   setSearchInput(searchValue);
+  //   if (searchInput !== "") {
+  //     const filteredData = members.data?.filter((item) => {
+  //       return Object.values(item.schoolWorking.className)
+  //         .join("")
+  //         .toLowerCase()
+  //         .includes(searchInput.toLowerCase());
+  //     });
+  //     setMembers({data: filteredData})
+  //   } else {
+  //     console.log('error')
+  //   }
+  // }
 
   return (
     <>
@@ -148,19 +153,7 @@ const Teacher = () => {
             onChange={e => setFilter({...filter, s: e.target.value})}
           />
           <Select
-            label='Tên trường'
-            placeholder='Chọn trường'
-            name='schoolId'
-            onChange={e => {
-              onChangeSchool(e);
-              setSelect({...selects, ...{school: e, schoolYear: null, parent: null}})
-              setFilter({...filter, schoolId: e.value, schoolYearId: '', parentId: ''})
-            }}
-            value={selects.school}
-            options={schoolOptions}
-          />
-          <Select
-            label='Khối'
+            label='Tên khối'
             name='parentId'
             value={selects.parent}
             onChange={e => {
@@ -168,6 +161,12 @@ const Teacher = () => {
               setFilter({...filter, parentId: e.value})
             }}
             options={groupOptions}
+          />
+          <Input
+            label='Tên lớp'
+            name="s"
+            // onChange={e => setFilter({...filter, s: e.target.value})}
+            onChange={e => searchItems(e.target.value)}
           />
         </div>
         <Button type='submit'>Tìm kiếm</Button>

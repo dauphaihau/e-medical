@@ -6,7 +6,7 @@ import Router, {useRouter} from "next/router";
 
 import Button from "@components/button";
 import Input from "@components/form/input";
-import { memberService, locationService, schoolService, classroomService } from "@services";
+import {memberService, locationService, schoolService, classroomService} from "@services";
 import Select from "@components/form/select";
 import Region from "@components/form/region";
 import _ from "lodash";
@@ -39,6 +39,24 @@ const UpdateStaff = () => {
   const [member, setMember] = useState();
   const [listSchool, setListSchool] = useState([]);
   const [listProvince, setListProvince] = useState([]);
+  const [provinceOptions, setProvinceOptions] = useState([]);
+  const [selects, setSelect] = useState({
+    province: {
+      value: '',
+      label: '',
+      code: '',
+    },
+    district: {
+      value: '',
+      label: '',
+      code: '',
+    },
+    ward: {
+      value: '',
+      label: '',
+      code: '',
+    },
+  })
   const [initData, setInitData] = useState({
     school: {},
     class: {},
@@ -47,37 +65,44 @@ const UpdateStaff = () => {
     ward: {},
   });
 
-  useEffect( () => {
+  useEffect(() => {
     if (!router.isReady) return;
 
-    if( router.pathname.includes('giao-vien') ){
+    if (router.pathname.includes('giao-vien')) {
       setAddType('giao-vien');
     }
     loadInit();
     return () => setMember({})
   }, [router.isReady]);
 
-  useEffect( () => {
+  useEffect(() => {
   }, [listSchool])
 
   const loadInit = async () => {
-    const { id } = router.query;
-    if( id ){
+    const provinces = await locationService.listProvince();
+    setProvinceOptions(provinces);
+    const {id} = router.query;
+    if (id) {
       const memberRes = await memberService.detail(id);
-      if(memberRes && !_.isEmpty(memberRes)){
+      if (memberRes && !_.isEmpty(memberRes)) {
+        const provinceOption = _.find(provinces, (o) => o.code === memberRes.province.code);
+        const districts = await locationService.listDistrict(memberRes.province.code);
+        const districtOption = _.find(districts, (o) => o.code === memberRes.district.code);
+        const wards = await locationService.listWard(memberRes.district.code);
+        const wardOption = _.find(wards, (o) => o.code === memberRes.ward.code);
+        setSelect({...selects, ...{ward: wardOption, district: districtOption, province: provinceOption}})
         setMember(memberRes);
-      }
-      else{
+      } else {
         swal("Thành viên này không tồn tại!", "", "error")
-          .then(() => Router.push('/nhan-su/giao-vien/'));
+          .then(() => Router.push('/phu-huynh'));
       }
 
       let initDataSelected = {};
       const provinces = await locationService.listProvince();
       setListProvince(provinces);
-    
-      const schools = await schoolService.list({limit:20});
-      if(schools.total){
+
+      const schools = await schoolService.list({limit: 20});
+      if (schools.total) {
         const schoolSelect = schools.data.map((data) => ({
           value: data._id,
           label: data.schoolname,
@@ -85,38 +110,37 @@ const UpdateStaff = () => {
         setListSchool(schoolSelect);
         const initSchool = _.find(schoolSelect, {value: memberRes.schoolWorking?.schoolId});
         initDataSelected.school = initSchool;
-    
+
         setInitData(initDataSelected);
+        console.log('init-data', initData)
       }
-    }
-    else{
+    } else {
       Router.push('/phu-huynh');
     }
   }
 
   const handleSubmitForm = async (data) => {
-    const { id } = router.query;
+    const {id} = router.query;
     let bodyData = {};
-    if(data.province && !_.isEmpty(data.province)){
+    if (data.province && !_.isEmpty(data.province)) {
       bodyData.province = {code: data.province.code, provinceName: data.province.label}
     }
-    if(data.district && !_.isEmpty(data.district)){
+    if (data.district && !_.isEmpty(data.district)) {
       bodyData.district = {code: data.district.code, districtName: data.district.label}
     }
-    if(data.ward && !_.isEmpty(data.ward)){
+    if (data.ward && !_.isEmpty(data.ward)) {
       bodyData.ward = {code: data.ward.code, wardName: data.ward.label}
     }
     bodyData = {...data, ...bodyData};
 
     const result = await memberService.update(id, bodyData);
-    if(result){
+    if (result) {
       swal({
         title: "Cập nhật thành công",
         icon: "success"
       })
         .then(() => Router.push('/phu-huynh'))
-    }
-    else{
+    } else {
       swal({
         title: "Cập nhật không thành công",
         icon: "error"
@@ -127,7 +151,7 @@ const UpdateStaff = () => {
   const onChangeSchool = async (schoolId) => {
     const classes = await classroomService.list({schoolId});
     let classSelected = [];
-    if(classes.total){
+    if (classes.total) {
       classSelected = classes.data.map((data) => ({
         value: data._id,
         label: data.className,
@@ -149,21 +173,9 @@ const UpdateStaff = () => {
         fullName: member?.fullName ?? '',
         address: member?.address ?? '',
         phoneNumber: member?.phoneNumber ?? '',
-        province: member && member.province ? {
-          value: member.province.code, 
-          code: member.province.code,
-          label: member.province.provinceName
-        }:defaultSelectValue,
-        district: member && member.district ? {
-          value: member.district.code, 
-          code: member.district.code,
-          label: member.district.districtName
-        }:defaultSelectValue,
-        ward: member && member.ward ? {
-          value: member.ward.code, 
-          code: member.ward.code,
-          label: member.ward.wardName
-        }:defaultSelectValue,
+        province: selects.province,
+        district: selects.district,
+        ward: selects.ward,
       }}
     >
       {({
@@ -173,21 +185,23 @@ const UpdateStaff = () => {
         }) => (
         <Form className='form py-8'>
           <h3>Cập nhật thông tin</h3>
-        
+
           <Select
             label='Tên trường'
             name='schoolId'
             options={listSchool}
-            value={initData.school && !_.isEmpty(initData.school)?initData.school: ''}
+            value={initData.school && !_.isEmpty(initData.school) ? initData.school : ''}
             onChange={(e) => {
               setFieldValue('schoolId', e.value);
-              setInitData({...initData, ...{
-                school: e,
-                class: {},
-              }});
+              setInitData({
+                ...initData, ...{
+                  school: e,
+                  class: {},
+                }
+              });
             }}
           />
-          
+
           <Input
             label='Họ tên'
             name='fullName'
@@ -208,12 +222,12 @@ const UpdateStaff = () => {
           />
           <Field
             component={Region}
-            listProvince={listProvince}
+            listProvince={provinceOptions}
             provinceSelected={values.province}
             districtSelected={values.district}
             wardSelected={values.ward}
           />
-          
+
           <Button type='submit' className='mr-4'>Cập nhật</Button>
         </Form>
       )}
