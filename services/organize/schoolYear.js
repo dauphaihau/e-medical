@@ -20,10 +20,10 @@ export const schoolYearService = {
   },
   create: async (data) => {
     try {
-      const res = await api.post("/organization/schoolyear", data);
-      return res;
+      await api.post("/organization/schoolyear", data);
+      return true;
     } catch (e) {
-      return false;
+      return JSON.parse(e.request?.response)
     }
   },
   delete: async (id) => {

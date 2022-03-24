@@ -15,25 +15,19 @@ import {locationService} from "../../services";
 
 const phoneRegExp = /(([03+[2-9]|05+[6|8|9]|07+[0|6|7|8|9]|08+[1-9]|09+[1-4|6-9]]){3})+[0-9]{7}\b/
 const validationSchema = Yup.object().shape({
-  schoolId: Yup.string().required(),
-  classId: Yup.string().required(),
+  // classId: Yup.string().required(),
   fullName: Yup.string()
     .min(5, 'Tên trường ít nhất là 5 ký tự')
     .max(50, 'Tên trường tối đa là 50 ký tự')
     .required('Tên người dùng không được để trống'),
   phoneNumber: Yup.string()
-    .required('Vui logn2 nhập số điện thoại')
+    .required('Vui lòng nhập số điện thoại')
     .matches(phoneRegExp, 'Số điện thoại không hợp lệ'),
   // address: Yup.string().required('Địa chỉ không được để trống'),
   province: Yup.object().shape({}),
   district: Yup.object().shape({}),
   ward: Yup.object().shape({}),
 });
-const defaultSelectValue = {
-  value: "",
-  label: "",
-  code: "",
-};
 
 const Profile = () => {
   const router = useRouter();
@@ -41,6 +35,8 @@ const Profile = () => {
   const [listSchool, setListSchool] = useState([]);
   const [listSchoolYear, setListSchoolYear] = useState();
   const [listGroup, setListGroup] = useState();
+  const {user} = useAuth();
+  console.log('user', user)
   const [listClass, setListClass] = useState([]);
   const [provinceOptions, setProvinceOptions] = useState([]);
   const [initData, setInitData] = useState({
@@ -52,30 +48,11 @@ const Profile = () => {
     district: {},
     ward: {},
   });
-  const {user} = useAuth();
-
-  const [selects, setSelect] = useState({
-    province: {
-      value: '',
-      label: '',
-      code: '',
-    },
-    district: {
-      value: '',
-      label: '',
-      code: '',
-    },
-    ward: {
-      value: '',
-      label: '',
-      code: '',
-    },
-  })
 
   useEffect(() => {
     if (!router.isReady) return;
     loadInit();
-    return () => setMember({})
+    return () => {};
   }, [router.isReady]);
 
   useEffect(() => {
@@ -87,22 +64,19 @@ const Profile = () => {
     setProvinceOptions(provinces);
 
     if (user && !_.isEmpty(user)) {
-      setMember(user);
-      const provinceOption = _.find(provinces, (o) => o.code === user.province.code);
-      const districts = await locationService.listDistrict(user.province.code);
-      const districtOption = _.find(districts, (o) => o.code === user.district.code);
-      const wards = await locationService.listWard(user.district.code);
-      const wardOption = _.find(wards, (o) => o.code === user.ward.code);
-      setSelect({...selects, ...{ward: wardOption, district: districtOption, province: provinceOption}})
-
-      // const memberRes = await memberService.detail(id);
-      // console.log('member-res', memberRes)
-      // else{
-      //   swal("Thành viên này không tồn tại!", "", "error")
-      //     .then(() => Router.push('/nhan-su/giao-vien/'));
-      // }
-
       let initDataSelected = {};
+      if (user && !_.isEmpty(user) && user.province !== undefined) {
+        initDataSelected.province = _.find(provinces, (o) => o.code === user.province.code);
+        if (user.district !== undefined) {
+          const districts = await locationService.listDistrict(user.province.code);
+          initDataSelected.district = _.find(districts, (o) => o.code === user.district.code);
+          if (user.ward !== undefined) {
+            const wards = await locationService.listWard(user.district.code);
+            initDataSelected.ward = _.find(wards, (o) => o.code === user.ward.code);
+          }
+        }
+      }
+
       const schools = await schoolService.list({limit: 20});
       if (schools.total) {
         const schoolSelect = schools.data.map((data) => ({
@@ -156,16 +130,18 @@ const Profile = () => {
         }
       }
       setInitData(initDataSelected);
+      setMember(user);
     } else {
       Router.push('/');
     }
   }
 
   const handleSubmitForm = async (data) => {
+    console.log('data', data)
     try {
       await memberService.update(user._id, data);
       swal('Cập nhật thành công', '', 'success')
-      // .then(() => Router.push('/nhan-su/giao-vien/'));
+      .then(() => Router.push('/trang-ca-nhan'));
     } catch (error) {
       swal('Cập nhật không thành công.', 'Vui lòng thử lại.', 'error');
     }
@@ -215,9 +191,9 @@ const Profile = () => {
         fullName: member?.fullName ?? '',
         address: member?.address ?? '',
         phoneNumber: member?.phoneNumber ?? '',
-        province: selects.province,
-        district: selects.district,
-        ward: selects.ward,
+        province: initData.province,
+        district: initData.district,
+        ward: initData.ward,
       }}
     >
       {({
@@ -227,62 +203,65 @@ const Profile = () => {
         }) => (
         <Form className='form py-8'>
           <h3>Thông tin cá nhân</h3>
-          {user.role !== 'admin' &&
-            <div className='grid lg:grid-cols-2 gap-x-4'>
-              <Select
-                label='Tên trường'
-                name='schoolId'
-                options={listSchool}
-                value={initData.school && !_.isEmpty(initData.school) ? initData.school : ''}
-                onChange={(e) => {
-                  onChangeSchool(e.value);
-                  setFieldValue('schoolId', e.value);
-                  setInitData({
-                    ...initData, ...{
-                      school: e,
-                      class: {},
-                    }
-                  });
-                }}
-              />
-              <Select
-                label='Niên khoá'
-                name='schoolYearId'
-                onChange={e => {
-                  onChangeSchoolYear(e.value);
-                  setFieldValue('schoolYearId', e.value)
-                }}
-                options={listSchoolYear}
-                value={initData.schoolYear && !_.isEmpty(initData.schoolYear) ? initData.schoolYear : ''}
-                useFormik='true'
-              />
-              <Select
-                label='Khối'
-                name='classGroupId'
-                useFormik='true'
-                onChange={e => {
-                  onChangeGroup(e.value);
-                  setFieldValue('classGroupId', e.value)
-                }}
-                value={initData.classGroup && !_.isEmpty(initData.classGroup) ? initData.classGroup : ''}
-                options={listGroup}
-              />
-              <Select
-                label='Lớp chủ nhiệm'
-                name='classId'
-                options={listClass}
-                value={initData.class && !_.isEmpty(initData.class) ? initData.class : ''}
-                onChange={(e) => {
-                  setFieldValue('classId', e.value)
-                  setInitData({
-                    ...initData, ...{
-                      class: e,
-                    }
-                  });
-                }}
-              />
-            </div>
-          }
+            <Select
+              label='Tên trường'
+              name='schoolId'
+              options={listSchool}
+              value={initData.school && !_.isEmpty(initData.school) ? initData.school : ''}
+              onChange={(e) => {
+                onChangeSchool(e.value);
+                setFieldValue('schoolId', e.value);
+                setInitData({
+                  ...initData, ...{
+                    school: e,
+                    class: {},
+                  }
+                });
+              }}
+            />
+
+          <div className='grid lg:grid-cols-2 gap-x-4'>
+            {user.role !== 'staff' &&
+              <>
+                <Select
+                  label='Niên khoá'
+                  name='schoolYearId'
+                  onChange={e => {
+                    onChangeSchoolYear(e.value);
+                    setFieldValue('schoolYearId', e.value)
+                  }}
+                  options={listSchoolYear}
+                  value={initData.schoolYear && !_.isEmpty(initData.schoolYear) ? initData.schoolYear : ''}
+                  useFormik='true'
+                />
+                <Select
+                  label='Khối'
+                  name='classGroupId'
+                  useFormik='true'
+                  onChange={e => {
+                    onChangeGroup(e.value);
+                    setFieldValue('classGroupId', e.value)
+                  }}
+                  value={initData.classGroup && !_.isEmpty(initData.classGroup) ? initData.classGroup : ''}
+                  options={listGroup}
+                />
+                <Select
+                  label='Lớp chủ nhiệm'
+                  name='classId'
+                  options={listClass}
+                  value={initData.class && !_.isEmpty(initData.class) ? initData.class : ''}
+                  onChange={(e) => {
+                    setFieldValue('classId', e.value)
+                    setInitData({
+                      ...initData, ...{
+                        class: e,
+                      }
+                    });
+                  }}
+                />
+              </>
+            }
+          </div>
           <Input
             label='Họ tên'
             name='fullName'

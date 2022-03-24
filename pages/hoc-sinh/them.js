@@ -9,7 +9,7 @@ import _ from "lodash";
 import {classroomService, schoolService, schoolYearService, memberService} from "@services";
 
 import Input from "@components/form/input";
-import Radio, {RadioGroup} from "@components/form/radio";
+import {RadioGroup} from "@components/form/radio";
 import Button from "@components/button";
 import Select from "@components/form/select";
 import {TrashIcon} from "@heroicons/react/outline";
@@ -23,7 +23,6 @@ const validationSchema = Yup.object().shape({
   dateOfBirth: Yup.string().required('Ngày sinh không được để trống'),
   schoolYearId: Yup.string().required('Vui lòng chọn niên khóa'),
   parent: Yup.array().min(1, 'Vui lòng chọn phụ huynh').required('Vui lòng chọn phụ huynh'),
-  // schoolId: Yup.string().required('Vui lòng chọn trường.'),
   classId: Yup.string().required('Vui lòng chọn lớp.'),
 });
 
@@ -36,12 +35,12 @@ const AddStudent = () => {
   const [listGroup, setListGroup] = useState();
   const [listClass, setListClass] = useState();
   const [parentSelect, setParentSelect] = useState({})
-  const {user: {schoolWorking: {schoolId} = {}}} = useAuth();
+  const {schoolId} = useAuth();
 
   useEffect(() => {
     if (!router.isReady) return;
     loadInit();
-    return () => setListSchool({});
+    return () => {};
   }, [router.isReady])
 
   const loadInit = async () => {
@@ -89,7 +88,6 @@ const AddStudent = () => {
   };
 
   const handleSubmitForm = async (values) => {
-    console.log('values', values);
     const result = await memberService.createStudent(values);
     if (result) {
       swal({
@@ -127,7 +125,6 @@ const AddStudent = () => {
     return submitParents.map((v) => ({parentId: v.value, fullName: v.fullName}))
   };
 
-  console.log('list-school', listSchool)
   return (
     <>
       <h4>Thêm mới học sinh</h4>
@@ -142,7 +139,7 @@ const AddStudent = () => {
           fullName: '',
           dateOfBirth: '',
           gender: '',
-          role: 'teacher'
+          role: 'student'
         }}
       >
         {({

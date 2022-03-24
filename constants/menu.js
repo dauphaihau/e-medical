@@ -304,6 +304,55 @@ export const MENU = {
       icon: "icon-Layout-4-blocks",
     },
     {
+      title: "Tổ chức",
+      // link: "/to-chuc",
+      id: 'organize',
+      roles: ["manager", "admin"],
+      icon: "icon-Library",
+      subNav: [
+        {
+          title: "Trường",
+          link: "/to-chuc/truong",
+          roles: ["agent", "manager", "admin"],
+          icon: "mdi mdi-medical-bag",
+          features: {
+            add: '/to-chuc/truong/them',
+            id: '/to-chuc/truong/[id]',
+          }
+        },
+        {
+          title: "Niên Khoá",
+          link: "/to-chuc/nien-khoa",
+          roles: ["agent", "manager", "admin"],
+          icon: "mdi mdi-needle",
+          features: {
+            add: '/to-chuc/nien-khoa/them',
+            id: '/to-chuc/nien-khoa/[id]',
+          }
+        },
+        {
+          title: "Khối",
+          link: "/to-chuc/khoi",
+          roles: ["agent", "manager", "admin"],
+          icon: "mdi mdi-needle",
+          features: {
+            add: '/to-chuc/khoi/them',
+            id: '/to-chuc/khoi/[id]',
+          }
+        },
+        {
+          title: "Lớp",
+          link: "/to-chuc/lop",
+          roles: ["agent", "manager", "admin"],
+          icon: "mdi mdi-needle",
+          features: {
+            add: '/to-chuc/lop/them',
+            id: '/to-chuc/lop/[id]',
+          }
+        },
+      ],
+    },
+    {
       title: "Quản lý hồ sơ học sinh",
       link: "/hoc-sinh",
       id: 'student',

@@ -42,23 +42,6 @@ const UpdateStaff = () => {
     district: {},
     ward: {},
   });
-  const [selects, setSelect] = useState({
-    province: {
-      value: '',
-      label: '',
-      code: '',
-    },
-    district: {
-      value: '',
-      label: '',
-      code: '',
-    },
-    ward: {
-      value: '',
-      label: '',
-      code: '',
-    },
-  })
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -71,22 +54,21 @@ const UpdateStaff = () => {
     const {id} = router.query;
     if (id) {
       const memberRes = await memberService.detail(id);
-      if (memberRes && !_.isEmpty(memberRes)) {
-        const provinces = await locationService.listProvince();
-        setProvinceOptions(provinces);
-        const provinceOption = _.find(provinces, (o) => o.code === memberRes.province.code);
-        const districts = await locationService.listDistrict(memberRes.province.code);
-        const districtOption = _.find(districts, (o) => o.code === memberRes.district.code);
-        const wards = await locationService.listWard(memberRes.district.code);
-        const wardOption = _.find(wards, (o) => o.code === memberRes.ward.code);
-        setSelect({...selects, ...{ward: wardOption, district: districtOption, province: provinceOption}})
-        setMember(memberRes);
-      } else {
-        swal("Thành viên này không tồn tại!", "", "error")
-          .then(() => Router.push('/nhan-su/giao-vien/'));
+      const provinces = await locationService.listProvince();
+      setProvinceOptions(provinces);
+      let initDataSelected = {};
+      if (memberRes && !_.isEmpty(memberRes) && memberRes.province !== undefined) {
+        initDataSelected.province = _.find(provinces, (o) => o.code === memberRes.province.code);
+        if (memberRes.district !== undefined) {
+          const districts = await locationService.listDistrict(memberRes.province.code);
+          initDataSelected.district = _.find(districts, (o) => o.code === memberRes.district.code);
+          if (memberRes.ward !== undefined) {
+            const wards = await locationService.listWard(memberRes.district.code);
+            initDataSelected.ward = _.find(wards, (o) => o.code === memberRes.ward.code);
+          }
+        }
       }
 
-      let initDataSelected = {};
       const schools = await schoolService.list({limit: 20});
       if (schools.total) {
         const schoolSelect = schools.data.map((data) => ({
@@ -98,6 +80,7 @@ const UpdateStaff = () => {
         initDataSelected.school = initSchool;
       }
       setInitData(initDataSelected);
+      setMember(memberRes);
     } else {
       Router.push('/nhan-su/nhan-vien/');
     }
@@ -126,9 +109,9 @@ const UpdateStaff = () => {
         address: member?.address ?? '',
         phoneNumber: member?.phoneNumber ?? '',
         role: member?.role,
-        province: selects.province,
-        district: selects.district,
-        ward: selects.ward,
+        province: initData.province,
+        district: initData.district,
+        ward: initData.ward,
       }}
     >
       {({
@@ -144,6 +127,7 @@ const UpdateStaff = () => {
             name='schoolId'
             options={listSchool}
             value={initData.school && !_.isEmpty(initData.school) ? initData.school : ''}
+            isDisable={true}
             onChange={(e) => {
               setFieldValue('schoolId', e.value);
               setInitData({

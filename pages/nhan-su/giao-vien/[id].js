@@ -6,64 +6,39 @@ import Router, {useRouter} from "next/router";
 
 import Button from "@components/button";
 import Input from "@components/form/input";
-import { memberService, schoolYearService, schoolService, classroomService } from "@services";
+import {memberService, schoolYearService, schoolService, classroomService} from "@services";
 import Select from "@components/form/select";
 import Region from "@components/form/region";
 import _ from "lodash";
 import {locationService} from "../../../services";
+import {useAuth} from "../../../context/auth";
 
 const phoneRegExp = /(([03+[2-9]|05+[6|8|9]|07+[0|6|7|8|9]|08+[1-9]|09+[1-4|6-9]]){3})+[0-9]{7}\b/
 const validationSchema = Yup.object().shape({
-  schoolId: Yup.string().required(),
   classId: Yup.string().required(),
   fullName: Yup.string()
     .min(5, 'Tên trường ít nhất là 5 ký tự')
     .max(50, 'Tên trường tối đa là 50 ký tự')
     .required('Tên người dùng không được để trống'),
   phoneNumber: Yup.string()
-    .required('Vui logn2 nhập số điện thoại')
+    .required('Vui lòng nhập số điện thoại')
     .matches(phoneRegExp, 'Số điện thoại không hợp lệ'),
-  // address: Yup.string().required('Địa chỉ không được để trống'),
+  address: Yup.string().required('Địa chỉ không được để trống'),
   province: Yup.object().shape({}),
   district: Yup.object().shape({}),
   ward: Yup.object().shape({}),
 });
-const defaultSelectValue = {
-  value: "",
-  label: "",
-  code: "",
-};
-const labelAddType = {
-  'giao-vien': 'Giáo Viên',
-  'nhan-vien': 'Nhân viên',
-};
 
 const UpdateTeacher = () => {
   const router = useRouter();
   const [member, setMember] = useState();
+  const {school, schoolId} = useAuth();
   const [listSchool, setListSchool] = useState([]);
   const [listSchoolYear, setListSchoolYear] = useState();
   const [listGroup, setListGroup] = useState();
   const [listClass, setListClass] = useState([]);
   const [provinceOptions, setProvinceOptions] = useState([]);
   const [addType, setAddType] = useState();
-  const [selects, setSelect] = useState({
-    province: {
-      value: '',
-      label: '',
-      code: '',
-    },
-    district: {
-      value: '',
-      label: '',
-      code: '',
-    },
-    ward: {
-      value: '',
-      label: '',
-      code: '',
-    },
-  })
   const [initData, setInitData] = useState({
     school: {},
     schoolYear: {},
@@ -74,43 +49,45 @@ const UpdateTeacher = () => {
     ward: {},
   });
 
-  useEffect( () => {
+  useEffect(() => {
     if (!router.isReady) return;
     let abortController = new AbortController();
 
-    if( router.pathname.includes('giao-vien') ){
+    if (router.pathname.includes('giao-vien')) {
       setAddType('giao-vien');
     }
     loadInit();
     return () => abortController.abort();
   }, [router.isReady]);
 
-  useEffect( () => {
+  useEffect(() => {
   }, [listSchool])
 
   const loadInit = async () => {
     const provinces = await locationService.listProvince();
     setProvinceOptions(provinces);
-    const { id } = router.query;
-    if( id ){
+
+    const {id} = router.query;
+    if (id) {
       const memberRes = await memberService.detail(id);
-      if(memberRes && !_.isEmpty(memberRes)){
-        const provinceOption = _.find(provinces, (o) => o.code === memberRes.province.code);
-        const districts = await locationService.listDistrict(memberRes.province.code);
-        const districtOption = _.find(districts, (o) => o.code === memberRes.district.code);
-        const wards = await locationService.listWard(memberRes.district.code);
-        const wardOption = _.find(wards, (o) => o.code === memberRes.ward.code);
-        setSelect({...selects, ...{ward: wardOption, district: districtOption, province: provinceOption}})
-        setMember(memberRes);
-      }
-      else{
-        swal("Thành viên này không tồn tại!", "", "error")
-          .then(() => Router.push('/nhan-su/giao-vien/'));
-      }
+      setMember(memberRes);
 
       let initDataSelected = {};
-      const schools = await schoolService.list({limit:20});
-      if(schools.total){
+      if (memberRes && !_.isEmpty(memberRes) && memberRes.province !== undefined) {
+        initDataSelected.province = _.find(provinces, (o) => o.code === memberRes.province.code);
+        if (memberRes.district !== undefined) {
+          const districts = await locationService.listDistrict(memberRes.province.code);
+          initDataSelected.district = _.find(districts, (o) => o.code === memberRes.district.code);
+          if (memberRes.ward !== undefined) {
+            const wards = await locationService.listWard(memberRes.district.code);
+            initDataSelected.ward = _.find(wards, (o) => o.code === memberRes.ward.code);
+          }
+        }
+      }
+      setMember(memberRes);
+
+      const schools = await schoolService.list({limit: 20});
+      if (schools.total) {
         const schoolSelect = schools.data.map((data) => ({
           value: data._id,
           label: data.schoolname,
@@ -119,19 +96,23 @@ const UpdateTeacher = () => {
         const initSchool = _.find(schoolSelect, {value: memberRes.schoolWorking?.schoolId});
         initDataSelected.school = initSchool;
 
-        if(initSchool && !_.isEmpty(initSchool)){
+        if (initSchool && !_.isEmpty(initSchool)) {
           const schoolYears = await schoolYearService.list({schoolId: initSchool.value});
-          if(schoolYears && schoolYears.total){
+          if (schoolYears && schoolYears.total) {
             const schoolYearSelect = schoolYears.data.map((data) => ({
               value: data._id,
               label: data.schoolYearName,
             }));
             setListSchoolYear(schoolYearSelect);
+
             const initYear = _.find(schoolYearSelect, {value: memberRes.schoolWorking?.schoolYearId});
             initDataSelected.schoolYear = initYear;
 
-            if( !_.isEmpty(initYear) ){
-              const clsGroup = await classroomService.listGroup({schoolYearId: memberRes.schoolWorking?.schoolYearId, limit: 100});
+            if (!_.isEmpty(initYear)) {
+              const clsGroup = await classroomService.listGroup({
+                schoolYearId: memberRes.schoolWorking?.schoolYearId,
+                limit: 100
+              });
               if (clsGroup && clsGroup.total) {
                 const clsGroupOpt = clsGroup.data.map((data) => ({
                   value: data._id,
@@ -139,11 +120,11 @@ const UpdateTeacher = () => {
                 }));
                 setListGroup(clsGroupOpt);
                 const clsGroupSelected = _.find(clsGroupOpt, {value: memberRes.schoolWorking?.classGroupId});
-                if(clsGroupSelected){
+                if (clsGroupSelected) {
                   initDataSelected.classGroup = clsGroupSelected;
 
                   const listCls = await classroomService.list({parentId: clsGroupSelected.value})
-                  if(listCls && listCls.total){
+                  if (listCls && listCls.total) {
                     const listClsOpt = listCls.data.map((data) => ({
                       value: data._id,
                       label: data.className,
@@ -159,14 +140,13 @@ const UpdateTeacher = () => {
         }
       }
       setInitData(initDataSelected);
-    }
-    else{
+    } else {
       Router.push('/nhan-su/giao-vien/');
     }
   }
 
   const handleSubmitForm = async (data) => {
-    const { id } = router.query;
+    const {id} = router.query;
     try {
       await memberService.update(id, data);
       swal('Cập nhật thành công', '', 'success')
@@ -183,8 +163,7 @@ const UpdateTeacher = () => {
         value: data._id,
         label: data.schoolYearName,
       })));
-    }
-    else setListSchoolYear([]);
+    } else setListSchoolYear([]);
   };
 
   const onChangeSchoolYear = async (schoolYearId) => {
@@ -207,6 +186,8 @@ const UpdateTeacher = () => {
     }
   };
 
+  console.log('init-data', initData)
+
   return (
     <Formik
       className='my-4'
@@ -221,9 +202,9 @@ const UpdateTeacher = () => {
         fullName: member?.fullName ?? '',
         address: member?.address ?? '',
         phoneNumber: member?.phoneNumber ?? '',
-        province: selects.province,
-        district: selects.district,
-        ward: selects.ward,
+        province: initData.province,
+        district: initData.district,
+        ward: initData.ward,
       }}
     >
       {({
@@ -232,20 +213,22 @@ const UpdateTeacher = () => {
           setFieldValue,
         }) => (
         <Form className='form py-8'>
-          <h3>Cập nhật {labelAddType[addType]}</h3>
+          <h3>Cập nhật thông tin</h3>
           <div className='grid lg:grid-cols-2 gap-x-4'>
             <Select
               label='Tên trường'
               name='schoolId'
-              options={listSchool}
-              value={initData.school && !_.isEmpty(initData.school)?initData.school: ''}
+              isDisable={true}
+              value={{value: school?._id, label: school?.schoolname}}
               onChange={(e) => {
                 onChangeSchool(e.value);
                 setFieldValue('schoolId', e.value);
-                setInitData({...initData, ...{
-                  school: e,
-                  class: {},
-                }});
+                setInitData({
+                  ...initData, ...{
+                    school: e,
+                    class: {},
+                  }
+                });
               }}
             />
             <Select
@@ -256,7 +239,7 @@ const UpdateTeacher = () => {
                 setFieldValue('schoolYearId', e.value)
               }}
               options={listSchoolYear}
-              value={initData.schoolYear && !_.isEmpty(initData.schoolYear)?initData.schoolYear: ''}
+              value={initData.schoolYear && !_.isEmpty(initData.schoolYear) ? initData.schoolYear : ''}
               useFormik='true'
             />
             <Select
@@ -267,19 +250,21 @@ const UpdateTeacher = () => {
                 onChangeGroup(e.value);
                 setFieldValue('classGroupId', e.value)
               }}
-              value={initData.classGroup && !_.isEmpty(initData.classGroup)?initData.classGroup: ''}
+              value={initData.classGroup && !_.isEmpty(initData.classGroup) ? initData.classGroup : ''}
               options={listGroup}
             />
             <Select
               label='Lớp chủ nhiệm'
               name='classId'
               options={listClass}
-              value={initData.class && !_.isEmpty(initData.class)?initData.class:''}
+              value={initData.class && !_.isEmpty(initData.class) ? initData.class : ''}
               onChange={(e) => {
                 setFieldValue('classId', e.value)
-                setInitData({...initData, ...{
-                  class: e,
-                }});
+                setInitData({
+                  ...initData, ...{
+                    class: e,
+                  }
+                });
               }}
             />
           </div>

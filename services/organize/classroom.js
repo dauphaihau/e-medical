@@ -53,7 +53,7 @@ export const classroomService = {
   },
   create: async (data) => {
     try {
-      const response = await api.post("/organization/classroom", data);
+      await api.post("/organization/classroom", data);
       return true;
     } catch (e) {
       return false;

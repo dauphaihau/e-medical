@@ -8,19 +8,22 @@ import {memberService} from "@services";
 import Input from "@components/form/input";
 import {PencilIcon, TrashIcon} from "@heroicons/react/outline";
 import Button from "@components/button";
-import {locationService} from "../../../services";
+import {locationService, schoolService} from "../../../services";
 import Select from "../../../components/form/select";
+import {useAuth} from "../../../context/auth";
 
 const Manager = () => {
   const router = useRouter();
   const {query} = router;
+  const {user} = useAuth()
   const [members, setMembers] = useState();
 
+  const [schoolOptions, setSchoolOptions] = useState([]);
   const [provinceOptions, setProvinceOptions] = useState([]);
   const [districtOptions, setDistrictOptions] = useState([])
   const [wardOptions, setWardOptions] = useState([])
 
-  const [selects, setSelect] = useState({
+  const [selects, setSelects] = useState({
     s: '',
     province: {
       value: '',
@@ -45,12 +48,23 @@ const Manager = () => {
   useEffect(() => {
     if (!router.isReady) return;
     loadInit();
-    return () => setMembers({});
+    return () => {};
   }, [router.isReady]);
 
   const loadInit = async () => {
     const provinces = await locationService.listProvince();
     setProvinceOptions(provinces);
+
+    if (user.role === 'admin') {
+      const schools = await schoolService.list({limit: 100});
+      if (schools.total) {
+        const schoolOptions = schools.data.map((data) => ({
+          value: data._id,
+          label: data.schoolname,
+        }));
+        setSchoolOptions(schoolOptions);
+      }
+    }
 
     if (_.isEmpty(query)) {
       const listMember = await memberService.listManagers();
@@ -61,19 +75,19 @@ const Manager = () => {
 
       if (query.province) {
         const provinceOption = _.find(provinces, (o) => o.code === query.province);
-        setSelect({...selects, ...{province: provinceOption}});
+        setSelects({...selects, ...{province: provinceOption}});
         const districtOptions = await locationService.listDistrict(query.province);
         setDistrictOptions(districtOptions);
         if (query.district) {
           const districts = await locationService.listDistrict(provinceOption.code);
           const districtOption = _.find(districts, (o) => o.code === query.district);
-          setSelect({...selects, ...{district: districtOption, province: provinceOption}})
+          setSelects({...selects, ...{district: districtOption, province: provinceOption}})
           const wardOptions = await locationService.listWard(query.district);
           setWardOptions(wardOptions);
           if (query.ward) {
             const wards = await locationService.listWard(districtOption.code);
             const wardOption = _.find(wards, (o) => o.code === query.ward);
-            setSelect({...selects, ...{ward: wardOption, district: districtOption, province: provinceOption}})
+            setSelects({...selects, ...{ward: wardOption, district: districtOption, province: provinceOption}})
           }
         }
       }
@@ -148,7 +162,7 @@ const Manager = () => {
             placeholder='Chọn Tỉnh thành'
             onChange={e => {
               onChangeProvince(e);
-              setSelect({...selects, ...{province: e, district: null, ward: null}})
+              setSelects({...selects, ...{province: e, district: null, ward: null}})
               setFilter({...filter, province: e.code, district: '', ward: ''})
             }}
             value={selects.province}
@@ -161,7 +175,7 @@ const Manager = () => {
             value={selects.district}
             onChange={e => {
               onChangeDistrict(e)
-              setSelect({...selects, ...{district: e, ward: null}});
+              setSelects({...selects, ...{district: e, ward: null}});
               setFilter({...filter, district: e.code, ward: ''})
             }}
             options={districtOptions}
@@ -172,11 +186,24 @@ const Manager = () => {
             name='ward'
             value={selects.ward}
             onChange={e => {
-              setSelect({...selects, ...{ward: e}})
+              setSelects({...selects, ...{ward: e}})
               setFilter({...filter, ward: e.code})
             }}
             options={wardOptions}
           />
+          {user.role === 'admin' &&
+            <>
+              <Select
+                label='Tên trường'
+                name='schoolId'
+                onChange={e => {
+                  setSelects({...selects, ...{school: e}})
+                  setFilter({...filter, schoolId: e.value})
+                }}
+                options={schoolOptions}
+              />
+            </>
+          }
         </div>
         <Button type='submit'>Tìm kiếm</Button>
       </form>

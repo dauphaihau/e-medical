@@ -11,25 +11,30 @@ import {PencilIcon, TrashIcon} from "@heroicons/react/outline";
 import Select from "@components/form/select";
 import {classroomService, schoolService} from "@services";
 import {useAuth} from "../../../context/auth";
+import {schoolYearService} from "../../../services";
 
 const Teacher = () => {
-  const router = useRouter();
-  const {query} = router;
   const [members, setMembers] = useState();
   const {schoolId} = useAuth();
-  const [searchInput, setSearchInput] = useState("");
+  const router = useRouter();
 
+  const [schoolYearOptions, setSchoolYearOptions] = useState([])
   const [groupOptions, setGroupOptions] = useState([])
+  const [classroomOptions, setClassroomOptions] = useState([])
 
-  const [selects, setSelect] = useState({
+  const [selects, setSelects] = useState({
     s: '',
-    school: {
+    schoolYear: {
       value: '',
-      label: ''
+      label: '',
     },
-    parent: {
+    group: {
       value: '',
-      label: ''
+      label: '',
+    },
+    class: {
+      value: '',
+      label: '',
     },
   })
   const [filter, setFilter] = useState({
@@ -41,10 +46,51 @@ const Teacher = () => {
   useEffect(() => {
     if (!router.isReady) return;
     loadInit();
-    return () => setMembers([]);
+    return () => {};
   }, [router.isReady]);
 
   const loadInit = async () => {
+
+    const schoolYear = await schoolYearService.list({schoolId})
+    if (schoolYear) {
+      setSchoolYearOptions(schoolYear.data.map((data) => ({
+        value: data._id,
+        label: data.schoolYearName,
+      })));
+    }
+
+    if (_.isEmpty(router.query)) {
+      const listMember = await memberService.list({type: 'teacher'});
+      setMembers(listMember);
+
+    } else {
+      const listMember = await memberService.list({...router.query, type: 'teacher'});
+      setMembers(listMember);
+
+      if (router.query.schoolId) {
+        let schoolOption = await schoolService.detail(router.query.schoolId);
+        schoolOption = {
+          value: schoolOption._id,
+          label: schoolOption.schoolname
+        };
+        setSelects({...selects, ...{school: schoolOption}});
+
+        if (router.query.parentId) {
+          let groupOption = await classroomService.listGroup({schoolId: query.schoolId})
+          groupOption = groupOption.data.map(group => ({
+            value: group._id,
+            label: group.className,
+          }))
+          setSelects({
+            ...selects,
+            ...{school: schoolOption, parent: groupOption}
+          });
+        }
+      }
+    }
+  }
+
+  const onChangeSchoolYear = async (e) => {
     const groups = await classroomService.listGroup({schoolId, limit: 10});
     if (groups.total) {
       setGroupOptions(groups.data?.map((data) => ({
@@ -52,35 +98,15 @@ const Teacher = () => {
         label: data.className,
       })));
     }
+  }
 
-    if (_.isEmpty(query)) {
-      const listMember = await memberService.list({type: 'teacher'});
-      setMembers(listMember);
-
-    } else {
-      const listMember = await memberService.list({...query, type: 'teacher'});
-      setMembers(listMember);
-
-      if (query.schoolId) {
-        let schoolOption = await schoolService.detail(query.schoolId);
-        schoolOption = {
-          value: schoolOption._id,
-          label: schoolOption.schoolname
-        };
-        setSelect({...selects, ...{school: schoolOption}});
-
-        if (query.parentId) {
-          let groupOption = await classroomService.listGroup({schoolId: query.schoolId})
-          groupOption = groupOption.data.map(group => ({
-            value: group._id,
-            label: group.className,
-          }))
-          setSelect({
-            ...selects,
-            ...{school: schoolOption, parent: groupOption}
-          });
-        }
-      }
+  const onChangeGroup = async (e) => {
+    const classes = await classroomService.list({schoolId, limit: 10});
+    if (classes.total) {
+      setClassroomOptions(classes.data?.map((data) => ({
+        value: data._id,
+        label: data.className,
+      })));
     }
   }
 
@@ -126,21 +152,6 @@ const Teacher = () => {
     setMembers(res);
   };
 
-  // const searchItems = (searchValue) => {
-  //   setSearchInput(searchValue);
-  //   if (searchInput !== "") {
-  //     const filteredData = members.data?.filter((item) => {
-  //       return Object.values(item.schoolWorking.className)
-  //         .join("")
-  //         .toLowerCase()
-  //         .includes(searchInput.toLowerCase());
-  //     });
-  //     setMembers({data: filteredData})
-  //   } else {
-  //     console.log('error')
-  //   }
-  // }
-
   return (
     <>
       <h4>Danh sách giáo viên</h4>
@@ -153,20 +164,36 @@ const Teacher = () => {
             onChange={e => setFilter({...filter, s: e.target.value})}
           />
           <Select
+            label='Niên khoá trường'
+            name='schoolYearId'
+            value={selects.schoolYear}
+            onChange={e => {
+              onChangeSchoolYear(e)
+              setSelects({...selects, ...{schoolYear: e}});
+              setFilter({...filter, schoolYearId: e.value})
+            }}
+            options={schoolYearOptions}
+          />
+          <Select
             label='Tên khối'
-            name='parentId'
+            name='classGroupId'
             value={selects.parent}
             onChange={e => {
-              setSelect({...selects, ...{parent: e}})
-              setFilter({...filter, parentId: e.value})
+              onChangeGroup(e)
+              setSelects({...selects, ...{group: e}})
+              setFilter({...filter, classGroupId: e.value})
             }}
             options={groupOptions}
           />
-          <Input
+          <Select
             label='Tên lớp'
-            name="s"
-            // onChange={e => setFilter({...filter, s: e.target.value})}
-            onChange={e => searchItems(e.target.value)}
+            name='classId'
+            value={selects.parent}
+            onChange={e => {
+              setSelects({...selects, ...{class: e}})
+              setFilter({...filter, classId: e.value})
+            }}
+            options={classroomOptions}
           />
         </div>
         <Button type='submit'>Tìm kiếm</Button>
@@ -202,7 +229,7 @@ const Teacher = () => {
                         </td>
                     </tr>
                 ))
-                : (<tr><td colSpan='4'>Chưa có dữ liệu</td></tr>)
+                : (<tr><td colSpan='5'>Chưa có dữ liệu</td></tr>)
               }
             </tbody>
           </table>
