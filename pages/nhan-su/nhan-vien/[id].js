@@ -41,7 +41,7 @@ const UpdateStaff = () => {
   const {user} = useAuth();
   const [listSchool, setListSchool] = useState([]);
   const [provinceOptions, setProvinceOptions] = useState([]);
-  const [selects, setSelect] = useState({
+  const [selects, setSelects] = useState({
     province: {
       value: '',
       label: '',
@@ -83,12 +83,12 @@ const UpdateStaff = () => {
     if( id ){
       const memberRes = await memberService.detail(id);
       if(memberRes && !_.isEmpty(memberRes)){
-        const provinceOption = _.find(provinces, (o) => o.code === memberRes.province.code);
-        const districts = await locationService.listDistrict(memberRes.province.code);
-        const districtOption = _.find(districts, (o) => o.code === memberRes.district.code);
-        const wards = await locationService.listWard(memberRes.district.code);
-        const wardOption = _.find(wards, (o) => o.code === memberRes.ward.code);
-        setSelect({...selects, ...{ward: wardOption, district: districtOption, province: provinceOption}})
+        const provinceOption = _.find(provinces, (o) => o.code === memberRes.province?.code);
+        const districts = await locationService.listDistrict(memberRes.province?.code);
+        const districtOption = _.find(districts, (o) => o.code === memberRes.district?.code);
+        const wards = await locationService.listWard(memberRes.district?.code);
+        const wardOption = _.find(wards, (o) => o.code === memberRes.ward?.code);
+        setSelects({...selects, ...{ward: wardOption, district: districtOption, province: provinceOption}})
         setMember(memberRes);
       }
       else{
@@ -117,8 +117,20 @@ const UpdateStaff = () => {
 
   const handleSubmitForm = async (data) => {
     const { id } = router.query;
+    let bodyData = {};
+    if(data.province && !_.isEmpty(data.province)){
+      bodyData.province = {code: data.province.code, provinceName: data.province.label}
+    }
+    if(data.district && !_.isEmpty(data.district)){
+      bodyData.district = {code: data.district.code, districtName: data.district.label}
+    }
+    if(data.ward && !_.isEmpty(data.ward)){
+      bodyData.ward = {code: data.ward.code, wardName: data.ward.label}
+    }
+    bodyData = {...data, ...bodyData};
+    
     try {
-      await memberService.update(id, data);
+      await memberService.update(id, bodyData);
       swal('Cập nhật thành công', '', 'success')
         .then(() => Router.push('/nhan-su/nhan-vien/'));
     } catch (error) {
