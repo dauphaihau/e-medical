@@ -8,15 +8,16 @@ import {memberService} from "@services";
 import Input from "@components/form/input";
 import {PencilIcon, TrashIcon} from "@heroicons/react/outline";
 import Button from "@components/button";
-import {locationService} from "../../../services";
+import {locationService, schoolService} from "../../../services";
 import Select from "../../../components/form/select";
 import {useAuth} from "../../../context/auth";
 
 const Staff = () => {
   const router = useRouter();
   const {query} = router;
+  const {user} = useAuth()
   const [members, setMembers] = useState();
-
+  const [schoolOptions, setSchoolOptions] = useState([]);
   const [provinceOptions, setProvinceOptions] = useState([]);
   const [districtOptions, setDistrictOptions] = useState([])
   const [wardOptions, setWardOptions] = useState([])
@@ -52,6 +53,17 @@ const Staff = () => {
   const loadInit = async () => {
     const provinces = await locationService.listProvince();
     setProvinceOptions(provinces);
+
+    if (user.role === 'admin') {
+      const schools = await schoolService.list({limit: 100});
+      if (schools.total) {
+        const schoolOptions = schools.data.map((data) => ({
+          value: data._id,
+          label: data.schoolname,
+        }));
+        setSchoolOptions(schoolOptions);
+      }
+    }
 
     if (_.isEmpty(query)) {
       const listMember = await memberService.listStaff();
@@ -177,7 +189,22 @@ const Staff = () => {
             }}
             options={wardOptions}
           />
+          {user.role === 'admin' &&
+            <>
+              <Select
+                label='Tên trường'
+                name='schoolId'
+                value={selects.ward}
+                // onChange={e => {
+                //   setSelect({...selects, ...{ward: e}})
+                //   setFilter({...filter, ward: e.code})
+                // }}
+                options={schoolOptions}
+              />
+            </>
+          }
         </div>
+
         <Button type='submit'>Tìm kiếm</Button>
       </form>
       <div className="mt-8 drop-shadow-2xl overflow-x-auto lg:overflow-x-visible">
@@ -221,4 +248,4 @@ const Staff = () => {
   );
 }
 
-export default Staff;
+export default Staff
