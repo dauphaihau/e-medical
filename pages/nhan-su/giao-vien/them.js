@@ -1,15 +1,15 @@
-import {Formik, Form, Field} from "formik";
+import {Field, Form, Formik} from "formik";
 import {useEffect, useState} from "react";
 import * as Yup from "yup";
 import swal from "sweetalert";
 import Router, {useRouter} from "next/router";
+import _ from "lodash";
 
 import Button from "@components/button";
 import Input from "@components/form/input";
-import { memberService, locationService, schoolService, classroomService, schoolYearService } from "@services";
+import {classroomService, locationService, memberService, schoolService, schoolYearService} from "@services";
 import Select from "@components/form/select";
 import Region from "@components/form/region";
-import _ from "lodash";
 
 const phoneRegExp = /(([03+[2-9]|05+[6|8|9]|07+[0|6|7|8|9]|08+[1-9]|09+[1-4|6-9]]){3})+[0-9]{7}\b/
 const validationSchema = Yup.object().shape({
@@ -22,10 +22,16 @@ const validationSchema = Yup.object().shape({
   phoneNumber: Yup.string()
     .required('Vui logn2 nhập số điện thoại')
     .matches(phoneRegExp, 'Số điện thoại không hợp lệ'),
-  // address: Yup.string().required('Địa chỉ không được để trống'),
-  province: Yup.object().shape({}),
-  district: Yup.object().shape({}),
-  ward: Yup.object().shape({}),
+  address: Yup.string().required('Địa chỉ không được để trống'),
+  province: Yup.object().shape({
+    value: Yup.string().required('Vui lòng chọn tỉnh/thành'),
+  }),
+  district: Yup.object().shape({
+    value: Yup.string().required('Vui lòng chọn quận/huyện'),
+  }),
+  ward: Yup.object().shape({
+    value: Yup.string().required('Vui lòng chọn phường/xã'),
+  }),
 });
 
 const labelAddType = {
@@ -78,6 +84,7 @@ const AddTeacher = () => {
       bodyData.ward = {code: data.ward.code, wardName: data.ward.label}
     }
     bodyData = {...data, ...bodyData};
+    console.log('body-data', bodyData)
 
     const result = await memberService.createTeacher(bodyData);
     if(result){
@@ -156,6 +163,7 @@ const AddTeacher = () => {
                 onChangeSchool(e.value);
                 setFieldValue('schoolId', e.value);
               }}
+              useFormik
             />
             <Select
               label='Niên khoá'
@@ -165,12 +173,12 @@ const AddTeacher = () => {
                 setFieldValue('schoolYearId', e.value)
               }}
               options={listSchoolYear}
-              useFormik='true'
+              useFormik
             />
             <Select
               label='Khối'
               name='classGroupId'
-              useFormik='true'
+              useFormik
               onChange={e => {
                 onChangeGroup(e.value);
                 setFieldValue('classGroupId', e.value)
@@ -208,7 +216,6 @@ const AddTeacher = () => {
               listProvince={listProvince}
             />
           </div>
-          
           <Button type='submit' className='mr-4'>Thêm</Button>
         </Form>
       )}

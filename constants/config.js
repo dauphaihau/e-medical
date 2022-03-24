@@ -5,8 +5,8 @@ const config = {
     endpoint: "http://localhost:5000/v1",
   },
   develop: {
-    endpoint: "https://eschool.api.e-doctor.dev/v1",
-    // endpoint: "http://10.0.0.38:5000/v1",
+    // endpoint: "https://eschool.api.e-doctor.dev/v1",
+    endpoint: "http://10.0.0.38:5000/v1",
   },
   production: {
     endpoint: "https://spo2.api.edoctor.io/v1",

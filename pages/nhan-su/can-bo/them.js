@@ -13,15 +13,15 @@ import Region from "@components/form/region";
 
 const phoneRegExp = /(([03+[2-9]|05+[6|8|9]|07+[0|6|7|8|9]|08+[1-9]|09+[1-4|6-9]]){3})+[0-9]{7}\b/
 const validationSchema = Yup.object().shape({
-  schoolId: Yup.string().required(),
+  schoolId: Yup.string().required('Trường không được để trống'),
   fullName: Yup.string()
     .min(5, 'Tên trường ít nhất là 5 ký tự')
     .max(50, 'Tên trường tối đa là 50 ký tự')
-    .required('Tên người dùng không được để trống'),
+    .required('Tên không được để trống'),
   phoneNumber: Yup.string()
     .required('Vui lòng nhập số điện thoại')
     .matches(phoneRegExp, 'Số điện thoại không hợp lệ'),
-  // address: Yup.string().required('Địa chỉ không được để trống'),
+  address: Yup.string().required('Địa chỉ không được để trống'),
   province: Yup.object().shape({}),
   district: Yup.object().shape({}),
   ward: Yup.object().shape({}),
@@ -65,6 +65,7 @@ const AddManager = () => {
       bodyData.ward = {code: data.ward.code, wardName: data.ward.label}
     }
     bodyData = {...data, ...bodyData};
+    console.log('body-data', bodyData)
 
     const result = await memberService.createManager(bodyData);
     if(result){
@@ -103,6 +104,7 @@ const AddManager = () => {
           <Select
             label='Tên trường'
             name='schoolId'
+            useFormik
             options={listSchool}
             onChange={(e) => {
               setFieldValue('schoolId', e.value);
@@ -111,18 +113,21 @@ const AddManager = () => {
           <Input
             label='Họ tên'
             name='fullName'
+            useFormik
             onChange={handleChange}
             value={values.fullName}
           />
           <Input
             label='Phone'
             name='phoneNumber'
+            useFormik
             onChange={handleChange}
             value={values.phoneNumber}
           />
           <Input
             label='Địa chỉ'
             name='address'
+            useFormik
             onChange={handleChange}
             value={values.address}
           />

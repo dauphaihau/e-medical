@@ -98,9 +98,6 @@ const UpdateStaff = () => {
       }
 
       let initDataSelected = {};
-      const provinces = await locationService.listProvince();
-      setListProvince(provinces);
-
       const schools = await schoolService.list({limit: 20});
       if (schools.total) {
         const schoolSelect = schools.data.map((data) => ({
@@ -112,7 +109,6 @@ const UpdateStaff = () => {
         initDataSelected.school = initSchool;
 
         setInitData(initDataSelected);
-        console.log('init-data', initData)
       }
     } else {
       Router.push('/phu-huynh');
