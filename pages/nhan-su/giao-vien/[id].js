@@ -102,7 +102,6 @@ const UpdateTeacher = () => {
         const wardOption = _.find(wards, (o) => o.code === memberRes.ward.code);
         setSelect({...selects, ...{ward: wardOption, district: districtOption, province: provinceOption}})
         setMember(memberRes);
-        setMember(memberRes);
       }
       else{
         swal("Thành viên này không tồn tại!", "", "error")

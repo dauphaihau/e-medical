@@ -11,6 +11,7 @@ import Select from "@components/form/select";
 import Region from "@components/form/region";
 import _ from "lodash";
 import {useAuth} from "../../../context/auth";
+import {locationService} from "../../../services";
 
 const phoneRegExp = /(([03+[2-9]|05+[6|8|9]|07+[0|6|7|8|9]|08+[1-9]|09+[1-4|6-9]]){3})+[0-9]{7}\b/
 const validationSchema = Yup.object().shape({
@@ -39,7 +40,24 @@ const UpdateStaff = () => {
   const [member, setMember] = useState();
   const {user} = useAuth();
   const [listSchool, setListSchool] = useState([]);
-  const [listProvince, setListProvince] = useState([]);
+  const [provinceOptions, setProvinceOptions] = useState([]);
+  const [selects, setSelect] = useState({
+    province: {
+      value: '',
+      label: '',
+      code: '',
+    },
+    district: {
+      value: '',
+      label: '',
+      code: '',
+    },
+    ward: {
+      value: '',
+      label: '',
+      code: '',
+    },
+  })
   const [initData, setInitData] = useState({
     school: {},
     schoolYear: {},
@@ -59,10 +77,18 @@ const UpdateStaff = () => {
   }, [router.isReady]);
 
   const loadInit = async () => {
+    const provinces = await locationService.listProvince();
+    setProvinceOptions(provinces);
     const { id } = router.query;
     if( id ){
       const memberRes = await memberService.detail(id);
       if(memberRes && !_.isEmpty(memberRes)){
+        const provinceOption = _.find(provinces, (o) => o.code === memberRes.province.code);
+        const districts = await locationService.listDistrict(memberRes.province.code);
+        const districtOption = _.find(districts, (o) => o.code === memberRes.district.code);
+        const wards = await locationService.listWard(memberRes.district.code);
+        const wardOption = _.find(wards, (o) => o.code === memberRes.ward.code);
+        setSelect({...selects, ...{ward: wardOption, district: districtOption, province: provinceOption}})
         setMember(memberRes);
       }
       else{
@@ -111,22 +137,9 @@ const UpdateStaff = () => {
         fullName: member?.fullName ?? '',
         address: member?.address ?? '',
         phoneNumber: member?.phoneNumber ?? '',
-        
-        province: member && member.province ? {
-          value: member.province.code, 
-          code: member.province.code,
-          label: member.province.provinceName
-        }:defaultSelectValue,
-        district: member && member.district ? {
-          value: member.district.code, 
-          code: member.district.code,
-          label: member.district.districtName
-        }:defaultSelectValue,
-        ward: member && member.ward ? {
-          value: member.ward.code, 
-          code: member.ward.code,
-          label: member.ward.wardName
-        }:defaultSelectValue,
+        province: selects.province,
+        district: selects.district,
+        ward: selects.ward,
       }}
     >
       {({
@@ -136,7 +149,6 @@ const UpdateStaff = () => {
         }) => (
         <Form className='form py-8'>
           <h3>Cập nhật thông tin</h3>
-          
           <Select
             label='Tên trường'
             name='schoolId'
@@ -171,7 +183,7 @@ const UpdateStaff = () => {
           <div className='grid lg:grid-cols-2 gap-x-4'>
             <Field
               component={Region}
-              listProvince={listProvince}
+              listProvince={provinceOptions}
               provinceSelected={values.province}
               districtSelected={values.district}
               wardSelected={values.ward}
