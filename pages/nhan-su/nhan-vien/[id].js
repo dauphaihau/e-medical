@@ -6,7 +6,7 @@ import Router, {useRouter} from "next/router";
 
 import Button from "@components/button";
 import Input from "@components/form/input";
-import {memberService, schoolYearService, schoolService, classroomService} from "@services";
+import { memberService, schoolYearService, schoolService, classroomService } from "@services";
 import Select from "@components/form/select";
 import Region from "@components/form/region";
 import _ from "lodash";
@@ -41,7 +41,7 @@ const UpdateStaff = () => {
   const {user} = useAuth();
   const [listSchool, setListSchool] = useState([]);
   const [provinceOptions, setProvinceOptions] = useState([]);
-  const [selects, setSelect] = useState({
+  const [selects, setSelects] = useState({
     province: {
       value: '',
       label: '',
@@ -68,36 +68,37 @@ const UpdateStaff = () => {
     ward: {},
   });
 
-  useEffect(() => {
+  useEffect( () => {
     if (!router.isReady) return;
-    let abortController = new AbortController();
-
+    let abortController = new AbortController();  
+  
     loadInit();
-    return () => abortController.abort();
+    return () => abortController.abort(); 
   }, [router.isReady]);
 
   const loadInit = async () => {
     const provinces = await locationService.listProvince();
     setProvinceOptions(provinces);
-    const {id} = router.query;
-    if (id) {
+    const { id } = router.query;
+    if( id ){
       const memberRes = await memberService.detail(id);
-      if (memberRes && !_.isEmpty(memberRes)) {
-        const provinceOption = _.find(provinceOptions, (o) => o.code === memberRes.province?.code);
-        const districts = await locationService.listDistrict(memberRes.province.code);
-        const districtOption = _.find(districts, (o) => o.code === memberRes.district.code);
-        const wards = await locationService.listWard(memberRes.district.code);
-        const wardOption = _.find(wards, (o) => o.code === memberRes.ward.code);
-        setSelect({...selects, ...{ward: wardOption, district: districtOption, province: provinceOption}})
+      if(memberRes && !_.isEmpty(memberRes)){
+        const provinceOption = _.find(provinces, (o) => o.code === memberRes.province?.code);
+        const districts = await locationService.listDistrict(memberRes.province?.code);
+        const districtOption = _.find(districts, (o) => o.code === memberRes.district?.code);
+        const wards = await locationService.listWard(memberRes.district?.code);
+        const wardOption = _.find(wards, (o) => o.code === memberRes.ward?.code);
+        setSelects({...selects, ...{ward: wardOption, district: districtOption, province: provinceOption}})
         setMember(memberRes);
-      } else {
+      }
+      else{
         swal("Thành viên này không tồn tại!", "", "error")
           .then(() => Router.push('/nhan-su/nhan-vien/'));
       }
 
       let initDataSelected = {};
-      const schools = await schoolService.list({limit: 20});
-      if (schools.total) {
+      const schools = await schoolService.list({limit:20});
+      if(schools.total){
         const schoolSelect = schools.data.map((data) => ({
           value: data._id,
           label: data.schoolname,
@@ -107,23 +108,36 @@ const UpdateStaff = () => {
         initDataSelected.school = initSchool;
       }
       setInitData(initDataSelected);
-    } else {
+    }
+    else{
       Router.push('/nhan-su/nhan-vien/');
     }
   }
 
 
   const handleSubmitForm = async (data) => {
-    const {id} = router.query;
+    const { id } = router.query;
+    let bodyData = {};
+    if(data.province && !_.isEmpty(data.province)){
+      bodyData.province = {code: data.province.code, provinceName: data.province.label}
+    }
+    if(data.district && !_.isEmpty(data.district)){
+      bodyData.district = {code: data.district.code, districtName: data.district.label}
+    }
+    if(data.ward && !_.isEmpty(data.ward)){
+      bodyData.ward = {code: data.ward.code, wardName: data.ward.label}
+    }
+    bodyData = {...data, ...bodyData};
+    
     try {
-      await memberService.update(id, data);
+      await memberService.update(id, bodyData);
       swal('Cập nhật thành công', '', 'success')
         .then(() => Router.push('/nhan-su/nhan-vien/'));
     } catch (error) {
       swal('Cập nhật không thành công.', 'Vui lòng thử lại.', 'error');
     }
   };
-
+  
   return (
     <Formik
       className='my-4'
@@ -131,7 +145,7 @@ const UpdateStaff = () => {
       onSubmit={handleSubmitForm}
       enableReinitialize
       initialValues={{
-        schoolId: member && member.schoolWorking?.schoolId,
+        schoolId: member && member.schoolWorking.schoolId,
         fullName: member?.fullName ?? '',
         address: member?.address ?? '',
         phoneNumber: member?.phoneNumber ?? '',
@@ -151,15 +165,13 @@ const UpdateStaff = () => {
             label='Tên trường'
             name='schoolId'
             options={listSchool}
-            value={initData.school && !_.isEmpty(initData.school) ? initData.school : ''}
+            value={initData.school && !_.isEmpty(initData.school)?initData.school: ''}
             onChange={(e) => {
               setFieldValue('schoolId', e.value);
-              setInitData({
-                ...initData, ...{
-                  school: e,
-                  class: {},
-                }
-              });
+              setInitData({...initData, ...{
+                school: e,
+                class: {},
+              }});
             }}
           />
           <Input
@@ -189,11 +201,11 @@ const UpdateStaff = () => {
               wardSelected={values.ward}
             />
             <Select
-              label='Phân quyền'
+              label='Phân quyền'  
               name='role'
               options={[
-                {value: 'staff', label: 'Nhân viên'},
-                {value: 'manager', label: 'Cán bộ quản lý'},
+                {value:'staff', label:'Nhân viên'},
+                {value:'manager', label:'Cán bộ quản lý'},
               ].filter((option) => {
                 if (user.role === 'manager' || user.role === 'admin') {
                   return option
@@ -203,7 +215,7 @@ const UpdateStaff = () => {
               onChange={(e) => {
                 setFieldValue('role', e.value);
               }}
-              defaultValue={{value: 'staff', label: 'Nhân viên'}}
+              defaultValue={{value:'staff', label:'Nhân viên'}}
             />
           </div>
           <Button type='submit' className='mr-4'>Cập nhật</Button>
