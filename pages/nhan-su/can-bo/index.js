@@ -68,6 +68,7 @@ const Manager = () => {
 
     if (_.isEmpty(query)) {
       const listMember = await memberService.listManagers();
+      console.log('list-member', listMember)
       setMembers(listMember);
     } else {
       const listMember = await memberService.listManagers(query);
@@ -136,7 +137,6 @@ const Manager = () => {
     );
 
     const res = await memberService.list({...newFilter, type: 'manager'})
-    console.log('res', res)
     if (!res) {
       swal({
         text: "Nội dung tìm kiếm ít nhất là 3 ký tự",
@@ -220,7 +220,7 @@ const Manager = () => {
               </tr>
             </thead>
             <tbody>
-              {!_.isEmpty(members)
+              {!_.isEmpty(members?.data)
                 ? members.data?.map((row, idz) => (
                   <tr key={idz}>
                     <td>{idz + 1}</td>

@@ -11,15 +11,17 @@ import Input from "@components/form/input";
 import Select from "@components/form/select";
 import {schoolYearService} from "@services";
 import {schoolService} from "@services";
+import {useAuth} from "../../../context/auth";
 
 const validationSchema = Yup.object().shape({
   schoolYearName: Yup.string().required('Tên niên khoá trường không được để trống'),
-  schoolId: Yup.string().required('Vui lòng chọn trường.'),
+  // schoolId: Yup.string().required('Vui lòng chọn trường.'),
 });
 
 const DetailSchoolYear = () => {
   const router = useRouter();
   const [schoolYear, setSchoolYear] = useState();
+  const {school} = useAuth();
   const [listSchool, setListSchool] = useState();
   const [schoolSelected, setSchoolSelected] = useState();
 
@@ -68,7 +70,7 @@ const DetailSchoolYear = () => {
       onSubmit={handleSubmitForm}
       enableReinitialize
       initialValues={{
-        schoolId: schoolYear ? schoolYear.schoolId : '',
+        schoolname: school?._id,
         schoolYearName: schoolYear ? schoolYear.schoolYearName : '',
       }}
     >
@@ -76,13 +78,13 @@ const DetailSchoolYear = () => {
           handleChange,
           values
         }) => (
-        <Form className='form'>
+        <Form className='form lg:w-1/2'>
           <h3>Thông tin niên khoá</h3>
           <div>
             <Select
               label='Tên trường'
               name='schoolId'
-              value={schoolSelected}
+              value={{value: school?._id, label: school?.schoolname}}
               isDisable={true}
               placeholder='Chọn trường'
             />

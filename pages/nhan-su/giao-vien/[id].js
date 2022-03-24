@@ -38,7 +38,6 @@ const UpdateTeacher = () => {
   const [listGroup, setListGroup] = useState();
   const [listClass, setListClass] = useState([]);
   const [provinceOptions, setProvinceOptions] = useState([]);
-  const [addType, setAddType] = useState();
   const [initData, setInitData] = useState({
     school: {},
     schoolYear: {},
@@ -51,13 +50,8 @@ const UpdateTeacher = () => {
 
   useEffect(() => {
     if (!router.isReady) return;
-    let abortController = new AbortController();
-
-    if (router.pathname.includes('giao-vien')) {
-      setAddType('giao-vien');
-    }
     loadInit();
-    return () => abortController.abort();
+    return () => {};
   }, [router.isReady]);
 
   useEffect(() => {
@@ -186,8 +180,6 @@ const UpdateTeacher = () => {
     }
   };
 
-  console.log('init-data', initData)
-
   return (
     <Formik
       className='my-4'
@@ -202,9 +194,9 @@ const UpdateTeacher = () => {
         fullName: member?.fullName ?? '',
         address: member?.address ?? '',
         phoneNumber: member?.phoneNumber ?? '',
-        province: initData.province,
-        district: initData.district,
-        ward: initData.ward,
+        province: initData.province || {},
+        district: initData.district || {},
+        ward: initData.ward || {},
       }}
     >
       {({

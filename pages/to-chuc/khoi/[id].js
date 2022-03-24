@@ -126,6 +126,8 @@ const DetailGroup = () => {
         schoolId: school?._id,
         schoolYearId: listSchoolYear[0]?.value,
         className: classGroup ? classGroup?.className : '',
+        parentId: null,
+        status: 1
       }}
     >
       {({handleChange, values,}) => (
@@ -137,7 +139,8 @@ const DetailGroup = () => {
               placeholder='Chọn trường'
               name='schoolId'
               isDisable={true}
-              value={{value: school?._id, label: school?.schoolname}}
+              value={values.schoolId}
+              options={{value: school?._id, label: school?.schoolname}}
             />
             <Select
               label='Niên khoá'

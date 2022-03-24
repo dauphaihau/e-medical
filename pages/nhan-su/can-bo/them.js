@@ -7,7 +7,7 @@ import _ from "lodash";
 
 import Button from "@components/button";
 import Input from "@components/form/input";
-import { memberService, locationService, schoolService } from "@services";
+import {memberService, locationService, schoolService} from "@services";
 import Select from "@components/form/select";
 import Region from "@components/form/region";
 import {useAuth} from "../../../context/auth";
@@ -31,19 +31,24 @@ const AddManager = () => {
   const router = useRouter();
   const [listSchool, setListSchool] = useState();
   const [listProvince, setListProvince] = useState();
-  const {school} = useAuth();
+  const [schoolSelected, setSchoolSelected] = useState()
+  const [isAdmin, setIsAdmin] = useState(false)
+  const {school, user} = useAuth();
 
-  useEffect( () => {
+  useEffect(() => {
     if (!router.isReady) return;
     loadInit();
     return () => {};
   }, [router.isReady]);
 
   const loadInit = async () => {
+    if (user.role === 'admin') {
+      setIsAdmin(true)
+    }
     const provinces = await locationService.listProvince();
     setListProvince(provinces);
-    const schools = await schoolService.list({limit:20});
-    if(schools.total){
+    const schools = await schoolService.list({limit: 20});
+    if (schools.total) {
       setListSchool(schools.data.map((data) => ({
         value: data._id,
         label: data.schoolname,
@@ -54,24 +59,23 @@ const AddManager = () => {
   const handleSubmitForm = async (data, {resetForm}) => {
     //format data
     let bodyData = {};
-    if(data.province && !_.isEmpty(data.province)){
+    if (data.province && !_.isEmpty(data.province)) {
       bodyData.province = {code: data.province.code, provinceName: data.province.label}
     }
-    if(data.district && !_.isEmpty(data.district)){
+    if (data.district && !_.isEmpty(data.district)) {
       bodyData.district = {code: data.district.code, districtName: data.district.label}
     }
-    if(data.ward && !_.isEmpty(data.ward)){
+    if (data.ward && !_.isEmpty(data.ward)) {
       bodyData.ward = {code: data.ward.code, wardName: data.ward.label}
     }
     bodyData = {...data, ...bodyData};
     console.log('body-data', bodyData)
 
     const result = await memberService.createManager(bodyData);
-    if(result){
+    if (result) {
       swal('Cập nhật thành công', '', 'success')
         .then(() => Router.push('/nhan-su/can-bo/'));
-    }
-    else {
+    } else {
       swal('Cập nhật không thành công', '', 'error');
     }
   };
@@ -83,7 +87,8 @@ const AddManager = () => {
       onSubmit={handleSubmitForm}
       enableReinitialize
       initialValues={{
-        schoolId: school?._id,
+        // schoolId: school?._id,
+        schoolId: isAdmin ? {} : {value: school?._id, label: school?.schoolname},
         fullName: '',
         address: '',
         phoneNumber: '',
@@ -100,16 +105,36 @@ const AddManager = () => {
         }) => (
         <Form className='form py-8'>
           <h3>Thêm cán bộ quản lý</h3>
-          <Select
-            label='Tên trường'
-            name='schoolId'
-            isDisable={true}
-            value={{value: school?._id, label: school?.schoolname}}
-            options={listSchool}
-            onChange={(e) => {
-              setFieldValue('schoolId', e.value);
-            }}
-          />
+          {isAdmin ?
+            <>
+              <Select
+                label='Tên trường'
+                name='schoolId'
+                // isDisable={isAdmin}
+                value={schoolSelected}
+                options={listSchool}
+                onChange={(e) => {
+                  // setFieldValue('schoolId', e.value);
+                  setFieldValue('schoolId', e.value);
+                  setSchoolSelected(e)
+                }}
+              />
+            </> :
+            <Select
+              label='Tên trường'
+              name='schoolId'
+              isDisable={!isAdmin}
+              // value={values.schoolId}
+              value={values.schoolId}
+              // options={listSchool}
+              // onChange={(e) => {
+              //   console.log('e', e)
+              //   // setFieldValue('schoolId', e.value);
+              //   setFieldValue('schoolId', e.value);
+              //   setSchoolSelected(e)
+              // }}
+            />
+          }
           <Input
             label='Họ tên'
             name='fullName'
@@ -140,16 +165,16 @@ const AddManager = () => {
               label='Phân quyền'
               name='role'
               options={[
-                {value:'staff', label:'Nhân viên'},
-                {value:'manger', label:'Cán bộ quản lý'},
+                {value: 'staff', label: 'Nhân viên'},
+                {value: 'manger', label: 'Cán bộ quản lý'},
               ]}
               onChange={(e) => {
                 setFieldValue('role', e.value);
               }}
-              defaultValue={{value:'manger', label:'Cán bộ quản lý'}}
+              defaultValue={{value: 'manger', label: 'Cán bộ quản lý'}}
             />
           </div>
-          
+
           <Button type='submit' className='mr-4'>Thêm</Button>
         </Form>
       )}

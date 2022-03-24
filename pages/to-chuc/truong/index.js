@@ -16,7 +16,6 @@ import {useAuth} from "../../../context/auth";
 const SchoolList = () => {
   const router = useRouter();
   const {user} = useAuth()
-  const {query} = router;
   const [isLoading, setIsLoading] = useState(false)
   const [schools, setSchools] = useState([])
 
@@ -51,10 +50,12 @@ const SchoolList = () => {
   useEffect(() => {
     if (!router.isReady) return;
     loadInit();
-    return () => {};
+    return () => {
+    };
   }, [router.isReady]);
 
   const loadInit = async () => {
+    const {query} = router;
     const provinces = await locationService.listProvince();
     setProvinceOptions(provinces);
 
@@ -75,10 +76,8 @@ const SchoolList = () => {
         setSelects({...selects, ...{province: provinceOption}});
         const districtOptions = await locationService.listDistrict(query.province);
         setDistrictOptions(districtOptions);
-        console.log('province');
 
         if (query.district) {
-          console.log('district');
           const districts = await locationService.listDistrict(provinceOption.code);
           const districtOption = _.find(districts, (o) => o.code === query.district);
           // initDataSelected.district = districtOption
@@ -235,22 +234,24 @@ const SchoolList = () => {
                           <td>{school.district?.districtName}</td>
                           <td>{school.ward?.wardName}</td>
                           <td>
-                           <Link href={`/to-chuc/truong/${school._id}`}>
-                             <a>
-                              <Link href={router.pathname + '/' + school._id}>
-                                <a>
-                                  {user.role === 'staff'
-                                    ? <EyeIcon className='h-5 w-5 inline'/>
-                                    : <PencilIcon className='h-5 w-5 inline'/>
-                                  }
-                                </a>
-                              </Link>
-                             </a>
-                           </Link>
+                             {user.role === 'staff' ?
+                               <Link href={`/to-chuc/truong/${school._id}`}>
+                                 <a><EyeIcon className='h-5 w-5 inline'/></a>
+                               </Link> :
+                               <Link href={`/to-chuc/truong/${school._id}`}>
+                                 <a><PencilIcon className='h-5 w-5 inline'/></a>
+                               </Link>
+                             }
+                            {user.role === 'admin' &&
+                              <TrashIcon
+                                className='h-5 w-5 inline ml-4 cursor-pointer'
+                                onClick={() => handleDelete(school._id)}
+                              />
+                            }
                           </td>
                         </tr>
                       ))
-                      : (<tr><td colSpan='6'>Chưa có dữ liệu</td></tr>)}
+                      : (<tr><td colSpan='7'>Chưa có dữ liệu</td></tr>)}
                   </tbody>
                 </table>
                 {/* <Pagination data={schools}/> */}
@@ -264,4 +265,3 @@ const SchoolList = () => {
 }
 
 export default SchoolList;
-

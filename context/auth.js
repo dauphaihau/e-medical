@@ -26,10 +26,11 @@ export function AuthProvider({children}) {
       async function verifyAuth() {
         const userRes = await accountService.me();
         if (userRes) {
-          console.log('user-res', userRes)
+          console.log('get data profile on Auth', userRes)
           setUser(userRes);
           if (userRes.role !== 'admin') {
             const res = await schoolService.detail(userRes.schoolWorking.schoolId);
+            console.log('get fullname from schoolId', res)
             setSchool(res)
           }
         } else {

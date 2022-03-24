@@ -1,5 +1,5 @@
-import Router, { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import Router, {useRouter} from "next/router";
+import {useEffect, useState} from "react";
 import {Formik, Form, Field} from "formik";
 import * as Yup from "yup";
 import swal from "sweetalert";
@@ -7,14 +7,14 @@ import swal from "sweetalert";
 import Button from "@components/button";
 import Input from "@components/form/input";
 import Region from "@components/form/region";
-import { schoolService, locationService } from "@services";
+import {schoolService, locationService} from "@services";
 import {useAuth} from "../../../context/auth";
 
 const validationSchema = Yup.object().shape({
-  schoolname: Yup.string()
-    .min(5, 'Tên trường ít nhất là 5 ký tự')
-    .max(50, 'Tên trường tối đa là 50 ký tự')
-    .required('Tên người dùng không được để trống'),
+  // schoolname: Yup.string()
+  //   .min(5, 'Tên trường ít nhất là 5 ký tự')
+  //   .max(50, 'Tên trường tối đa là 50 ký tự')
+  //   .required('Tên người dùng không được để trống'),
   address: Yup.string().required('Địa chỉ không được để trống'),
   province: Yup.object().shape({
     value: Yup.string().required('Vui lòng chọn tỉnh/thành'),
@@ -29,28 +29,34 @@ const validationSchema = Yup.object().shape({
 
 const AddSchool = () => {
   const router = useRouter();
-  const {school} = useAuth();
+  const {school, user} = useAuth();
   const [listProvince, setListProvince] = useState([]);
+  const [isAdmin, setIsAdmin] = useState(false)
 
   useEffect(() => {
     if (!router.isReady) return;
     loadInit();
+    return () => {
+    };
   }, [router.isReady])
 
   const loadInit = async () => {
     const provinces = await locationService.listProvince();
     setListProvince(provinces);
+    if (user.role !== 'admin') {
+      setIsAdmin(true)
+    }
   }
 
   const handleSubmitForm = async (data) => {
     let bodyData = {};
-    if(data.province && !_.isEmpty(data.province)){
+    if (data.province && !_.isEmpty(data.province)) {
       bodyData.province = {code: data.province.code, provinceName: data.province.label}
     }
-    if(data.district && !_.isEmpty(data.district)){
+    if (data.district && !_.isEmpty(data.district)) {
       bodyData.district = {code: data.district.code, districtName: data.district.label}
     }
-    if(data.ward && !_.isEmpty(data.ward)){
+    if (data.ward && !_.isEmpty(data.ward)) {
       bodyData.ward = {code: data.ward.code, wardName: data.ward.label}
     }
     bodyData = {...data, ...bodyData};
@@ -60,7 +66,7 @@ const AddSchool = () => {
         title: "Thêm trường thành công",
         icon: "success"
       })
-      .then(() => Router.push('/to-chuc/truong'))
+        .then(() => Router.push('/to-chuc/truong'))
     } catch (error) {
       console.log({error})
     }
@@ -72,7 +78,7 @@ const AddSchool = () => {
       onSubmit={handleSubmitForm}
       enableReinitialize
       initialValues={{
-        schoolname: school?._id || '',
+        schoolname: isAdmin ? '' : school?._id,
         address: '',
         province: {},
         district: {},
@@ -85,7 +91,8 @@ const AddSchool = () => {
           <Input
             label='Tên trường'
             name='schoolname'
-            disable={true}
+            disable={isAdmin}
+            onChange={handleChange}
             value={school?.schoolname}
           />
           <Input
