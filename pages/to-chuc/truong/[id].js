@@ -1,5 +1,5 @@
-import Router, { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import Router, {useRouter} from "next/router";
+import {useEffect, useState} from "react";
 import {Formik, Form, Field} from "formik";
 import * as Yup from "yup";
 import swal from "sweetalert";
@@ -7,7 +7,9 @@ import swal from "sweetalert";
 import Button from "@components/button";
 import Input from "@components/form/input";
 import Region from "@components/form/region";
-import { schoolService, locationService } from "@services";
+import {schoolService, locationService} from "@services";
+import {useAuth} from "../../../context/auth";
+import Select from "../../../components/form/select";
 
 const validationSchema = Yup.object().shape({
   schoolname: Yup.string()
@@ -32,8 +34,11 @@ const defaultSelectValue = {
 };
 const UpdateSchool = () => {
   const router = useRouter();
+  const {school, user} = useAuth();
   const [listProvince, setListProvince] = useState([]);
-  const [school, setSchool] = useState();
+  const [schoolSelected, setSchoolSelected] = useState()
+  console.log('school', school)
+  console.log('school-selected', schoolSelected)
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -41,81 +46,84 @@ const UpdateSchool = () => {
   }, [router.isReady])
 
   const loadInit = async () => {
-    const { id } = router.query;
-    const school = await schoolService.detail(id);
-    if(!school){
-      swal('Truờng này không tồn tại', '', 'error')
-        .then(Router.push('/to-chuc/truong'))
-    }
-    setSchool(school);
     const provinces = await locationService.listProvince();
     setListProvince(provinces);
+
+    // if (user.role === 'admin') {
+    //   const {id} = router.query;
+    //   const school = await schoolService.detail(id);
+    //   if (!school) {
+    //     swal('Truờng này không tồn tại', '', 'error')
+    //       .then(Router.push('/to-chuc/truong'))
+    //   }
+    //   setSchoolSelected(school);
+    // } else {
+    // }
+      setSchoolSelected(school)
   }
 
   const handleSubmitForm = async (data) => {
     let bodyData = {};
-    const { id } = router.query;
-    if(data.province && !_.isEmpty(data.province)){
+    const {id} = router.query;
+    if (data.province && !_.isEmpty(data.province)) {
       bodyData.province = {code: data.province.code, provinceName: data.province.label}
     }
-    if(data.district && !_.isEmpty(data.district)){
+    if (data.district && !_.isEmpty(data.district)) {
       bodyData.district = {code: data.district.code, districtName: data.district.label}
     }
-    if(data.ward && !_.isEmpty(data.ward)){
+    if (data.ward && !_.isEmpty(data.ward)) {
       bodyData.ward = {code: data.ward.code, wardName: data.ward.label}
     }
     bodyData = {...data, ...bodyData};
-    
+
     const result = await schoolService.update(id, bodyData)
-    if(result){
+    if (result) {
       swal({
         title: "Cập nhật thành công",
         icon: "success"
       })
         .then(() => Router.push('/to-chuc/truong'))
-    }
-    else{
+    } else {
       swal({
         title: "Cập nhật không thành công",
         icon: "error"
       })
     }
   }
-  
+
   return (
     <Formik
       validationSchema={validationSchema}
       onSubmit={handleSubmitForm}
       enableReinitialize
       initialValues={{
-        schoolname: school ? school.schoolname : '',
+        schoolname: school?._id,
         address: school ? school.address : '',
         province: school && school.province ? {
-          value: school.province.code, 
+          value: school.province.code,
           code: school.province.code,
           label: school.province.provinceName
-        }:defaultSelectValue,
+        } : defaultSelectValue,
         district: school && school.district ? {
-          value: school.district.code, 
+          value: school.district.code,
           code: school.district.code,
           label: school.district.districtName
-        }:defaultSelectValue,
+        } : defaultSelectValue,
         ward: school && school.ward ? {
-          value: school.ward.code, 
+          value: school.ward.code,
           code: school.ward.code,
           label: school.ward.wardName
-        }:defaultSelectValue,
+        } : defaultSelectValue,
       }}
     >
       {({handleChange, values, errors}) => (
         <Form className='form'>
           <h3>Cập nhật thông tin trường</h3>
-          <Input
+          <Select
             label='Tên trường'
-            name='schoolname'
-            onChange={handleChange}
-            value={values.schoolname}
-            useFormik={true}
+            name='schoolId'
+            isDisable={true}
+            value={{value: school?._id, label: school?.schoolname}}
           />
           <Input
             label='Địa chỉ'
@@ -131,7 +139,7 @@ const UpdateSchool = () => {
             districtSelected={values.district}
             wardSelected={values.ward}
           />
-          <Button type='submit' className='mr-4'>Cập nhật</Button>
+          {user.role !== 'staff' && <Button type='submit' className='mr-4'>Cập nhật</Button>}
         </Form>
       )}
     </Formik>

@@ -8,7 +8,6 @@ import _ from 'lodash';
 
 import Button from "@components/button";
 import Input from "@components/form/input";
-import Layout from "@components/layout";
 import Select from "@components/form/select";
 import {schoolYearService} from "@services";
 import {schoolService} from "@services";
@@ -75,7 +74,6 @@ const DetailSchoolYear = () => {
     >
       {({
           handleChange,
-          setFieldValue,
           values
         }) => (
         <Form className='form'>
@@ -85,12 +83,7 @@ const DetailSchoolYear = () => {
               label='Tên trường'
               name='schoolId'
               value={schoolSelected}
-              onChange={e => {
-                setSchoolSelected(e);
-                setFieldValue('schoolId', e.value);
-              }}
-              options={listSchool}
-              useFormik={true}
+              isDisable={true}
               placeholder='Chọn trường'
             />
             <Input

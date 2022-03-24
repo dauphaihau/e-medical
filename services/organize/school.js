@@ -19,7 +19,12 @@ export const schoolService = {
     }
   },
   create: async (dataSchool) => {
-    return await api.post("/organization/school", dataSchool);
+    try {
+      await api.post("/organization/school", dataSchool);
+      return true
+    } catch (e) {
+      return false;
+    }
   },
   delete: async (id) => {
     try {

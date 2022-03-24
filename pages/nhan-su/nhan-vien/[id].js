@@ -136,7 +136,6 @@ const UpdateStaff = () => {
           <Select
             label='Tên trường'
             name='schoolId'
-            options={listSchool}
             isDisable={true}
             value={{value: school?._id, label: school?.schoolname}}
             onChange={(e) => {

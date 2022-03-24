@@ -124,7 +124,6 @@ const GroupList = () => {
         }
       }
       // endregion
-
       // await setIsLoading(false);
     }
   }
@@ -143,7 +142,6 @@ const GroupList = () => {
           router.reload();
         } else {
           swal('Xóa không thành công!!', '', 'error');
-          s
         }
       }
     });

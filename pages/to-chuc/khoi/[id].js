@@ -2,30 +2,26 @@ import {useEffect, useState} from "react";
 import {useRouter} from "next/router";
 import * as Yup from "yup";
 import swal from "sweetalert";
-import Link from "next/link";
-
 import _ from "lodash";
 import {Formik, Form} from "formik";
+
 import Input from "@components/form/input";
 import Button from "@components/button";
 import Select from "@components/form/select";
-import Layout from "@components/layout";
 import {classroomService, schoolService, schoolYearService} from "@services";
-
+import {useAuth} from "../../../context/auth";
 
 const validationSchema = Yup.object().shape({
   className: Yup.string()
     .required('Tên khối không được để trống')
     .max(50, 'Tên khối tối đa là 50 ký tự')
     .min(5, 'Tên khối phải ít nhất 5 ký tự'),
-  schoolYearId: Yup.string().required('Niên khoá không được để trống'),
-  schoolId: Yup.string().required('Tên trường không được để trống'),
 });
 
-const AddGroup = () => {
+const DetailGroup = () => {
   const router = useRouter();
+  const {school} = useAuth();
   const [classGroup, setClassGroup] = useState();
-  const [listSchool, setListSchool] = useState([]);
   const [listSchoolYear, setListSchoolYear] = useState([])
   const [initData, setInitData] = useState({
     school: {
@@ -37,6 +33,8 @@ const AddGroup = () => {
       label: "",
     }
   })
+  console.log('list-school-year', listSchoolYear)
+  console.log('class-group', classGroup)
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -44,17 +42,27 @@ const AddGroup = () => {
   }, [router.isReady]);
 
   const loadInit = async () => {
-    const { id } = router.query;
+    const {id} = router.query;
     const clsGroup = await classroomService.detailGroup(id);
-    if(clsGroup){
+    if (clsGroup) {
       setClassGroup(clsGroup);
-    }
-    else{
+    } else {
       swal('Thông tin này không tồn tại!!', '', 'error')
         .then(() => router.push('/to-chuc/khoi/'));
     }
 
-    const schools = await schoolService.list({limit: 100});
+    const schoolYears = await schoolYearService.list({schoolId: school?._id, limit: 100})
+    if (schoolYears && schoolYears.total) {
+      setListSchoolYear(schoolYears.data.map((data) => ({
+        value: data._id,
+        label: data.schoolYearName,
+      })));
+    } else {
+      setListSchoolYear();
+    }
+
+
+    // const schools = await schoolService.list({limit: 100});
     const initDataState = {
       school: {
         value: "",
@@ -65,60 +73,47 @@ const AddGroup = () => {
         label: "",
       }
     };
-    if (schools.total) {
-      const schoolOpts = schools.data.map((data) => ({
-        value: data._id,
-        label: data.schoolname,
-      }));
-      setListSchool(schoolOpts);
-      const schoolSelected = _.find(schoolOpts, {value: clsGroup.schoolId});
-      if(schoolSelected){
-        initDataState.school = schoolSelected;
-        const schoolYears = await schoolYearService.list({schoolId: schoolSelected.value, limit: 100})
-        if (schoolYears && schoolYears.total) {
-          const schoolYearOpt = schoolYears.data.map((data) => ({
-            value: data._id,
-            label: data.schoolYearName,
-          }));
-          setListSchoolYear(schoolYearOpt);
-          const schoolYearSelected = _.find(schoolYearOpt, {value: clsGroup.schoolYearId});
-          if(schoolYearSelected){
-            initDataState.schoolYear = schoolYearSelected;
-          }
-        }
-      }
-    }
-    setInitData(initDataState);
+    // if (schools.total) {
+    //   const schoolOpts = schools.data.map((data) => ({
+    //     value: data._id,
+    //     label: data.schoolname,
+    //   }));
+    //   setListSchool(schoolOpts);
+    //   const schoolSelected = _.find(schoolOpts, {value: clsGroup.schoolId});
+    //   if (schoolSelected) {
+    //     initDataState.school = schoolSelected;
+    //     const schoolYears = await schoolYearService.list({schoolId: schoolSelected.value, limit: 100})
+    //     if (schoolYears && schoolYears.total) {
+    //       const schoolYearOpt = schoolYears.data.map((data) => ({
+    //         value: data._id,
+    //         label: data.schoolYearName,
+    //       }));
+    //       setListSchoolYear(schoolYearOpt);
+    //       const schoolYearSelected = _.find(schoolYearOpt, {value: clsGroup.schoolYearId});
+    //       if (schoolYearSelected) {
+    //         initDataState.schoolYear = schoolYearSelected;
+    //       }
+    //     }
+    //   }
+    // }
+    // setInitData(initDataState);
   }
 
   const handleSubmitForm = async (data) => {
-    const { id } = router.query;
+    const {id} = router.query;
+    console.log('data', data)
     const result = await classroomService.updateGroup(id, data);
-    if(result){
+    if (result) {
       swal({
         text: "Cập nhật thành công",
         icon: "success"
       })
         .then(() => router.push('/to-chuc/khoi/'));
-    }
-    else{
+    } else {
       swal({
         text: "Cập nhật không thành công",
         icon: "error"
       });
-    }
-  };
-
-  const onChangeSchool = async (idSchool) => {
-    const schoolYears = await schoolYearService.list({schoolId: idSchool, limit: 100})
-    if (schoolYears && schoolYears.total) {
-      setListSchoolYear(schoolYears.data.map((data) => ({
-        value: data._id,
-        label: data.schoolYearName,
-      })));
-    }
-    else{
-      setListSchoolYear();
     }
   };
 
@@ -128,55 +123,34 @@ const AddGroup = () => {
       onSubmit={handleSubmitForm}
       enableReinitialize
       initialValues={{
-        className: classGroup?classGroup?.className:'',
-        schoolId: classGroup?classGroup?.schoolId:'',
-        schoolYearId: classGroup?classGroup?.schoolYearId:'',
+        schoolId: school?._id,
+        schoolYearId: listSchoolYear[0]?.value,
+        className: classGroup ? classGroup?.className : '',
       }}
     >
-      {({
-          handleChange,
-          setFieldValue,
-          values,
-        }) => (
+      {({handleChange, values,}) => (
         <Form className='form lg:w-1/2'>
           <h3>Chỉnh Sửa Khối</h3>
           <div>
             <Select
               label='Tên trường'
-              name='schoolId'
-              onChange={e => {
-                onChangeSchool(e.value);
-                setInitData({
-                  school:e,
-                  schoolYear: {
-                    value: "",
-                    label: "",
-                  }
-                });
-                setFieldValue('schoolId', e.value);
-              }}
-              options={listSchool}
-              value={initData.school}
               placeholder='Chọn trường'
-              useFormik='true'
+              name='schoolId'
+              isDisable={true}
+              value={{value: school?._id, label: school?.schoolname}}
             />
             <Select
               label='Niên khoá'
-              name='schoolYearId'
-              onChange={e => {
-                setInitData({...initData, ...{schoolYear:e}})
-                setFieldValue('schoolYearId', e.value)
-              }}
-              options={listSchoolYear}
-              value={initData.schoolYear}
               placeholder='Chọn niên khoá'
-              useFormik='true'
+              isDisable={true}
+              name='schoolYearId'
+              value={{value: listSchoolYear[0]?.value, label: listSchoolYear[0]?.label}}
             />
             <Input
               name='className'
               label='Tên khối'
               onChange={handleChange}
-              useFormik='true'
+              useFormik
               value={values.className}
             />
           </div>
@@ -189,4 +163,4 @@ const AddGroup = () => {
   );
 }
 
-export default AddGroup;
+export default DetailGroup;

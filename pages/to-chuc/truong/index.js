@@ -4,7 +4,7 @@ import swal from "sweetalert";
 import {useRouter} from "next/router";
 import _ from "lodash";
 
-import {PencilIcon, TrashIcon} from "@heroicons/react/outline";
+import {EyeIcon, PencilIcon, TrashIcon} from "@heroicons/react/outline";
 import Input from "@components/form/input";
 import Pagination from "@components/pagination";
 import {schoolService} from "@services";
@@ -15,6 +15,7 @@ import {useAuth} from "../../../context/auth";
 
 const SchoolList = () => {
   const router = useRouter();
+  const {user} = useAuth()
   const {query} = router;
   const [isLoading, setIsLoading] = useState(false)
   const [schools, setSchools] = useState([])
@@ -235,7 +236,16 @@ const SchoolList = () => {
                           <td>{school.ward?.wardName}</td>
                           <td>
                            <Link href={`/to-chuc/truong/${school._id}`}>
-                             <a><PencilIcon className='h-5 w-5 inline'/></a>
+                             <a>
+                              <Link href={router.pathname + '/' + school._id}>
+                                <a>
+                                  {user.role === 'staff'
+                                    ? <EyeIcon className='h-5 w-5 inline'/>
+                                    : <PencilIcon className='h-5 w-5 inline'/>
+                                  }
+                                </a>
+                              </Link>
+                             </a>
                            </Link>
                           </td>
                         </tr>

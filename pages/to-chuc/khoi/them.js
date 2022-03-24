@@ -8,20 +8,19 @@ import {Formik, Form} from "formik";
 import Input from "@components/form/input";
 import Button from "@components/button";
 import Select from "@components/form/select";
-import {classroomService, schoolService, schoolYearService} from "@services";
+import {classroomService, schoolYearService} from "@services";
+import {useAuth} from "../../../context/auth";
 
 const validationSchema = Yup.object().shape({
   className: Yup.string()
     .required('Tên khối không được để trống')
     .max(50, 'Tên khối tối đa là 50 ký tự')
     .min(5, 'Tên khối phải ít nhất 5 ký tự'),
-  schoolYearId: Yup.string().required('Niên khoá không được để trống'),
-  schoolId: Yup.string().required('Tên trường không được để trống'),
 });
 
 const AddGroup = () => {
   const router = useRouter();
-  const [listSchool, setListSchool] = useState([]);
+  const {school} = useAuth();
   const [listSchoolYear, setListSchoolYear] = useState([])
   const [schoolYearSelected, setSchoolYearSelected] = useState()
 
@@ -31,12 +30,14 @@ const AddGroup = () => {
   }, [router.isReady]);
 
   const loadInit = async () => {
-    const schools = await schoolService.list({limit: 100});
-    if (schools.total) {
-      setListSchool(schools.data.map((data) => ({
+    const schoolYears = await schoolYearService.list({schoolId: school?._id, limit: 100})
+    if (schoolYears && schoolYears.total) {
+      setListSchoolYear(schoolYears.data.map((data) => ({
         value: data._id,
-        label: data.schoolname,
+        label: data.schoolYearName,
       })));
+    } else {
+      setListSchoolYear();
     }
   }
 
@@ -56,18 +57,6 @@ const AddGroup = () => {
     }
   };
 
-  const onChangeSchool = async (idSchool) => {
-    const schoolYears = await schoolYearService.list({schoolId: idSchool, limit: 100})
-    if (schoolYears && schoolYears.total) {
-      setListSchoolYear(schoolYears.data.map((data) => ({
-        value: data._id,
-        label: data.schoolYearName,
-      })));
-    } else {
-      setListSchoolYear();
-    }
-  };
-
   return (
     <Formik
       validationSchema={validationSchema}
@@ -75,8 +64,8 @@ const AddGroup = () => {
       enableReinitialize
       initialValues={{
         className: '',
-        schoolId: '',
-        schoolYearId: '',
+        schoolId: school?._id,
+        schoolYearId: listSchoolYear[0]?.value,
         parentId: null,
         status: 1
       }}
@@ -90,27 +79,17 @@ const AddGroup = () => {
           <div>
             <Select
               label='Tên trường'
-              name='schoolId'
-              onChange={e => {
-                onChangeSchool(e.value);
-                setFieldValue('schoolId', e.value);
-                setSchoolYearSelected([]);
-              }}
-              options={listSchool}
               placeholder='Chọn trường'
-              useFormik
+              name='schoolId'
+              isDisable={true}
+              value={{value: school?._id, label: school?.schoolname}}
             />
             <Select
               label='Niên khoá'
               name='schoolYearId'
-              value={schoolYearSelected}
-              onChange={e => {
-                setSchoolYearSelected(e);
-                setFieldValue('schoolYearId', e.value);
-              }}
-              options={listSchoolYear}
+              isDisable={true}
+              value={{value: listSchoolYear[0]?.value, label: listSchoolYear[0]?.label}}
               placeholder='Chọn niên khoá'
-              useFormik
             />
             <Input
               name='className'
