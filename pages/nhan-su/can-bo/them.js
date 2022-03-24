@@ -10,10 +10,10 @@ import Input from "@components/form/input";
 import { memberService, locationService, schoolService } from "@services";
 import Select from "@components/form/select";
 import Region from "@components/form/region";
+import {useAuth} from "../../../context/auth";
 
 const phoneRegExp = /(([03+[2-9]|05+[6|8|9]|07+[0|6|7|8|9]|08+[1-9]|09+[1-4|6-9]]){3})+[0-9]{7}\b/
 const validationSchema = Yup.object().shape({
-  schoolId: Yup.string().required('Trường không được để trống'),
   fullName: Yup.string()
     .min(5, 'Tên trường ít nhất là 5 ký tự')
     .max(50, 'Tên trường tối đa là 50 ký tự')
@@ -31,6 +31,7 @@ const AddManager = () => {
   const router = useRouter();
   const [listSchool, setListSchool] = useState();
   const [listProvince, setListProvince] = useState();
+  const {school} = useAuth();
 
   useEffect( () => {
     if (!router.isReady) return;
@@ -84,7 +85,7 @@ const AddManager = () => {
       onSubmit={handleSubmitForm}
       enableReinitialize
       initialValues={{
-        schoolId: '',
+        schoolId: school?._id,
         fullName: '',
         address: '',
         phoneNumber: '',
@@ -104,7 +105,8 @@ const AddManager = () => {
           <Select
             label='Tên trường'
             name='schoolId'
-            useFormik
+            isDisable={true}
+            value={{value: school?._id, label: school?.schoolname}}
             options={listSchool}
             onChange={(e) => {
               setFieldValue('schoolId', e.value);
@@ -146,7 +148,7 @@ const AddManager = () => {
               onChange={(e) => {
                 setFieldValue('role', e.value);
               }}
-              defaultValue={{value:'staff', label:'Nhân viên'}}
+              defaultValue={{value:'manger', label:'Cán bộ quản lý'}}
             />
           </div>
           

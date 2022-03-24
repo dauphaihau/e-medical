@@ -28,17 +28,11 @@ const validationSchema = Yup.object().shape({
   ward: Yup.object().shape({}),
 });
 
-const defaultSelectValue = {
-  value: "",
-  label: "",
-  code: "",
-};
 
 const UpdateStaff = () => {
   const router = useRouter();
   const [member, setMember] = useState();
   const [listSchool, setListSchool] = useState([]);
-  const [listProvince, setListProvince] = useState([]);
   const [provinceOptions, setProvinceOptions] = useState([]);
   const [selects, setSelect] = useState({
     province: {
@@ -91,11 +85,8 @@ const UpdateStaff = () => {
         const wards = await locationService.listWard(memberRes.district.code);
         const wardOption = _.find(wards, (o) => o.code === memberRes.ward.code);
         setSelect({...selects, ...{ward: wardOption, district: districtOption, province: provinceOption}})
-        setMember(memberRes);
-      } else {
-        swal("Thành viên này không tồn tại!", "", "error")
-          .then(() => Router.push('/phu-huynh'));
       }
+      setMember(memberRes);
 
       let initDataSelected = {};
       const schools = await schoolService.list({limit: 20});

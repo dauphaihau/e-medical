@@ -71,7 +71,7 @@ const UpdateStaff = () => {
     const {id} = router.query;
     if (id) {
       const memberRes = await memberService.detail(id);
-      if (memberRes && !_.isEmpty(memberRes)) {
+      if (memberRes && !_.isEmpty(memberRes) && memberRes.province?.code !== undefined) {
         const provinces = await locationService.listProvince();
         setProvinceOptions(provinces);
         const provinceOption = _.find(provinces, (o) => o.code === memberRes.province.code);
@@ -80,11 +80,8 @@ const UpdateStaff = () => {
         const wards = await locationService.listWard(memberRes.district.code);
         const wardOption = _.find(wards, (o) => o.code === memberRes.ward.code);
         setSelect({...selects, ...{ward: wardOption, district: districtOption, province: provinceOption}})
-        setMember(memberRes);
-      } else {
-        swal("Thành viên này không tồn tại!", "", "error")
-          .then(() => Router.push('/nhan-su/giao-vien/'));
       }
+      setMember(memberRes);
 
       let initDataSelected = {};
       const schools = await schoolService.list({limit: 20});

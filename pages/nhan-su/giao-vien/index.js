@@ -25,13 +25,17 @@ const Teacher = () => {
 
   const [selects, setSelect] = useState({
     s: '',
-    school: {
+    schoolYear: {
       value: '',
-      label: ''
+      label: '',
     },
-    parent: {
+    group: {
       value: '',
-      label: ''
+      label: '',
+    },
+    class: {
+      value: '',
+      label: '',
     },
   })
   const [filter, setFilter] = useState({
@@ -98,8 +102,7 @@ const Teacher = () => {
   }
 
   const onChangeGroup = async (e) => {
-    const classes = await classroomService.list();
-    console.log('classes', classes)
+    const classes = await classroomService.list({schoolId, limit: 10});
     if (classes.total) {
       setClassroomOptions(classes.data?.map((data) => ({
         value: data._id,
@@ -174,22 +177,22 @@ const Teacher = () => {
           />
           <Select
             label='Tên khối'
-            name='parentId'
+            name='classGroupId'
             value={selects.parent}
             onChange={e => {
               onChangeGroup(e)
-              setSelect({...selects, ...{parent: e}})
-              setFilter({...filter, parentId: e.value})
+              setSelect({...selects, ...{group: e}})
+              setFilter({...filter, classGroupId: e.value})
             }}
             options={groupOptions}
           />
           <Select
             label='Tên lớp'
-            // name='parentId'
-            // value={selects.parent}
+            name='classId'
+            value={selects.parent}
             onChange={e => {
-              setSelect({...selects, ...{parent: e}})
-              setFilter({...filter, parentId: e.value})
+              setSelect({...selects, ...{class: e}})
+              setFilter({...filter, classId: e.value})
             }}
             options={classroomOptions}
           />

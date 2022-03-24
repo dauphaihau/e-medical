@@ -12,6 +12,7 @@ import Select from "@components/form/select";
 import AsyncSelect from 'react-select/async';
 import {classroomService, memberService, schoolService, schoolYearService} from "@services";
 import {TrashIcon} from "@heroicons/react/outline";
+import {useAuth} from "../../../context/auth";
 
 const validationSchema = Yup.object().shape({
   fullName: Yup.string()
@@ -37,10 +38,10 @@ const DetailStudent = () => {
   const router = useRouter();
   const [member, setMember] = useState();
   const [listSchool, setListSchool] = useState();
+  const {school} = useAuth();
   const [listSchoolYear, setListSchoolYear] = useState();
   const [listGroup, setListGroup] = useState();
   const [listClass, setListClass] = useState();
-
   const [initData, setInitData] = useState({
     school: {
       value: "",
@@ -278,6 +279,7 @@ const DetailStudent = () => {
                 fullName: member ? member.fullName : '',
                 dateOfBirth: member ? member.dateOfBirth : '',
                 gender: member ? member.gender : 1,
+                role: 'student'
               }}
             >
               {({
@@ -289,14 +291,14 @@ const DetailStudent = () => {
                   <h3>Thông tin cá nhân</h3>
                   <Select
                     label='Tên Trường'
+                    isDisable={true}
                     name='schoolId'
-                    useFormik='true'
                     onChange={e => {
                       onChangeSchool(e.value);
                       setFieldValue('schoolId', e.value);
                       setInitData({...initData, ...{school: e}});
                     }}
-                    value={initData.school}
+                    value={{value: school?._id, label: school?.schoolname}}
                     options={listSchool}
                   />
                   <Select

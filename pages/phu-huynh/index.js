@@ -54,6 +54,7 @@ const Parent = () => {
 
     if (_.isEmpty(query)) {
       const listMember = await memberService.listParent();
+      console.log('list-member', listMember)
       setMembers(listMember);
 
     } else {

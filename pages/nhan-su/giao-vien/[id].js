@@ -11,36 +11,28 @@ import Select from "@components/form/select";
 import Region from "@components/form/region";
 import _ from "lodash";
 import {locationService} from "../../../services";
+import {useAuth} from "../../../context/auth";
 
 const phoneRegExp = /(([03+[2-9]|05+[6|8|9]|07+[0|6|7|8|9]|08+[1-9]|09+[1-4|6-9]]){3})+[0-9]{7}\b/
 const validationSchema = Yup.object().shape({
-  schoolId: Yup.string().required(),
   classId: Yup.string().required(),
   fullName: Yup.string()
     .min(5, 'Tên trường ít nhất là 5 ký tự')
     .max(50, 'Tên trường tối đa là 50 ký tự')
     .required('Tên người dùng không được để trống'),
   phoneNumber: Yup.string()
-    .required('Vui logn2 nhập số điện thoại')
+    .required('Vui lòng nhập số điện thoại')
     .matches(phoneRegExp, 'Số điện thoại không hợp lệ'),
-  // address: Yup.string().required('Địa chỉ không được để trống'),
+  address: Yup.string().required('Địa chỉ không được để trống'),
   province: Yup.object().shape({}),
   district: Yup.object().shape({}),
   ward: Yup.object().shape({}),
 });
-const defaultSelectValue = {
-  value: "",
-  label: "",
-  code: "",
-};
-const labelAddType = {
-  'giao-vien': 'Giáo Viên',
-  'nhan-vien': 'Nhân viên',
-};
 
 const UpdateTeacher = () => {
   const router = useRouter();
   const [member, setMember] = useState();
+  const {school, schoolId} = useAuth();
   const [listSchool, setListSchool] = useState([]);
   const [listSchoolYear, setListSchoolYear] = useState();
   const [listGroup, setListGroup] = useState();
@@ -91,27 +83,21 @@ const UpdateTeacher = () => {
   const loadInit = async () => {
     const provinces = await locationService.listProvince();
     setProvinceOptions(provinces);
+
     const {id} = router.query;
     if (id) {
       const memberRes = await memberService.detail(id);
-      console.log('member-res', memberRes)
-      if (memberRes && !_.isEmpty(memberRes)) {
-        console.log('provinces', provinces)
-        if (memberRes.province.code !== undefined) {
-          // swal("Giáo viên này không có location", "", "error")
-          //   .then(() => Router.push('/nhan-su/giao-vien/'));
-          const provinceOption = _.find(provinces, (o) => o.code === memberRes.province.code);
-          const districts = await locationService.listDistrict(memberRes.province.code);
-          const districtOption = _.find(districts, (o) => o.code === memberRes.district.code);
-          const wards = await locationService.listWard(memberRes.district.code);
-          const wardOption = _.find(wards, (o) => o.code === memberRes.ward.code);
-          setSelect({...selects, ...{ward: wardOption, district: districtOption, province: provinceOption}})
-          setMember(memberRes);
-        }
-      } else {
-        swal("Thành viên này không tồn tại!", "", "error")
-          .then(() => Router.push('/nhan-su/giao-vien/'));
+      setMember(memberRes);
+
+      if (memberRes && !_.isEmpty(memberRes) && memberRes.province?.code !== undefined) {
+        const provinceOption = _.find(provinces, (o) => o.code === memberRes.province.code);
+        const districts = await locationService.listDistrict(memberRes.province.code);
+        const districtOption = _.find(districts, (o) => o.code === memberRes.district.code);
+        const wards = await locationService.listWard(memberRes.district.code);
+        const wardOption = _.find(wards, (o) => o.code === memberRes.ward.code);
+        setSelect({...selects, ...{ward: wardOption, district: districtOption, province: provinceOption}})
       }
+      setMember(memberRes);
 
       let initDataSelected = {};
       const schools = await schoolService.list({limit: 20});
@@ -132,6 +118,10 @@ const UpdateTeacher = () => {
               label: data.schoolYearName,
             }));
             setListSchoolYear(schoolYearSelect);
+
+            console.log('list-school-year', listSchoolYear)
+            console.log('school-year-select', schoolYearSelect)
+
             const initYear = _.find(schoolYearSelect, {value: memberRes.schoolWorking?.schoolYearId});
             initDataSelected.schoolYear = initYear;
 
@@ -213,6 +203,8 @@ const UpdateTeacher = () => {
     }
   };
 
+  console.log('init-data', initData)
+
   return (
     <Formik
       className='my-4'
@@ -238,13 +230,13 @@ const UpdateTeacher = () => {
           setFieldValue,
         }) => (
         <Form className='form py-8'>
-          <h3>Cập nhật {labelAddType[addType]}</h3>
+          <h3>Cập nhật thông tin</h3>
           <div className='grid lg:grid-cols-2 gap-x-4'>
             <Select
               label='Tên trường'
               name='schoolId'
-              options={listSchool}
-              value={initData.school && !_.isEmpty(initData.school) ? initData.school : ''}
+              isDisable={true}
+              value={{value: school?._id, label: school?.schoolname}}
               onChange={(e) => {
                 onChangeSchool(e.value);
                 setFieldValue('schoolId', e.value);

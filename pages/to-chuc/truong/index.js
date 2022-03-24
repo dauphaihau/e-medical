@@ -92,17 +92,7 @@ const SchoolList = () => {
             setSelect({...selects, ...{ward: wardOption, district: districtOption, province: provinceOption}})
           }
         }
-        console.log('render');
-        // setSelect({
-        //   ...selects,
-        //   ...{
-        //     province: initDataSelected.province ,
-        //     district: initDataSelected.district || {},
-        //     ward: initDataSelected.ward || {},
-        //   }
-        // })
       }
-
       await setIsLoading(false)
     }
   };
