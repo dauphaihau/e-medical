@@ -36,10 +36,8 @@ const AddStaff = () => {
 
   useEffect( () => {
     if (!router.isReady) return;
-    let abortController = new AbortController();  
-    
     loadInit();
-    return () => abortController.abort(); 
+    return () => {};
   }, [router.isReady]);
 
   const loadInit = async () => {
@@ -55,6 +53,7 @@ const AddStaff = () => {
   }
 
   const handleSubmitForm = async (data, {resetForm}) => {
+    console.log('data', data)
     //format data
     let bodyData = {};
     if(data.province && !_.isEmpty(data.province)){

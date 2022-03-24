@@ -40,7 +40,7 @@ const AddStudent = () => {
   useEffect(() => {
     if (!router.isReady) return;
     loadInit();
-    return () => setListSchool({});
+    return () => {};
   }, [router.isReady])
 
   const loadInit = async () => {

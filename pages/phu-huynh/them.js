@@ -35,7 +35,7 @@ const AddParent = () => {
   useEffect( () => {
     if (!router.isReady) return;
     loadInit();
-    return () => setListProvince({});
+    return () => {}
   }, [router.isReady]);
 
   const loadInit = async () => {

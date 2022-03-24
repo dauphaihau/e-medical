@@ -35,10 +35,8 @@ const AddManager = () => {
 
   useEffect( () => {
     if (!router.isReady) return;
-    let abortController = new AbortController();  
-    
     loadInit();
-    return () => abortController.abort(); 
+    return () => {};
   }, [router.isReady]);
 
   const loadInit = async () => {

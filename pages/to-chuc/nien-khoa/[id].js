@@ -57,7 +57,7 @@ const DetailSchoolYear = () => {
     const result = await schoolYearService.update(id, data);
     if (result) {
       swal('Cập nhật thành công!', '', 'success')
-        .then(() => router.push('/to-chuc/tan-nien/'));
+        .then(() => router.push('/to-chuc/nien-khoa/'));
     } else {
       swal('Cập nhật không thành công!', '', 'error');
     }

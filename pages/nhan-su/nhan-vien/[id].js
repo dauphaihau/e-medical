@@ -46,10 +46,8 @@ const UpdateStaff = () => {
 
   useEffect(() => {
     if (!router.isReady) return;
-    let abortController = new AbortController();
-
     loadInit();
-    return () => abortController.abort();
+    return () => {};
   }, [router.isReady]);
 
   const loadInit = async () => {
@@ -195,7 +193,7 @@ const UpdateStaff = () => {
               defaultValue={{value: 'staff', label: 'Nhân viên'}}
             />
           </div>
-          <Button type='submit' className='mr-4'>Cập nhật</Button>
+          {user.role !== 'staff' && <Button type='submit' className='mr-4'>Cập nhật</Button>}
         </Form>
       )}
     </Formik>

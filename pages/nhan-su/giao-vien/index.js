@@ -14,16 +14,15 @@ import {useAuth} from "../../../context/auth";
 import {schoolYearService} from "../../../services";
 
 const Teacher = () => {
-  const router = useRouter();
-  const {query} = router;
   const [members, setMembers] = useState();
   const {schoolId} = useAuth();
+  const router = useRouter();
 
   const [schoolYearOptions, setSchoolYearOptions] = useState([])
   const [groupOptions, setGroupOptions] = useState([])
   const [classroomOptions, setClassroomOptions] = useState([])
 
-  const [selects, setSelect] = useState({
+  const [selects, setSelects] = useState({
     s: '',
     schoolYear: {
       value: '',
@@ -47,7 +46,7 @@ const Teacher = () => {
   useEffect(() => {
     if (!router.isReady) return;
     loadInit();
-    return () => setMembers([]);
+    return () => {};
   }, [router.isReady]);
 
   const loadInit = async () => {
@@ -60,29 +59,29 @@ const Teacher = () => {
       })));
     }
 
-    if (_.isEmpty(query)) {
+    if (_.isEmpty(router.query)) {
       const listMember = await memberService.list({type: 'teacher'});
       setMembers(listMember);
 
     } else {
-      const listMember = await memberService.list({...query, type: 'teacher'});
+      const listMember = await memberService.list({...router.query, type: 'teacher'});
       setMembers(listMember);
 
-      if (query.schoolId) {
-        let schoolOption = await schoolService.detail(query.schoolId);
+      if (router.query.schoolId) {
+        let schoolOption = await schoolService.detail(router.query.schoolId);
         schoolOption = {
           value: schoolOption._id,
           label: schoolOption.schoolname
         };
-        setSelect({...selects, ...{school: schoolOption}});
+        setSelects({...selects, ...{school: schoolOption}});
 
-        if (query.parentId) {
+        if (router.query.parentId) {
           let groupOption = await classroomService.listGroup({schoolId: query.schoolId})
           groupOption = groupOption.data.map(group => ({
             value: group._id,
             label: group.className,
           }))
-          setSelect({
+          setSelects({
             ...selects,
             ...{school: schoolOption, parent: groupOption}
           });
@@ -170,7 +169,7 @@ const Teacher = () => {
             value={selects.schoolYear}
             onChange={e => {
               onChangeSchoolYear(e)
-              setSelect({...selects, ...{schoolYear: e}});
+              setSelects({...selects, ...{schoolYear: e}});
               setFilter({...filter, schoolYearId: e.value})
             }}
             options={schoolYearOptions}
@@ -181,7 +180,7 @@ const Teacher = () => {
             value={selects.parent}
             onChange={e => {
               onChangeGroup(e)
-              setSelect({...selects, ...{group: e}})
+              setSelects({...selects, ...{group: e}})
               setFilter({...filter, classGroupId: e.value})
             }}
             options={groupOptions}
@@ -191,7 +190,7 @@ const Teacher = () => {
             name='classId'
             value={selects.parent}
             onChange={e => {
-              setSelect({...selects, ...{class: e}})
+              setSelects({...selects, ...{class: e}})
               setFilter({...filter, classId: e.value})
             }}
             options={classroomOptions}
@@ -230,7 +229,7 @@ const Teacher = () => {
                         </td>
                     </tr>
                 ))
-                : (<tr><td colSpan='4'>Chưa có dữ liệu</td></tr>)
+                : (<tr><td colSpan='5'>Chưa có dữ liệu</td></tr>)
               }
             </tbody>
           </table>

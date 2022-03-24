@@ -23,7 +23,7 @@ const SchoolList = () => {
   const [districtOptions, setDistrictOptions] = useState([])
   const [wardOptions, setWardOptions] = useState([])
 
-  const [selects, setSelect] = useState({
+  const [selects, setSelects] = useState({
     s: '',
     province: {
       value: '',
@@ -50,7 +50,7 @@ const SchoolList = () => {
   useEffect(() => {
     if (!router.isReady) return;
     loadInit();
-    return () => setSchools([]);
+    return () => {};
   }, [router.isReady]);
 
   const loadInit = async () => {
@@ -71,7 +71,7 @@ const SchoolList = () => {
         await setIsLoading(true)
         const provinceOption = _.find(provinces, (o) => o.code === query.province);
         // initDataSelected.province = provinceOption
-        setSelect({...selects, ...{province: provinceOption}});
+        setSelects({...selects, ...{province: provinceOption}});
         const districtOptions = await locationService.listDistrict(query.province);
         setDistrictOptions(districtOptions);
         console.log('province');
@@ -81,7 +81,7 @@ const SchoolList = () => {
           const districts = await locationService.listDistrict(provinceOption.code);
           const districtOption = _.find(districts, (o) => o.code === query.district);
           // initDataSelected.district = districtOption
-          setSelect({...selects, ...{district: districtOption, province: provinceOption}})
+          setSelects({...selects, ...{district: districtOption, province: provinceOption}})
           const wardOptions = await locationService.listWard(query.district);
           setWardOptions(wardOptions);
 
@@ -89,7 +89,7 @@ const SchoolList = () => {
             const wards = await locationService.listWard(districtOption.code);
             const wardOption = _.find(wards, (o) => o.code === query.ward);
             // initDataSelected.district = wardOption
-            setSelect({...selects, ...{ward: wardOption, district: districtOption, province: provinceOption}})
+            setSelects({...selects, ...{ward: wardOption, district: districtOption, province: provinceOption}})
           }
         }
       }
@@ -111,7 +111,6 @@ const SchoolList = () => {
           router.reload();
         } else {
           swal('Xóa không thành công!!', '', 'error');
-          s
         }
       }
     });
@@ -177,7 +176,7 @@ const SchoolList = () => {
                   placeholder='Chọn Tỉnh thành'
                   onChange={e => {
                     onChangeProvince(e);
-                    setSelect({...selects, ...{province: e, district: null, ward: null}})
+                    setSelects({...selects, ...{province: e, district: null, ward: null}})
                     setFilter({...filter, province: e.code, district: '', ward: ''})
                   }}
                   value={selects.province}
@@ -190,7 +189,7 @@ const SchoolList = () => {
                   value={selects.district}
                   onChange={e => {
                     onChangeDistrict(e)
-                    setSelect({...selects, ...{district: e, ward: null}});
+                    setSelects({...selects, ...{district: e, ward: null}});
                     setFilter({...filter, district: e.code, ward: ''})
                   }}
                   options={districtOptions}
@@ -201,7 +200,7 @@ const SchoolList = () => {
                   name='ward'
                   value={selects.ward}
                   onChange={e => {
-                    setSelect({...selects, ...{ward: e}})
+                    setSelects({...selects, ...{ward: e}})
                     setFilter({...filter, ward: e.code})
                   }}
                   options={wardOptions}
@@ -238,10 +237,6 @@ const SchoolList = () => {
                            <Link href={`/to-chuc/truong/${school._id}`}>
                              <a><PencilIcon className='h-5 w-5 inline'/></a>
                            </Link>
-                           <TrashIcon
-                             className='h-5 w-5 inline ml-4 cursor-pointer'
-                             onClick={() => handleDelete(school._id)}
-                           />
                           </td>
                         </tr>
                       ))

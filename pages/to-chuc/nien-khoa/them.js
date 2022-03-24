@@ -7,7 +7,6 @@ import swal from "sweetalert";
 import Select from "@components/form/select";
 import Input from "@components/form/input";
 import Button from "@components/button";
-import Layout from "@components/layout";
 import { schoolService, schoolYearService } from "@services";
 
 const validationSchema = Yup.object().shape({

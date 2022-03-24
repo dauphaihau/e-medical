@@ -63,11 +63,6 @@ const AddSchool = () => {
       console.log({error})
     }
   }
-  const defaultSelectValue = {
-    value: "",
-    label: "",
-    code: "",
-  };
   return (
     <Formik
       validationSchema={validationSchema}
