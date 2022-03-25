@@ -133,8 +133,6 @@ const Parent = () => {
     setMembers(res)
   };
 
-  console.log('members', members)
-
   return (
     <>
       <h4>Danh sách phụ huynh</h4>
@@ -199,16 +197,16 @@ const Parent = () => {
             </tr>
             </thead>
             <tbody>
-              {!_.isEmpty(members)
+              {!_.isEmpty(members?.data)
                 ? members.data?.map((row, idz) => (
                   <tr key={idz}>
                       <td>{idz + 1}</td>
                       <td className='text-left'>{row.fullName}</td>
                       <td className='text-left'>{row.phoneNumber}</td>
                       <td className='text-left'>{row.address}</td>
-                      <td className='text-left'>{row.province.provinceName}</td>
-                      <td className='text-left'>{row.district.districtName}</td>
-                      <td className='text-left'>{row.ward.wardName}</td>
+                      <td className='text-left'>{row.province?.provinceName}</td>
+                      <td className='text-left'>{row.district?.districtName}</td>
+                      <td className='text-left'>{row.ward?.wardName}</td>
                       <td>
                         <Link href={router.pathname + '/' + row._id}>
                            <a><PencilIcon className='h-5 w-5 inline'/></a>

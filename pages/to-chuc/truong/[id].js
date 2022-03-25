@@ -10,6 +10,8 @@ import Region from "@components/form/region";
 import {schoolService, locationService} from "@services";
 import {useAuth} from "../../../context/auth";
 import Select from "../../../components/form/select";
+import Link from "next/link";
+import {PencilIcon} from "@heroicons/react/outline";
 
 const validationSchema = Yup.object().shape({
   schoolname: Yup.string()
@@ -32,34 +34,37 @@ const defaultSelectValue = {
   label: "",
   code: "",
 };
+
 const UpdateSchool = () => {
   const router = useRouter();
-  const {school, user} = useAuth();
+  const {school: schoolFormProfile, user} = useAuth();
   const [listProvince, setListProvince] = useState([]);
-  const [schoolSelected, setSchoolSelected] = useState()
-  console.log('school', school)
-  console.log('school-selected', schoolSelected)
+  const [school, setSchool] = useState()
+  const [isAdminOrManager, setIsAdminOrManager] = useState(false)
 
   useEffect(() => {
     if (!router.isReady) return;
     loadInit();
+    return () => {};
   }, [router.isReady])
 
   const loadInit = async () => {
+    const {id} = router.query;
     const provinces = await locationService.listProvince();
     setListProvince(provinces);
 
-    // if (user.role === 'admin') {
-    //   const {id} = router.query;
-    //   const school = await schoolService.detail(id);
-    //   if (!school) {
-    //     swal('Truờng này không tồn tại', '', 'error')
-    //       .then(Router.push('/to-chuc/truong'))
-    //   }
-    //   setSchoolSelected(school);
-    // } else {
-    // }
-      setSchoolSelected(school)
+    if (user.role === 'admin' || user.role === 'manager') {
+      setIsAdminOrManager(true)
+    }
+
+    if (id) {
+      const school = await schoolService.detail(id);
+      if (!school) {
+        swal('Truờng này không tồn tại', '', 'error')
+          .then(Router.push('/to-chuc/truong'))
+      }
+      setSchool(school);
+    }
   }
 
   const handleSubmitForm = async (data) => {
@@ -97,7 +102,7 @@ const UpdateSchool = () => {
       onSubmit={handleSubmitForm}
       enableReinitialize
       initialValues={{
-        schoolname: school?._id,
+        schoolname: isAdminOrManager ? school?.schoolname : schoolFormProfile?.schoolname,
         address: school ? school.address : '',
         province: school && school.province ? {
           value: school.province.code,
@@ -116,15 +121,26 @@ const UpdateSchool = () => {
         } : defaultSelectValue,
       }}
     >
-      {({handleChange, values, errors}) => (
+      {({handleChange, values}) => (
         <Form className='form'>
           <h3>Cập nhật thông tin trường</h3>
-          <Select
-            label='Tên trường'
-            name='schoolId'
-            isDisable={true}
-            value={{value: school?._id, label: school?.schoolname}}
-          />
+          {isAdminOrManager ? <>
+              <Input
+                label='Tên trường'
+                name='schoolname'
+                onChange={handleChange}
+                value={values.schoolname}
+              />
+            </>
+            : <>
+              <Select
+                label='Tên trường'
+                name='schoolId'
+                isDisable={true}
+                value={{value: schoolFormProfile?._id, label: schoolFormProfile?.schoolname}}
+              />
+            </>
+          }
           <Input
             label='Địa chỉ'
             name='address'
@@ -139,7 +155,12 @@ const UpdateSchool = () => {
             districtSelected={values.district}
             wardSelected={values.ward}
           />
-          {user.role !== 'staff' && <Button type='submit' className='mr-4'>Cập nhật</Button>}
+          {user.role !== 'staff'
+            ? <Button type='submit' className='mr-4'>Cập nhật</Button>
+            : <Link href={'/to-chuc/truong/'}>
+              <a><Button type='submit' className='mr-4'>Trở lại</Button></a>
+            </Link>
+          }
         </Form>
       )}
     </Formik>

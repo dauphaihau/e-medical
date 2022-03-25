@@ -32,7 +32,7 @@ const validationSchema = Yup.object().shape({
 const UpdateTeacher = () => {
   const router = useRouter();
   const [member, setMember] = useState();
-  const {school, schoolId} = useAuth();
+  const {user} = useAuth();
   const [listSchool, setListSchool] = useState([]);
   const [listSchoolYear, setListSchoolYear] = useState();
   const [listGroup, setListGroup] = useState();
@@ -59,9 +59,6 @@ const UpdateTeacher = () => {
     loadInit();
     return () => abortController.abort();
   }, [router.isReady]);
-
-  useEffect(() => {
-  }, [listSchool])
 
   const loadInit = async () => {
     const provinces = await locationService.listProvince();
@@ -186,8 +183,6 @@ const UpdateTeacher = () => {
     }
   };
 
-  console.log('init-data', initData)
-
   return (
     <Formik
       className='my-4'
@@ -218,8 +213,9 @@ const UpdateTeacher = () => {
             <Select
               label='Tên trường'
               name='schoolId'
-              isDisable={true}
-              value={{value: school?._id, label: school?.schoolname}}
+              isDisable={user?.role !== 'admin'}
+              options={listSchool}
+              value={initData.school}
               onChange={(e) => {
                 onChangeSchool(e.value);
                 setFieldValue('schoolId', e.value);

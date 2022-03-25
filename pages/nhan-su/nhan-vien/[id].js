@@ -4,6 +4,7 @@ import * as Yup from "yup";
 import swal from "sweetalert";
 import Router, {useRouter} from "next/router";
 import _ from "lodash";
+import Link from "next/link";
 
 import Button from "@components/button";
 import Input from "@components/form/input";
@@ -31,7 +32,7 @@ const validationSchema = Yup.object().shape({
 const UpdateStaff = () => {
   const router = useRouter();
   const [member, setMember] = useState();
-  const {user, school} = useAuth();
+  const {user} = useAuth();
   const [listSchool, setListSchool] = useState([]);
   const [provinceOptions, setProvinceOptions] = useState([]);
   const [initData, setInitData] = useState({
@@ -47,7 +48,8 @@ const UpdateStaff = () => {
   useEffect(() => {
     if (!router.isReady) return;
     loadInit();
-    return () => {};
+    return () => {
+    };
   }, [router.isReady]);
 
   const loadInit = async () => {
@@ -100,6 +102,7 @@ const UpdateStaff = () => {
       bodyData.ward = {code: data.ward.code, wardName: data.ward.label}
     }
     bodyData = {...data, ...bodyData};
+    console.log('body-data', bodyData)
 
     try {
       await memberService.update(id, bodyData);
@@ -121,9 +124,9 @@ const UpdateStaff = () => {
         fullName: member?.fullName ?? '',
         address: member?.address ?? '',
         phoneNumber: member?.phoneNumber ?? '',
-        province: initData.province,
-        district: initData.district,
-        ward: initData.ward,
+        province: initData?.province ?? {},
+        district: initData?.district ?? {},
+        ward: initData?.ward ?? {},
       }}
     >
       {({
@@ -136,8 +139,9 @@ const UpdateStaff = () => {
           <Select
             label='Tên trường'
             name='schoolId'
-            isDisable={true}
-            value={{value: school?._id, label: school?.schoolname}}
+            isDisable={user?.role !== 'admin'}
+            value={initData.school}
+            options={listSchool}
             onChange={(e) => {
               setFieldValue('schoolId', e.value);
               setInitData({
@@ -192,7 +196,10 @@ const UpdateStaff = () => {
               defaultValue={{value: 'staff', label: 'Nhân viên'}}
             />
           </div>
-          {user.role !== 'staff' && <Button type='submit' className='mr-4'>Cập nhật</Button>}
+          {user.role === 'staff'
+            ? <Link href={'/nhan-su/nhan-vien/'}><a><Button type='submit' className='mr-4'>Quay lại</Button></a></Link>
+            : <Button type='submit' className='mr-4'>Cập nhật</Button>
+          }
         </Form>
       )}
     </Formik>

@@ -11,32 +11,39 @@ import Input from "@components/form/input";
 import Select from "@components/form/select";
 import {schoolYearService} from "@services";
 import {schoolService} from "@services";
+import {useAuth} from "../../../context/auth";
 
 const validationSchema = Yup.object().shape({
   schoolYearName: Yup.string().required('Tên niên khoá trường không được để trống'),
-  schoolId: Yup.string().required('Vui lòng chọn trường.'),
 });
 
 const DetailSchoolYear = () => {
   const router = useRouter();
   const [schoolYear, setSchoolYear] = useState();
+  const {school, user} = useAuth();
   const [listSchool, setListSchool] = useState();
   const [schoolSelected, setSchoolSelected] = useState();
+  const [initData, setInitData] = useState({
+    school: {},
+  });
 
   useEffect(() => {
     if (!router.isReady) return;
     loadInit();
+    return () => {
+    };
   }, [router.isReady]);
 
   const loadInit = async () => {
     const {id} = router.query;
-    const schoolRes = await schoolYearService.detail(id);
-    if (schoolRes) {
-      setSchoolYear(schoolRes);
+    const schoolYear = await schoolYearService.detail(id);
+    if (schoolYear) {
+      setSchoolYear(schoolYear);
     } else {
       swal('Thông tin này không tồn tại!!', '', 'error')
         .then(() => router.push('/to-chuc/nien-khoa/'));
     }
+    let initDataSelected = {};
     const schools = await schoolService.list({limit: 100});
     if (schools.total) {
       const schoolOptions = schools.data.map((data) => ({
@@ -44,10 +51,9 @@ const DetailSchoolYear = () => {
         label: data.schoolname,
       }));
       setListSchool(schoolOptions);
-      const initSchool = _.find(schoolOptions, {value: schoolRes.schoolId});
-      if (initSchool) {
-        setSchoolSelected(initSchool);
-      }
+      const initSchool = _.find(schoolOptions, {value: schoolYear.schoolId});
+      initDataSelected.school = initSchool;
+      setInitData(initDataSelected)
     }
   }
 
@@ -74,21 +80,30 @@ const DetailSchoolYear = () => {
     >
       {({
           handleChange,
-          values
+          values,
+          setFieldValue
         }) => (
-        <Form className='form'>
+        <Form className='form lg:w-1/2'>
           <h3>Thông tin niên khoá</h3>
           <div>
             <Select
               label='Tên trường'
               name='schoolId'
-              value={schoolSelected}
-              isDisable={true}
-              placeholder='Chọn trường'
+              options={listSchool}
+              isDisable={user?.role !== 'admin'}
+              value={initData.school}
+              onChange={(e) => {
+                setFieldValue('schoolId', e.value);
+                setInitData({
+                  ...initData, ...{
+                    school: e,
+                  }
+                });
+              }}
             />
             <Input
               name='schoolYearName' label='Niên khoá trường *'
-              useFormik='true'
+              useFormik
               onChange={handleChange}
               value={values.schoolYearName}
             />

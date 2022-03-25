@@ -11,6 +11,7 @@ import Input from "@components/form/input";
 import Region from "@components/form/region";
 import Select from "@components/form/select";
 import {useAuth} from "../../context/auth";
+import {schoolService} from "../../services";
 
 const phoneRegExp = /(([03+[2-9]|05+[6|8|9]|07+[0|6|7|8|9]|08+[1-9]|09+[1-4|6-9]]){3})+[0-9]{7}\b/
 const validationSchema = Yup.object().shape({
@@ -30,7 +31,11 @@ const validationSchema = Yup.object().shape({
 const AddParent = () => {
   const router = useRouter();
   const [listProvince, setListProvince] = useState();
-  const {school} = useAuth();
+  const {user} = useAuth();
+  const [listSchool, setListSchool] = useState();
+  const [initData, setInitData] = useState({
+    school: {},
+  });
 
   useEffect( () => {
     if (!router.isReady) return;
@@ -41,6 +46,19 @@ const AddParent = () => {
   const loadInit = async () => {
     const provinces = await locationService.listProvince();
     setListProvince(provinces);
+
+    let initDataSelected = {};
+    const schools = await schoolService.list({limit: 100});
+    if (schools.total) {
+      const schoolSelect = schools.data.map((data) => ({
+        value: data._id,
+        label: data.schoolname,
+      }))
+      setListSchool(schoolSelect);
+      const initSchool = _.find(schoolSelect, {value: user.schoolWorking?.schoolId});
+      initDataSelected.school = initSchool;
+    }
+    setInitData(initDataSelected);
   }
 
   const handleSubmitForm = async (data, {resetForm}) => {
@@ -57,6 +75,7 @@ const AddParent = () => {
       bodyData.ward = {code: data.ward.code, wardName: data.ward.label}
     }
     bodyData = {...data, ...bodyData};
+    console.log('body-data', bodyData)
     const result = await memberService.createParent(bodyData);
     if(result){
       swal('Thêm thành công', '', 'success')
@@ -74,7 +93,7 @@ const AddParent = () => {
       onSubmit={handleSubmitForm}
       enableReinitialize
       initialValues={{
-        schoolId: school?._id,
+        schoolId: user && user.role !== 'admin' && !_.isNil(user.schoolWorking?.schoolId)?user.schoolWorking.schoolId:'',
         fullName: '',
         address: '',
         phoneNumber: '',
@@ -94,8 +113,8 @@ const AddParent = () => {
           <Select
             label='Tên trường'
             name='schoolId'
-            isDisable={true}
-            value={{value: school?._id, label: school?.schoolname}}
+            isDisable={user?.role !== 'admin'}
+            options={listSchool}
             onChange={(e) => {
               setFieldValue('schoolId', e.value);
             }}

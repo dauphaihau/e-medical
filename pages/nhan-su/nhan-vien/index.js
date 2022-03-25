@@ -220,7 +220,7 @@ const Staff = () => {
               </tr>
             </thead>
             <tbody>
-              {!_.isEmpty(members)
+              {!_.isEmpty(members?.data)
                 ? members.data?.map((row, idz) => (
                   <tr key={idz}>
                     <td>{idz + 1}</td>

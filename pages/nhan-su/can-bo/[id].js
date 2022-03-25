@@ -11,6 +11,7 @@ import {memberService, schoolService} from "@services";
 import Select from "@components/form/select";
 import Region from "@components/form/region";
 import {locationService} from "../../../services";
+import {useAuth} from "../../../context/auth";
 
 const phoneRegExp = /(([03+[2-9]|05+[6|8|9]|07+[0|6|7|8|9]|08+[1-9]|09+[1-4|6-9]]){3})+[0-9]{7}\b/
 const validationSchema = Yup.object().shape({
@@ -32,6 +33,7 @@ const UpdateStaff = () => {
   const router = useRouter();
   const [member, setMember] = useState();
   const [listSchool, setListSchool] = useState([]);
+  const {user} = useAuth();
   const [provinceOptions, setProvinceOptions] = useState([]);
   const [initData, setInitData] = useState({
     school: {},
@@ -127,7 +129,7 @@ const UpdateStaff = () => {
             name='schoolId'
             options={listSchool}
             value={initData.school && !_.isEmpty(initData.school) ? initData.school : ''}
-            isDisable={true}
+            isDisable={user?.role !== 'admin'}
             onChange={(e) => {
               setFieldValue('schoolId', e.value);
               setInitData({

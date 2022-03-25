@@ -36,7 +36,6 @@ const Profile = () => {
   const [listSchoolYear, setListSchoolYear] = useState();
   const [listGroup, setListGroup] = useState();
   const {user} = useAuth();
-  console.log('user', user)
   const [listClass, setListClass] = useState([]);
   const [provinceOptions, setProvinceOptions] = useState([]);
   const [initData, setInitData] = useState({
@@ -137,7 +136,6 @@ const Profile = () => {
   }
 
   const handleSubmitForm = async (data) => {
-    console.log('data', data)
     try {
       await memberService.update(user._id, data);
       swal('Cập nhật thành công', '', 'success')
@@ -207,6 +205,7 @@ const Profile = () => {
               label='Tên trường'
               name='schoolId'
               options={listSchool}
+              isDisable={true}
               value={initData.school && !_.isEmpty(initData.school) ? initData.school : ''}
               onChange={(e) => {
                 onChangeSchool(e.value);
@@ -221,7 +220,7 @@ const Profile = () => {
             />
 
           <div className='grid lg:grid-cols-2 gap-x-4'>
-            {user.role !== 'staff' &&
+            {user.role !== 'staff' && user.role !== 'manager' ?
               <>
                 <Select
                   label='Niên khoá'
@@ -259,7 +258,7 @@ const Profile = () => {
                     });
                   }}
                 />
-              </>
+              </> : ''
             }
           </div>
           <Input

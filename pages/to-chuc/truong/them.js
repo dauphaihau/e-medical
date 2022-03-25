@@ -29,7 +29,7 @@ const validationSchema = Yup.object().shape({
 
 const AddSchool = () => {
   const router = useRouter();
-  const {school} = useAuth();
+  const {school, user} = useAuth();
   const [listProvince, setListProvince] = useState([]);
 
   useEffect(() => {
@@ -85,7 +85,7 @@ const AddSchool = () => {
           <Input
             label='Tên trường'
             name='schoolname'
-            disable={true}
+            disable={user.role !== 'admin'}
             value={school?.schoolname}
           />
           <Input

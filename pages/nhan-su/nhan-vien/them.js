@@ -30,9 +30,12 @@ const validationSchema = Yup.object().shape({
 
 const AddStaff = () => {
   const router = useRouter();
-  const {school} = useAuth();
+  const {user} = useAuth();
   const [listSchool, setListSchool] = useState();
   const [listProvince, setListProvince] = useState();
+  const [initData, setInitData] = useState({
+    school: {},
+  });
 
   useEffect( () => {
     if (!router.isReady) return;
@@ -84,7 +87,7 @@ const AddStaff = () => {
       onSubmit={handleSubmitForm}
       enableReinitialize
       initialValues={{
-        schoolId: school?._id,
+        schoolId: user && user.role !== 'admin' && !_.isNil(user.schoolWorking?.schoolId)?user.schoolWorking.schoolId:'',
         fullName: '',
         address: '',
         phoneNumber: '',
@@ -104,11 +107,12 @@ const AddStaff = () => {
           <Select
             label='Tên trường'
             name='schoolId'
-            isDisable={true}
-            value={{value: school?._id, label: school?.schoolname}}
+            isDisable={user?.role !== 'admin'}
             options={listSchool}
+            value={initData.school}
             onChange={(e) => {
               setFieldValue('schoolId', e.value);
+              setInitData({...initData, school: e})
             }}
           />
           <Input

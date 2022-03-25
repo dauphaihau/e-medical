@@ -38,7 +38,7 @@ const DetailStudent = () => {
   const router = useRouter();
   const [member, setMember] = useState();
   const [listSchool, setListSchool] = useState();
-  const {school} = useAuth();
+  const {user} = useAuth();
   const [listSchoolYear, setListSchoolYear] = useState();
   const [listGroup, setListGroup] = useState();
   const [listClass, setListClass] = useState();
@@ -291,14 +291,14 @@ const DetailStudent = () => {
                   <h3>Thông tin cá nhân</h3>
                   <Select
                     label='Tên Trường'
-                    isDisable={true}
+                    isDisable={user?.role !== 'admin'}
                     name='schoolId'
                     onChange={e => {
                       onChangeSchool(e.value);
                       setFieldValue('schoolId', e.value);
                       setInitData({...initData, ...{school: e}});
                     }}
-                    value={{value: school?._id, label: school?.schoolname}}
+                    value={initData.school}
                     options={listSchool}
                   />
                   <Select

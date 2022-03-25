@@ -16,9 +16,7 @@ const validationSchema = Yup.object().shape({
     .required('Tên lớp không được để trống')
     .min(5, 'Tên lớp ít nhất là 5 ký tự')
     .max(50, 'Tên lớp tối đa là 50 ký tự'),
-  schoolYearId: Yup.string().required('Vui lòng chọn niên khóa'),
   parentId: Yup.string().required('Vui lòng chọn khối.'),
-  schoolId: Yup.string().required('Vui lòng chọn trường.'),
 });
 
 const DetailClassroom = () => {
@@ -51,27 +49,6 @@ const DetailClassroom = () => {
   const loadInit = async () => {
     const {id} = router.query;
     const cls = await classroomService.detail(id);
-    if(cls){
-      setClassRoom(cls);
-      const schoolYear = await schoolYearService.list({schoolId: cls.schoolId})
-      if (schoolYear.total) {
-        setListSchoolYear(schoolYear.data.map((data) => ({
-          value: data._id,
-          label: data.schoolYearName,
-        })));
-      }
-      const clsGrp = await classroomService.listGroup({schoolYearId: cls.schoolYearId, limit: 100});
-      if (clsGrp.total) {
-        setListGroup(clsGrp.data.map((data) => ({
-          value: data._id,
-          label: data.className,
-        })));
-      }
-    }
-    else{
-      swal('Thông tin này không tồn tại!!', '', 'error')
-        .then(() => router.push('/to-chuc/lop/'));
-    }
     const initDataState = {
       school: {
         value: "",
@@ -86,6 +63,47 @@ const DetailClassroom = () => {
         label: "",
       },
     };
+    if (cls) {
+      setClassRoom(cls);
+      const schoolYear = await schoolYearService.list({schoolId: cls.schoolId})
+      if (schoolYear.total) {
+        setListSchoolYear(schoolYear.data.map((data) => ({
+          value: data._id,
+          label: data.schoolYearName,
+        })));
+      }
+      console.log('cls', cls)
+      const clsGrp = await classroomService.listGroup({schoolYearId: cls.schoolYearId, limit: 100});
+      if (clsGrp.total) {
+        setListGroup(clsGrp.data.map((data) => ({
+          value: data._id,
+          label: data.className,
+        })));
+        console.log('list-group', listGroup)
+        const clsGroupSelected = _.find(listGroup, {value: cls.parentId});
+        console.log('cls-group-selected', clsGroupSelected)
+        if (clsGroupSelected) {
+          initDataState.classGroup = clsGroupSelected;
+        }
+      }
+    }
+
+    // const clsGroup = await classroomService.listGroup({schoolYearId: cls.schoolYearId, limit: 100});
+    // if (clsGroup && clsGroup.total) {
+    //   const clsGroupOpt = clsGroup.data.map((data) => ({
+    //     value: data._id,
+    //     label: data.className,
+    //   }));
+    //   setListGroup(clsGroupOpt);
+    //   const clsGroupSelected = _.find(clsGroupOpt, {value: cls.parentId});
+    //   if (clsGroupSelected) {
+    //     initDataState.classGroup = clsGroupSelected;
+    //   }
+    // } else {
+    //   swal('Thông tin này không tồn tại!!', '', 'error')
+    //     .then(() => router.push('/to-chuc/lop/'));
+    // }
+
     const schools = await schoolService.list({limit: 100});
     if (schools.total) {
       const schoolOpts = schools.data.map((data) => ({
@@ -94,7 +112,7 @@ const DetailClassroom = () => {
       }));
       setListSchool(schoolOpts);
       const schoolSelected = _.find(schoolOpts, {value: cls.schoolId});
-      if(schoolSelected){
+      if (schoolSelected) {
         initDataState.school = schoolSelected;
         const schoolYears = await schoolYearService.list({schoolId: schoolSelected.value, limit: 100})
         if (schoolYears && schoolYears.total) {
@@ -104,7 +122,7 @@ const DetailClassroom = () => {
           }));
           setListSchoolYear(schoolYearOpt);
           const schoolYearSelected = _.find(schoolYearOpt, {value: cls.schoolYearId});
-          if(schoolYearSelected){
+          if (schoolYearSelected) {
             initDataState.schoolYear = schoolYearSelected;
 
             const clsGroup = await classroomService.listGroup({schoolYearId: cls.schoolYearId, limit: 100});
@@ -115,10 +133,11 @@ const DetailClassroom = () => {
               }));
               setListGroup(clsGroupOpt);
               const clsGroupSelected = _.find(clsGroupOpt, {value: cls.parentId});
-              if(clsGroupSelected){
+              if (clsGroupSelected) {
                 initDataState.classGroup = clsGroupSelected;
               }
             }
+
           }
         }
       }
@@ -129,16 +148,14 @@ const DetailClassroom = () => {
 
   const handleSubmitForm = async (values) => {
     const {id} = router.query;
-    console.log('values', values)
     const result = await classroomService.update(id, values)
-    if(result){
+    if (result) {
       swal({
         text: "Cập nhật thành công",
         icon: "success"
       })
         .then(() => router.push('/to-chuc/lop/'));
-    }
-    else{
+    } else {
       swal({
         text: "Cập nhật không thành công",
         icon: "error"
@@ -153,10 +170,10 @@ const DetailClassroom = () => {
         onSubmit={handleSubmitForm}
         enableReinitialize
         initialValues={{
-          className: classRoom?classRoom?.className : '',
-          schoolYearId: classRoom?classRoom?.schoolYearId:'',
-          schoolId: classRoom?classRoom?.schoolId:'',
-          parentId: classRoom?classRoom?.parentId:'',
+          className: classRoom ? classRoom?.className : '',
+          schoolYearId: classRoom ? classRoom?.schoolYearId : '',
+          schoolId: classRoom ? classRoom?.schoolId : '',
+          parentId: classRoom ? classRoom?.parentId : '',
         }}
       >
         {({
@@ -173,12 +190,10 @@ const DetailClassroom = () => {
                 value={initData.school}
                 // options={listSchool}
                 isDisable={true}
-                // value={{value: school?._id, label: school?.schoolname}}
               />
               <Select
                 label='Niên khoá trường'
                 name='schoolYearId'
-                isDisable={true}
                 value={initData.schoolYear}
               />
               <Select

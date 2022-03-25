@@ -10,6 +10,8 @@ import Input from "@components/form/input";
 import Button from "@components/button";
 import {classroomService, schoolYearService} from "@services";
 import {useAuth} from "../../../context/auth";
+import _ from "lodash";
+import {schoolService} from "../../../services";
 
 const validationSchema = Yup.object().shape({
   className: Yup.string()
@@ -19,18 +21,17 @@ const validationSchema = Yup.object().shape({
   parentId: Yup.string().required('Vui lòng chọn khối.'),
 });
 
-const defaultSelectValue = {
-  value: "",
-  label: "",
-  code: "",
-};
 
 const AddClassroom = () => {
 
   const router = useRouter();
-  const {school} = useAuth();
+  const {school, user} = useAuth();
   const [listSchoolYear, setListSchoolYear] = useState([])
   const [listGroup, setListGroup] = useState([])
+  const [listSchool, setListSchool] = useState();
+  const [initData, setInitData] = useState({
+    school: {},
+  });
 
   const [groupSelected, setGroupSelected] = useState()
 
@@ -40,6 +41,20 @@ const AddClassroom = () => {
   }, [router.isReady, router.asPath])
 
   const loadInit = async () => {
+
+    let initDataSelected = {};
+    const schools = await schoolService.list({limit: 100});
+    if (schools.total) {
+      const schoolOptions = schools.data.map((data) => ({
+        value: data._id,
+        label: data.schoolname,
+      }))
+      setListSchool(schoolOptions);
+      const initSchool = _.find(schoolOptions, {value: user.schoolWorking?.schoolId});
+      initDataSelected.school = initSchool;
+    }
+    setInitData(initDataSelected);
+
     const schoolYears = await schoolYearService.list({schoolId: school?._id})
     if (schoolYears && schoolYears.total) {
       setListSchoolYear(schoolYears.data.map((data) => ({
@@ -54,8 +69,6 @@ const AddClassroom = () => {
           label: data.className,
         })));
       }
-    } else {
-      setListSchoolYear();
     }
   }
 
@@ -75,6 +88,18 @@ const AddClassroom = () => {
     }
   };
 
+  const onChangeSchool = async (e) => {
+    const schoolYear = await schoolYearService.list({schoolId: e.value})
+    if (schoolYear) {
+      const schoolYearOptions = schoolYear.data.map((data) => ({
+        value: data._id,
+        label: data.schoolYearName,
+      }));
+      setListSchoolYear(schoolYearOptions)
+      // const initSchoolYear = _.find(schoolYearOptions, {value: user.schoolWorking?.schoolYearId});
+    }
+  };
+
   return (
     <>
       <Formik
@@ -82,7 +107,7 @@ const AddClassroom = () => {
         onSubmit={handleSubmitForm}
         enableReinitialize
         initialValues={{
-          schoolId: school?._id,
+          schoolId: user && user.role !== 'admin' && !_.isNil(user.schoolWorking?.schoolId) ? user.schoolWorking.schoolId : '',
           schoolYearId: listSchoolYear[0]?.value,
           className: '',
           parentId: '',
@@ -96,13 +121,16 @@ const AddClassroom = () => {
               <Select
                 label='Tên Trường'
                 name='schoolId'
-                isDisable={true}
-                value={{value: school?._id, label: school?.schoolname}}
+                isDisable={user.role !== 'admin'}
+                options={listSchool}
+                onChange={(e) => {
+                  onChangeSchool(e);
+                  setFieldValue('schoolId', e.value);
+                }}
               />
               <Select
                 label='Niên khoá trường'
                 name='schoolYearId'
-                isDisable={true}
                 value={{value: listSchoolYear[0]?.value, label: listSchoolYear[0]?.label}}
               />
               <Select

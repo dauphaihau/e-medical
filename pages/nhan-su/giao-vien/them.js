@@ -42,8 +42,11 @@ const AddTeacher = () => {
   const [listGroup, setListGroup] = useState();
   const [listClass, setListClass] = useState();
   const [listProvince, setListProvince] = useState();
-  const {school} = useAuth();
+  const {user} = useAuth();
   const [addType, setAddType] = useState();
+  const [initData, setInitData] = useState({
+    school: {},
+  });
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -58,13 +61,21 @@ const AddTeacher = () => {
     const provinces = await locationService.listProvince();
     setListProvince(provinces);
 
-    const schoolYear = await schoolYearService.list({schoolId: school?._id})
-    if (schoolYear.total) {
-      setListSchoolYear(schoolYear.data.map((data) => ({
+    let initDataSelected = {};
+    const schools = await schoolService.list({limit: 100});
+    if (schools.total) {
+      const schoolSelect = schools.data.map((data) => ({
         value: data._id,
-        label: data.schoolYearName,
-      })));
+        label: data.schoolname,
+      }))
+      setListSchool(schoolSelect);
+      const initSchool = _.find(schoolSelect, {value: user.schoolWorking?.schoolId});
+      if(initSchool){
+        initDataSelected.school = initSchool;
+        onChangeSchool(initSchool.value)
+      }
     }
+    setInitData(initDataSelected);
   }
 
   const handleSubmitForm = async (data, {resetForm}) => {
@@ -93,7 +104,7 @@ const AddTeacher = () => {
   };
 
   const onChangeSchool = async (idSchool) => {
-    const schoolYear = await schoolYearService.list({schoolId: idSchool})
+    const schoolYear = await schoolYearService.list({schoolId: idSchool, limit:100})
     if (schoolYear.total) {
       setListSchoolYear(schoolYear.data.map((data) => ({
         value: data._id,
@@ -129,7 +140,7 @@ const AddTeacher = () => {
       onSubmit={handleSubmitForm}
       enableReinitialize
       initialValues={{
-        schoolId: school?._id,
+        schoolId: user && user.role !== 'admin' && !_.isNil(user.schoolWorking?.schoolId)?user.schoolWorking.schoolId:'',
         schoolYearId: '',
         classGroupId: '',
         classId: '',
@@ -153,8 +164,8 @@ const AddTeacher = () => {
             <Select
               label='Tên trường'
               name='schoolId'
-              isDisable={true}
-              value={{value: school?._id, label: school?.schoolname}}
+              isDisable={user?.role !== 'admin'}
+              options={listSchool}
               onChange={(e) => {
                 onChangeSchool(e.value);
                 setFieldValue('schoolId', e.value);
