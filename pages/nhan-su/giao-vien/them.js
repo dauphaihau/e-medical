@@ -70,7 +70,10 @@ const AddTeacher = () => {
       }))
       setListSchool(schoolSelect);
       const initSchool = _.find(schoolSelect, {value: user.schoolWorking?.schoolId});
-      initDataSelected.school = initSchool;
+      if(initSchool){
+        initDataSelected.school = initSchool;
+        onChangeSchool(initSchool.value)
+      }
     }
     setInitData(initDataSelected);
     // const schoolYear = await schoolYearService.list({schoolId: school?._id})
@@ -108,7 +111,7 @@ const AddTeacher = () => {
   };
 
   const onChangeSchool = async (idSchool) => {
-    const schoolYear = await schoolYearService.list({schoolId: idSchool})
+    const schoolYear = await schoolYearService.list({schoolId: idSchool, limit:100})
     if (schoolYear.total) {
       setListSchoolYear(schoolYear.data.map((data) => ({
         value: data._id,
