@@ -31,7 +31,10 @@ const AddManager = () => {
   const router = useRouter();
   const [listSchool, setListSchool] = useState();
   const [listProvince, setListProvince] = useState();
-  const {school} = useAuth();
+  const {user} = useAuth();
+  const [initData, setInitData] = useState({
+    school: {},
+  });
 
   useEffect( () => {
     if (!router.isReady) return;
@@ -42,13 +45,19 @@ const AddManager = () => {
   const loadInit = async () => {
     const provinces = await locationService.listProvince();
     setListProvince(provinces);
-    const schools = await schoolService.list({limit:20});
-    if(schools.total){
-      setListSchool(schools.data.map((data) => ({
+
+    let initDataSelected = {};
+    const schools = await schoolService.list({limit: 100});
+    if (schools.total) {
+      const schoolSelect = schools.data.map((data) => ({
         value: data._id,
         label: data.schoolname,
-      })));
+      }))
+      setListSchool(schoolSelect);
+      const initSchool = _.find(schoolSelect, {value: user.schoolWorking?.schoolId});
+      initDataSelected.school = initSchool;
     }
+    setInitData(initDataSelected);
   }
 
   const handleSubmitForm = async (data, {resetForm}) => {
@@ -83,7 +92,7 @@ const AddManager = () => {
       onSubmit={handleSubmitForm}
       enableReinitialize
       initialValues={{
-        schoolId: school?._id,
+        schoolId: user && user.role !== 'admin' && !_.isNil(user.schoolWorking?.schoolId)?user.schoolWorking.schoolId:'',
         fullName: '',
         address: '',
         phoneNumber: '',
@@ -103,8 +112,7 @@ const AddManager = () => {
           <Select
             label='Tên trường'
             name='schoolId'
-            isDisable={true}
-            value={{value: school?._id, label: school?.schoolname}}
+            isDisable={user?.role !== 'admin'}
             options={listSchool}
             onChange={(e) => {
               setFieldValue('schoolId', e.value);

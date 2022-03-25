@@ -35,7 +35,10 @@ const AddStudent = () => {
   const [listGroup, setListGroup] = useState();
   const [listClass, setListClass] = useState();
   const [parentSelect, setParentSelect] = useState({})
-  const {schoolId} = useAuth();
+  const {user} = useAuth();
+  const [initData, setInitData] = useState({
+    school: {},
+  });
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -45,16 +48,29 @@ const AddStudent = () => {
 
   const loadInit = async () => {
 
-    const resSchool = await schoolService.detail(schoolId);
-    setSchool(resSchool)
+    // const resSchool = await schoolService.detail();
+    // setSchool(resSchool)
 
-    const schoolYear = await schoolYearService.list({schoolId})
-    if (schoolYear.total) {
-      setListSchoolYear(schoolYear.data.map((data) => ({
+    let initDataSelected = {};
+    // const schoolYear = await schoolYearService.list({})
+    // if (schoolYear.total) {
+    //   setListSchoolYear(schoolYear.data.map((data) => ({
+    //     value: data._id,
+    //     label: data.schoolYearName,
+    //   })));
+    // }
+
+    const schools = await schoolService.list({limit: 100});
+    if (schools.total) {
+      const schoolSelect = schools.data.map((data) => ({
         value: data._id,
-        label: data.schoolYearName,
-      })));
+        label: data.schoolname,
+      }))
+      setListSchool(schoolSelect);
+      const initSchool = _.find(schoolSelect, {value: user.schoolWorking?.schoolId});
+      initDataSelected.school = initSchool;
     }
+    setInitData(initDataSelected)
   }
 
   const onChangeSchool = async (idSchool) => {
@@ -133,7 +149,7 @@ const AddStudent = () => {
         onSubmit={handleSubmitForm}
         enableReinitialize
         initialValues={{
-          schoolId: school?._id,
+          schoolId: user && user.role !== 'admin' && !_.isNil(user.schoolWorking?.schoolId)?user.schoolWorking.schoolId:'',
           classId: '',
           parent: '',
           fullName: '',
@@ -150,13 +166,14 @@ const AddStudent = () => {
             <h3>Thông tin cá nhân</h3>
             <div className='grid lg:grid-cols-2 gap-x-6'>
               <Select
-                value={{value: school?._id, label: school?.schoolname}}
-                isDisable={true}
                 label='Tên Trường'
                 name='schoolId'
+                isDisable={user?.role !== 'admin'}
+                value={initData.school}
                 onChange={e => {
                   onChangeSchool(e.value);
                   setFieldValue('schoolId', e.value)
+                  setInitData({...initData, school: e})
                 }}
                 options={listSchool}
               />
@@ -168,12 +185,12 @@ const AddStudent = () => {
                   setFieldValue('schoolYearId', e.value)
                 }}
                 options={listSchoolYear}
-                useFormik='true'
+                useFormik
               />
               <Select
                 label='Khối'
                 name='classGroup'
-                useFormik='true'
+                useFormik
                 onChange={e => {
                   onChangeGroup(e.value);
                   setFieldValue('classGroup', e.value)
@@ -183,7 +200,7 @@ const AddStudent = () => {
               <Select
                 label='Lớp'
                 name='classId'
-                useFormik='true'
+                useFormik
                 onChange={e => setFieldValue('classId', e.value)}
                 options={listClass}
               />

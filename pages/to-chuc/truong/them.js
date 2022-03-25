@@ -29,8 +29,9 @@ const validationSchema = Yup.object().shape({
 
 const AddSchool = () => {
   const router = useRouter();
-  const {school} = useAuth();
+  const {school, user} = useAuth();
   const [listProvince, setListProvince] = useState([]);
+  console.log('user', user)
 
   useEffect(() => {
     if (!router.isReady) return;

@@ -31,7 +31,7 @@ const validationSchema = Yup.object().shape({
 const UpdateStaff = () => {
   const router = useRouter();
   const [member, setMember] = useState();
-  const {user, school} = useAuth();
+  const {user} = useAuth();
   const [listSchool, setListSchool] = useState([]);
   const [provinceOptions, setProvinceOptions] = useState([]);
   const [initData, setInitData] = useState({
@@ -100,6 +100,7 @@ const UpdateStaff = () => {
       bodyData.ward = {code: data.ward.code, wardName: data.ward.label}
     }
     bodyData = {...data, ...bodyData};
+    console.log('body-data', bodyData)
 
     try {
       await memberService.update(id, bodyData);
@@ -136,8 +137,9 @@ const UpdateStaff = () => {
           <Select
             label='Tên trường'
             name='schoolId'
-            isDisable={true}
-            value={{value: school?._id, label: school?.schoolname}}
+            isDisable={user?.role !== 'admin'}
+            value={initData.school}
+            options={listSchool}
             onChange={(e) => {
               setFieldValue('schoolId', e.value);
               setInitData({

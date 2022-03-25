@@ -206,9 +206,9 @@ const Parent = () => {
                       <td className='text-left'>{row.fullName}</td>
                       <td className='text-left'>{row.phoneNumber}</td>
                       <td className='text-left'>{row.address}</td>
-                      <td className='text-left'>{row.province.provinceName}</td>
-                      <td className='text-left'>{row.district.districtName}</td>
-                      <td className='text-left'>{row.ward.wardName}</td>
+                      <td className='text-left'>{row.province?.provinceName}</td>
+                      <td className='text-left'>{row.district?.districtName}</td>
+                      <td className='text-left'>{row.ward?.wardName}</td>
                       <td>
                         <Link href={router.pathname + '/' + row._id}>
                            <a><PencilIcon className='h-5 w-5 inline'/></a>
