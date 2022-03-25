@@ -190,12 +190,10 @@ const DetailClassroom = () => {
                 value={initData.school}
                 // options={listSchool}
                 isDisable={true}
-                // value={{value: school?._id, label: school?.schoolname}}
               />
               <Select
                 label='Niên khoá trường'
                 name='schoolYearId'
-                isDisable={true}
                 value={initData.schoolYear}
               />
               <Select

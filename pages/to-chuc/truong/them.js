@@ -31,7 +31,6 @@ const AddSchool = () => {
   const router = useRouter();
   const {school, user} = useAuth();
   const [listProvince, setListProvince] = useState([]);
-  console.log('user', user)
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -86,7 +85,7 @@ const AddSchool = () => {
           <Input
             label='Tên trường'
             name='schoolname'
-            disable={true}
+            disable={user.role !== 'admin'}
             value={school?.schoolname}
           />
           <Input

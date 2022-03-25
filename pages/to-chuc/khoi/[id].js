@@ -3,6 +3,7 @@ import {useRouter} from "next/router";
 import * as Yup from "yup";
 import swal from "sweetalert";
 import {Formik, Form} from "formik";
+import _ from "lodash";
 
 import Input from "@components/form/input";
 import Button from "@components/button";
@@ -19,10 +20,10 @@ const validationSchema = Yup.object().shape({
 
 const DetailGroup = () => {
   const router = useRouter();
-  const {school} = useAuth();
+  const {user} = useAuth();
   const [classGroup, setClassGroup] = useState();
   const [listSchoolYear, setListSchoolYear] = useState([])
-  // console.log('school', school)
+  const [listSchool, setListSchool] = useState();
   const [initData, setInitData] = useState({
     school: {
       value: "",
@@ -31,7 +32,8 @@ const DetailGroup = () => {
     schoolYear: {
       value: "",
       label: "",
-    }
+    },
+    classGroup: {},
   })
 
   useEffect(() => {
@@ -42,6 +44,7 @@ const DetailGroup = () => {
   const loadInit = async () => {
     const {id} = router.query;
     const clsGroup = await classroomService.detailGroup(id);
+    console.log('cls-group', clsGroup)
     if (clsGroup) {
       setClassGroup(clsGroup);
     } else {
@@ -49,18 +52,6 @@ const DetailGroup = () => {
         .then(() => router.push('/to-chuc/khoi/'));
     }
 
-    const schoolYears = await schoolYearService.list({schoolId: school?._id, limit: 100})
-    if (schoolYears && schoolYears.total) {
-      setListSchoolYear(schoolYears.data.map((data) => ({
-        value: data._id,
-        label: data.schoolYearName,
-      })));
-    } else {
-      setListSchoolYear();
-    }
-
-
-    // const schools = await schoolService.list({limit: 100});
     const initDataState = {
       school: {
         value: "",
@@ -71,31 +62,46 @@ const DetailGroup = () => {
         label: "",
       }
     };
-    // if (schools.total) {
-    //   const schoolOpts = schools.data.map((data) => ({
-    //     value: data._id,
-    //     label: data.schoolname,
-    //   }));
-    //   setListSchool(schoolOpts);
-    //   const schoolSelected = _.find(schoolOpts, {value: clsGroup.schoolId});
-    //   if (schoolSelected) {
-    //     initDataState.school = schoolSelected;
-    //     const schoolYears = await schoolYearService.list({schoolId: schoolSelected.value, limit: 100})
-    //     if (schoolYears && schoolYears.total) {
-    //       const schoolYearOpt = schoolYears.data.map((data) => ({
-    //         value: data._id,
-    //         label: data.schoolYearName,
-    //       }));
-    //       setListSchoolYear(schoolYearOpt);
-    //       const schoolYearSelected = _.find(schoolYearOpt, {value: clsGroup.schoolYearId});
-    //       if (schoolYearSelected) {
-    //         initDataState.schoolYear = schoolYearSelected;
-    //       }
-    //     }
-    //   }
-    // }
-    // setInitData(initDataState);
+
+    const schools = await schoolService.list({limit: 100});
+    if (schools.total) {
+      const schoolOpts = schools.data.map((data) => ({
+        value: data._id,
+        label: data.schoolname,
+      }));
+      setListSchool(schoolOpts);
+      const schoolSelected = _.find(schoolOpts, {value: clsGroup.schoolId });
+
+      if (schoolSelected) {
+        initDataState.school = schoolSelected;
+        const schoolYears = await schoolYearService.list({schoolId: schoolSelected.value, limit: 100})
+        if (schoolYears && schoolYears.total) {
+          const schoolYearOpt = schoolYears.data.map((data) => ({
+            value: data._id,
+            label: data.schoolYearName,
+          }));
+          setListSchoolYear(schoolYearOpt);
+          const schoolYearSelected = _.find(schoolYearOpt, {value: clsGroup.schoolYearId});
+          if (schoolYearSelected) {
+            initDataState.schoolYear = schoolYearSelected;
+          }
+        }
+      }
+    }
+    setInitData(initDataState);
   }
+
+  const onChangeSchool = async (e) => {
+    const schoolYear = await schoolYearService.list({schoolId: e.value})
+    if (schoolYear) {
+      const schoolYearOptions = schoolYear.data.map((data) => ({
+        value: data._id,
+        label: data.schoolYearName,
+      }));
+      setListSchoolYear(schoolYearOptions)
+      // const initSchoolYear = _.find(schoolYearOptions, {value: user.schoolWorking?.schoolYearId});
+    }
+  };
 
   const handleSubmitForm = async (data) => {
     const {id} = router.query;
@@ -115,36 +121,55 @@ const DetailGroup = () => {
     }
   };
 
+  console.log('class-group', classGroup)
   return (
     <Formik
       validationSchema={validationSchema}
       onSubmit={handleSubmitForm}
       enableReinitialize
       initialValues={{
-        schoolId: school?._id,
-        schoolYearId: listSchoolYear[0]?.value,
+        schoolId: classGroup?.schoolId,
+        schoolYearId: classGroup?.schoolYearId,
         className: classGroup ? classGroup?.className : '',
         parentId: null,
         status: 1
       }}
     >
-      {({handleChange, values,}) => (
+      {({handleChange, setFieldValue, values,}) => (
         <Form className='form lg:w-1/2'>
           <h3>Chỉnh Sửa Khối</h3>
           <div>
             <Select
               label='Tên trường'
               name='schoolId'
-              isDisable={true}
-              // value={values.schoolId}
-              value={{value: school?._id, label: school?.schoolname}}
+              isDisable={user?.role !== 'admin'}
+              value={initData.school}
+              options={listSchool}
+              onChange={(e) => {
+                onChangeSchool(e)
+                setFieldValue('schoolId', e.value);
+                setInitData({
+                  ...initData, ...{
+                    school: e,
+                  }
+                });
+              }}
             />
             <Select
               label='Niên khoá'
               placeholder='Chọn niên khoá'
-              isDisable={true}
+              isDisable={user.role !== 'admin'}
               name='schoolYearId'
-              value={{value: listSchoolYear[0]?.value, label: listSchoolYear[0]?.label}}
+              options={listSchoolYear}
+              onChange={(e) => {
+                setFieldValue('schoolYearId', e)
+                setInitData({
+                  ...initData, ...{
+                    schoolYear: e,
+                  }
+                });
+              }}
+              value={initData.schoolYear}
             />
             <Input
               name='className'
