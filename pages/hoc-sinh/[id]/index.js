@@ -38,7 +38,7 @@ const DetailStudent = () => {
   const router = useRouter();
   const [member, setMember] = useState();
   const [listSchool, setListSchool] = useState();
-  const {school, user} = useAuth();
+  const {user} = useAuth();
   const [listSchoolYear, setListSchoolYear] = useState();
   const [listGroup, setListGroup] = useState();
   const [listClass, setListClass] = useState();
@@ -99,10 +99,7 @@ const DetailStudent = () => {
         label: data.schoolname,
       }));
       setListSchool(schoolOpts);
-      console.log('school-opts', schoolOpts)
-      console.log('member-res-school-working-school-id', memberRes.schoolWorking.schoolId)
       const schoolSelected = _.find(schoolOpts, {value: memberRes.schoolWorking?.schoolId});
-      console.log('school-selected', schoolSelected)
 
       if (schoolSelected) {
         initDataState.school = schoolSelected;
@@ -183,6 +180,7 @@ const DetailStudent = () => {
 
   const handleSubmitForm = async (values) => {
     const {id} = router.query;
+    console.log('values', values)
     const result = memberService.updateStudent(id, values);
     if (result) {
       swal({
@@ -240,6 +238,8 @@ const DetailStudent = () => {
     }))
   };
 
+
+
   return (
     <div className="mt-8 drop-shadow-2xl overflow-x-auto lg:overflow-x-visible">
       <div className="mt-8 overflow-x-auto lg:overflow-x-visible">
@@ -279,7 +279,6 @@ const DetailStudent = () => {
                 classGroupId: member ? member.schoolWorking?.classGroupId : '',
                 classId: member ? member.schoolWorking?.classId : '',
                 // parent: '',
-                // schoolname: 
                 fullName: member ? member.fullName : '',
                 dateOfBirth: member ? member.dateOfBirth : '',
                 gender: member ? member.gender : 1,
@@ -293,34 +292,18 @@ const DetailStudent = () => {
                 }) => (
                 <Form>
                   <h3>Thông tin cá nhân</h3>
-                  <Input
+                  <Select
                     label='Tên Trường'
-                    // isDisable={user.role !== 'admin'}
+                    isDisable={user.role !== 'admin'}
                     name='schoolId'
-                    // onChange={e => {
-                    //   onChangeSchool(e.value);
-                    //   setFieldValue('schoolId', e.value);
-                    //   setInitData({...initData, ...{school: e}});
-                    // }}
-                    onChange={handleChange}
-                    value={school?.schoolname}
-                    // value={{value: school?._id, label: school?.schoolname}}
-                    // options={listSchool}
+                    onChange={e => {
+                      onChangeSchool(e.value);
+                      setFieldValue('schoolId', e.value);
+                      setInitData({...initData, ...{school: e}});
+                    }}
+                    value={initData.school}
+                    options={listSchool}
                   />
-
-                  {/*<Select*/}
-                  {/*  label='Tên Trường'*/}
-                  {/*  isDisable={true}*/}
-                  {/*  name='schoolId'*/}
-                  {/*  onChange={e => {*/}
-                  {/*    onChangeSchool(e.value);*/}
-                  {/*    setFieldValue('schoolId', e.value);*/}
-                  {/*    setInitData({...initData, ...{school: e}});*/}
-                  {/*  }}*/}
-                  {/*  value={{value: school?._id, label: school?.schoolname}}*/}
-                  {/*  options={listSchool}*/}
-                  {/*/>*/}
-
                   <Select
                     label='Niên khoá'
                     name='schoolYearId'

@@ -35,7 +35,7 @@ const AddStudent = () => {
   const [listGroup, setListGroup] = useState();
   const [listClass, setListClass] = useState();
   const [parentSelect, setParentSelect] = useState({})
-  const {schoolId} = useAuth();
+  const {user} = useAuth();
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -45,10 +45,15 @@ const AddStudent = () => {
 
   const loadInit = async () => {
 
-    const resSchool = await schoolService.detail(schoolId);
-    setSchool(resSchool)
+    const resSchool = await schoolService.list();
+    if (resSchool.total) {
+      setSchool(resSchool.data.map((data) => ({
+        value: data?._id,
+        label: data?.schoolname,
+      })));
+    }
 
-    const schoolYear = await schoolYearService.list({schoolId})
+    const schoolYear = await schoolYearService.list()
     if (schoolYear.total) {
       setListSchoolYear(schoolYear.data.map((data) => ({
         value: data._id,
@@ -150,15 +155,15 @@ const AddStudent = () => {
             <h3>Thông tin cá nhân</h3>
             <div className='grid lg:grid-cols-2 gap-x-6'>
               <Select
-                value={{value: school?._id, label: school?.schoolname}}
-                isDisable={true}
+                // value={{value: school?._id, label: school?.schoolname}}
+                isDisable={user.role !== 'admin'}
                 label='Tên Trường'
                 name='schoolId'
                 onChange={e => {
                   onChangeSchool(e.value);
                   setFieldValue('schoolId', e.value)
                 }}
-                options={listSchool}
+                options={school}
               />
               <Select
                 label='Niên khoá'
