@@ -26,7 +26,7 @@ export function AuthProvider({children}) {
         if (userRes) {
           if (!_.isNil(userRes.schoolWorking?.schoolId)) {
             const school = await schoolService.detail(userRes.schoolWorking.schoolId);
-            userRes.schoolWorking.schoolName = school.schoolName
+            userRes.schoolWorking.schoolName = school.schoolname;
           }
           setUser(userRes);
         } else {
