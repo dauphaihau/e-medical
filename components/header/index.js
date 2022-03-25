@@ -106,7 +106,7 @@ function renderButtonAddNew(pathname, role) {
   );
 };
 
-const handleRole = (role, school = '') => {
+const handleRole = (role, schoolName = '') => {
   const labelRoles = {
     parent: 'Phụ huynh: ',
     teacher: 'Giáo viên: ',
@@ -115,13 +115,13 @@ const handleRole = (role, school = '') => {
     manager: 'Cán bộ quản lý: ',
     admin: 'Quản trị viên',
   };
-  return labelRoles[role] ? `${labelRoles[role]} ${school && school.schoolname}` : '';
+  return labelRoles[role] ? `${labelRoles[role]} ${schoolName}` : '';
 };
 
 const Header = ({stateSidebar, setStateSidebar}) => {
   const router = useRouter();
   const [dropdown, setDropdown] = useState(false)
-  const {user, school} = useAuth();
+  const {user} = useAuth();
   const innerRef = useOuterClick(() => {
     setDropdown(false)
   });
@@ -160,7 +160,7 @@ const Header = ({stateSidebar, setStateSidebar}) => {
           <div className='navbar-right__info' ref={innerRef} onClick={() => setDropdown(!dropdown)}>
             <div>
               <p>{user?.fullName}</p>
-              <p>{handleRole(user?.role, school)}</p>
+              <p>{handleRole(user?.role, user?.schoolWorking?.schoolName)}</p>
             </div>
             <img src="https://i.pravatar.cc/300" alt='avatar'/>
           </div>
