@@ -22,6 +22,7 @@ const DetailGroup = () => {
   const {school} = useAuth();
   const [classGroup, setClassGroup] = useState();
   const [listSchoolYear, setListSchoolYear] = useState([])
+  // console.log('school', school)
   const [initData, setInitData] = useState({
     school: {
       value: "",
@@ -133,11 +134,10 @@ const DetailGroup = () => {
           <div>
             <Select
               label='Tên trường'
-              placeholder='Chọn trường'
               name='schoolId'
               isDisable={true}
-              value={values.schoolId}
-              options={{value: school?._id, label: school?.schoolname}}
+              // value={values.schoolId}
+              value={{value: school?._id, label: school?.schoolname}}
             />
             <Select
               label='Niên khoá'

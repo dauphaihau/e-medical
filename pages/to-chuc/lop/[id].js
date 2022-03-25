@@ -148,7 +148,6 @@ const DetailClassroom = () => {
 
   const handleSubmitForm = async (values) => {
     const {id} = router.query;
-    console.log('values', values)
     const result = await classroomService.update(id, values)
     if (result) {
       swal({

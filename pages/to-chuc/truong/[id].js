@@ -45,23 +45,25 @@ const UpdateSchool = () => {
   useEffect(() => {
     if (!router.isReady) return;
     loadInit();
+    return () => {};
   }, [router.isReady])
 
   const loadInit = async () => {
+    const {id} = router.query;
     const provinces = await locationService.listProvince();
     setListProvince(provinces);
 
     if (user.role === 'admin' || user.role === 'manager') {
       setIsAdminOrManager(true)
-      const {id} = router.query;
-      if (id) {
-        const school = await schoolService.detail(id);
-        if (!school) {
-          swal('Truờng này không tồn tại', '', 'error')
-            .then(Router.push('/to-chuc/truong'))
-        }
-        setSchool(school);
+    }
+
+    if (id) {
+      const school = await schoolService.detail(id);
+      if (!school) {
+        swal('Truờng này không tồn tại', '', 'error')
+          .then(Router.push('/to-chuc/truong'))
       }
+      setSchool(school);
     }
   }
 

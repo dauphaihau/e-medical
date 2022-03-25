@@ -40,6 +40,7 @@ const UpdateStaff = () => {
     district: {},
     ward: {},
   });
+  console.log('init-data', initData)
 
   useEffect(() => {
     if (!router.isReady) return;
