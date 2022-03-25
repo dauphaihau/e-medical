@@ -38,6 +38,7 @@ const UpdateTeacher = () => {
   const [listGroup, setListGroup] = useState();
   const [listClass, setListClass] = useState([]);
   const [provinceOptions, setProvinceOptions] = useState([]);
+  const [addType, setAddType] = useState();
   const [initData, setInitData] = useState({
     school: {},
     schoolYear: {},
@@ -50,8 +51,13 @@ const UpdateTeacher = () => {
 
   useEffect(() => {
     if (!router.isReady) return;
+    let abortController = new AbortController();
+
+    if (router.pathname.includes('giao-vien')) {
+      setAddType('giao-vien');
+    }
     loadInit();
-    return () => {};
+    return () => abortController.abort();
   }, [router.isReady]);
 
   const loadInit = async () => {
@@ -191,9 +197,9 @@ const UpdateTeacher = () => {
         fullName: member?.fullName ?? '',
         address: member?.address ?? '',
         phoneNumber: member?.phoneNumber ?? '',
-        province: initData.province || {},
-        district: initData.district || {},
-        ward: initData.ward || {},
+        province: initData.province,
+        district: initData.district,
+        ward: initData.ward,
       }}
     >
       {({
@@ -208,6 +214,7 @@ const UpdateTeacher = () => {
               label='Tên trường'
               name='schoolId'
               isDisable={user?.role !== 'admin'}
+              options={listSchool}
               value={initData.school}
               onChange={(e) => {
                 onChangeSchool(e.value);

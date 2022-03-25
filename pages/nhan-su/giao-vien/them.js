@@ -73,13 +73,6 @@ const AddTeacher = () => {
       initDataSelected.school = initSchool;
     }
     setInitData(initDataSelected);
-    // const schoolYear = await schoolYearService.list({schoolId: school?._id})
-    // if (schoolYear.total) {
-    //   setListSchoolYear(schoolYear.data.map((data) => ({
-    //     value: data._id,
-    //     label: data.schoolYearName,
-    //   })));
-    // }
   }
 
   const handleSubmitForm = async (data, {resetForm}) => {
@@ -170,7 +163,6 @@ const AddTeacher = () => {
               name='schoolId'
               isDisable={user?.role !== 'admin'}
               options={listSchool}
-              value={initData.school}
               onChange={(e) => {
                 onChangeSchool(e.value);
                 setFieldValue('schoolId', e.value);

@@ -64,7 +64,7 @@ const DetailStudent = () => {
   useEffect(() => {
     if (!router.isReady) return;
     loadInit();
-    return () => {};
+    return () => setMember({});
   }, [router.isReady])
 
   const loadInit = async () => {
@@ -180,7 +180,6 @@ const DetailStudent = () => {
 
   const handleSubmitForm = async (values) => {
     const {id} = router.query;
-    console.log('values', values)
     const result = memberService.updateStudent(id, values);
     if (result) {
       swal({
@@ -238,8 +237,6 @@ const DetailStudent = () => {
     }))
   };
 
-
-
   return (
     <div className="mt-8 drop-shadow-2xl overflow-x-auto lg:overflow-x-visible">
       <div className="mt-8 overflow-x-auto lg:overflow-x-visible">
@@ -294,7 +291,7 @@ const DetailStudent = () => {
                   <h3>Thông tin cá nhân</h3>
                   <Select
                     label='Tên Trường'
-                    isDisable={user.role !== 'admin'}
+                    isDisable={user?.role !== 'admin'}
                     name='schoolId'
                     onChange={e => {
                       onChangeSchool(e.value);
@@ -420,11 +417,17 @@ const DetailStudent = () => {
                 note: member && member.bodyMass ? member.bodyMass.note : '',
               }}
             >
-              {({handleChange, values,}) => (
+              {({
+                  handleChange,
+                  setFieldValue,
+                  values,
+                }) => (
                 <Form>
                   <h3>Thể trạng</h3>
+
                   <Input label='Chiều cao (cm)' name='height' useFormik onChange={handleChange} value={values.height}/>
                   <Input label='Cân nặng (kg)' name='weight' useFormik onChange={handleChange} value={values.weight}/>
+
                   <RadioGroup label='Sản khoa'>
                     <Radio name='obstetric' checked={values.obstetric === 'normal'} onChange={handleChange}
                            value='normal' labelName="Bình thường" id="obstetric-1"/>
