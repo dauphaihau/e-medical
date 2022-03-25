@@ -57,6 +57,7 @@ const UpdateStaff = () => {
   const loadInit = async () => {
     const provinces = await locationService.listProvince();
     setProvinceOptions(provinces);
+    
     const {id} = router.query;
     if (id) {
       const memberRes = await memberService.detail(id);
@@ -156,21 +157,21 @@ const UpdateStaff = () => {
         }) => (
         <Form className='form py-8'>
           <h3>Cập nhật thông tin</h3>
-          <Select
-            label='Tên trường'
-            name='schoolId'
-            options={listSchool}
-            value={initData.school && !_.isEmpty(initData.school) ? initData.school : ''}
-            onChange={(e) => {
-              setFieldValue('schoolId', e.value);
-              setInitData({
-                ...initData, ...{
-                  school: e,
-                  class: {},
-                }
-              });
-            }}
-          />
+          {/*<Select*/}
+          {/*  label='Tên trường'*/}
+          {/*  name='schoolId'*/}
+          {/*  options={listSchool}*/}
+          {/*  value={initData.school && !_.isEmpty(initData.school) ? initData.school : ''}*/}
+          {/*  onChange={(e) => {*/}
+          {/*    setFieldValue('schoolId', e.value);*/}
+          {/*    setInitData({*/}
+          {/*      ...initData, ...{*/}
+          {/*        school: e,*/}
+          {/*        class: {},*/}
+          {/*      }*/}
+          {/*    });*/}
+          {/*  }}*/}
+          {/*/>*/}
 
           <Input
             label='Họ tên'

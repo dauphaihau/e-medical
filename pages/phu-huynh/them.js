@@ -91,15 +91,15 @@ const AddParent = () => {
         }) => (
         <Form className='form py-8'>
           <h3>Thêm Phụ Huynh</h3>
-          <Select
-            label='Tên trường'
-            name='schoolId'
-            isDisable={true}
-            value={{value: school?._id, label: school?.schoolname}}
-            onChange={(e) => {
-              setFieldValue('schoolId', e.value);
-            }}
-          />
+          {/*<Select*/}
+          {/*  label='Tên trường'*/}
+          {/*  name='schoolId'*/}
+          {/*  isDisable={true}*/}
+          {/*  value={{value: school?._id, label: school?.schoolname}}*/}
+          {/*  onChange={(e) => {*/}
+          {/*    setFieldValue('schoolId', e.value);*/}
+          {/*  }}*/}
+          {/*/>*/}
           <Input
             label='Họ tên'
             name='fullName'

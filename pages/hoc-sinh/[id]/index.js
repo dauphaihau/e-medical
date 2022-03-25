@@ -38,7 +38,7 @@ const DetailStudent = () => {
   const router = useRouter();
   const [member, setMember] = useState();
   const [listSchool, setListSchool] = useState();
-  const {school} = useAuth();
+  const {school, user} = useAuth();
   const [listSchoolYear, setListSchoolYear] = useState();
   const [listGroup, setListGroup] = useState();
   const [listClass, setListClass] = useState();
@@ -64,7 +64,7 @@ const DetailStudent = () => {
   useEffect(() => {
     if (!router.isReady) return;
     loadInit();
-    return () => setMember({});
+    return () => {};
   }, [router.isReady])
 
   const loadInit = async () => {
@@ -99,7 +99,10 @@ const DetailStudent = () => {
         label: data.schoolname,
       }));
       setListSchool(schoolOpts);
+      console.log('school-opts', schoolOpts)
+      console.log('member-res-school-working-school-id', memberRes.schoolWorking.schoolId)
       const schoolSelected = _.find(schoolOpts, {value: memberRes.schoolWorking?.schoolId});
+      console.log('school-selected', schoolSelected)
 
       if (schoolSelected) {
         initDataState.school = schoolSelected;
@@ -276,6 +279,7 @@ const DetailStudent = () => {
                 classGroupId: member ? member.schoolWorking?.classGroupId : '',
                 classId: member ? member.schoolWorking?.classId : '',
                 // parent: '',
+                // schoolname: 
                 fullName: member ? member.fullName : '',
                 dateOfBirth: member ? member.dateOfBirth : '',
                 gender: member ? member.gender : 1,
@@ -289,18 +293,34 @@ const DetailStudent = () => {
                 }) => (
                 <Form>
                   <h3>Thông tin cá nhân</h3>
-                  <Select
+                  <Input
                     label='Tên Trường'
-                    isDisable={true}
+                    // isDisable={user.role !== 'admin'}
                     name='schoolId'
-                    onChange={e => {
-                      onChangeSchool(e.value);
-                      setFieldValue('schoolId', e.value);
-                      setInitData({...initData, ...{school: e}});
-                    }}
-                    value={{value: school?._id, label: school?.schoolname}}
-                    options={listSchool}
+                    // onChange={e => {
+                    //   onChangeSchool(e.value);
+                    //   setFieldValue('schoolId', e.value);
+                    //   setInitData({...initData, ...{school: e}});
+                    // }}
+                    onChange={handleChange}
+                    value={school?.schoolname}
+                    // value={{value: school?._id, label: school?.schoolname}}
+                    // options={listSchool}
                   />
+
+                  {/*<Select*/}
+                  {/*  label='Tên Trường'*/}
+                  {/*  isDisable={true}*/}
+                  {/*  name='schoolId'*/}
+                  {/*  onChange={e => {*/}
+                  {/*    onChangeSchool(e.value);*/}
+                  {/*    setFieldValue('schoolId', e.value);*/}
+                  {/*    setInitData({...initData, ...{school: e}});*/}
+                  {/*  }}*/}
+                  {/*  value={{value: school?._id, label: school?.schoolname}}*/}
+                  {/*  options={listSchool}*/}
+                  {/*/>*/}
+
                   <Select
                     label='Niên khoá'
                     name='schoolYearId'
@@ -417,17 +437,11 @@ const DetailStudent = () => {
                 note: member && member.bodyMass ? member.bodyMass.note : '',
               }}
             >
-              {({
-                  handleChange,
-                  setFieldValue,
-                  values,
-                }) => (
+              {({handleChange, values,}) => (
                 <Form>
                   <h3>Thể trạng</h3>
-
                   <Input label='Chiều cao (cm)' name='height' useFormik onChange={handleChange} value={values.height}/>
                   <Input label='Cân nặng (kg)' name='weight' useFormik onChange={handleChange} value={values.weight}/>
-
                   <RadioGroup label='Sản khoa'>
                     <Radio name='obstetric' checked={values.obstetric === 'normal'} onChange={handleChange}
                            value='normal' labelName="Bình thường" id="obstetric-1"/>
