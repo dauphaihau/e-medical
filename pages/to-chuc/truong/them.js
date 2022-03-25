@@ -61,7 +61,7 @@ const AddSchool = () => {
     }
     bodyData = {...data, ...bodyData};
     try {
-      // await schoolService.create(bodyData)
+      await schoolService.create(bodyData)
       swal({
         title: "Thêm trường thành công",
         icon: "success"

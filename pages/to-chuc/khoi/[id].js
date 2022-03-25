@@ -2,7 +2,6 @@ import {useEffect, useState} from "react";
 import {useRouter} from "next/router";
 import * as Yup from "yup";
 import swal from "sweetalert";
-import _ from "lodash";
 import {Formik, Form} from "formik";
 
 import Input from "@components/form/input";
