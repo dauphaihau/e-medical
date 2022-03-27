@@ -104,11 +104,11 @@ const Student = () => {
     }).then(async (willDelete) => {
       if (willDelete) {
         const result = await memberService.remove(id);
-        if (result) {
-          router.reload();
-        } else {
-          swal('Xóa không thành công!!', '', 'error');
-        }
+        swal({
+          title: result.message,
+          icon: result.status?"success":"error"
+        })
+          .then(() => router.reload())
       }
     });
   };

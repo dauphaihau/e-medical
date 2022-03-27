@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import {useRouter} from "next/router";
-import {Formik, Form, Field} from "formik";
+import {Formik, Form, Field, ErrorMessage} from "formik";
 import * as Yup from "yup";
 import swal from "sweetalert";
 import AsyncSelect from 'react-select/async';
@@ -21,16 +21,17 @@ const validationSchema = Yup.object().shape({
     .min(5, 'Họ tên ít nhất là 5 ký tự')
     .max(50, 'Họ tên tối đa là 50 ký tự'),
   dateOfBirth: Yup.string().required('Ngày sinh không được để trống'),
+  schoolId: Yup.string().required('Vui lòng chọn niên khóa'),
   schoolYearId: Yup.string().required('Vui lòng chọn niên khóa'),
-  parent: Yup.array().min(1, 'Vui lòng chọn phụ huynh').required('Vui lòng chọn phụ huynh'),
+  classGroupId: Yup.string().required('Vui lòng chọn niên khóa'),
   classId: Yup.string().required('Vui lòng chọn lớp.'),
+  parent: Yup.array().min(1, 'Vui lòng chọn phụ huynh').required('Vui lòng chọn phụ huynh'),
 });
 
 const AddStudent = () => {
   const router = useRouter();
   const [parents, setParents] = useState([]);
   const [listSchool, setListSchool] = useState();
-  const [school, setSchool] = useState()
   const [listSchoolYear, setListSchoolYear] = useState();
   const [listGroup, setListGroup] = useState();
   const [listClass, setListClass] = useState();
@@ -47,18 +48,7 @@ const AddStudent = () => {
   }, [router.isReady])
 
   const loadInit = async () => {
-
-    // const resSchool = await schoolService.detail();
-    // setSchool(resSchool)
-
     let initDataSelected = {};
-    // const schoolYear = await schoolYearService.list({})
-    // if (schoolYear.total) {
-    //   setListSchoolYear(schoolYear.data.map((data) => ({
-    //     value: data._id,
-    //     label: data.schoolYearName,
-    //   })));
-    // }
 
     const schools = await schoolService.list({limit: 100});
     if (schools.total) {
@@ -67,8 +57,12 @@ const AddStudent = () => {
         label: data.schoolname,
       }))
       setListSchool(schoolSelect);
-      const initSchool = _.find(schoolSelect, {value: user.schoolWorking?.schoolId});
-      initDataSelected.school = initSchool;
+      if(user?.role !== 'admin'){
+        const initSchool = _.find(schoolSelect, {value: user.schoolWorking?.schoolId});
+        initDataSelected.school = initSchool;
+        onChangeSchool(initSchool?.value);
+      }
+      
     }
     setInitData(initDataSelected)
   }
@@ -105,18 +99,11 @@ const AddStudent = () => {
 
   const handleSubmitForm = async (values) => {
     const result = await memberService.createStudent(values);
-    if (result) {
-      swal({
-        text: "Thêm mới thành công",
-        icon: "success"
-      })
-        .then(() => router.push('/hoc-sinh'));
-    } else {
-      swal({
-        text: "Thêm mới không thành công",
-        icon: "error"
-      });
-    }
+    swal({
+      title: result.message,
+      icon: result.status?"success":"error"
+    })
+      .then(() => (result.status || result.statusCode === 403) && router.push('/hoc-sinh'))
   };
 
   const loadOptions = async (inputValue) => {
@@ -149,13 +136,14 @@ const AddStudent = () => {
         onSubmit={handleSubmitForm}
         enableReinitialize
         initialValues={{
-          schoolId: user && user.role !== 'admin' && !_.isNil(user.schoolWorking?.schoolId)?user.schoolWorking.schoolId:'',
+          schoolId: initData.school?.value,
+          schoolYearId: '',
+          classGroupId: '',
           classId: '',
           parent: '',
           fullName: '',
           dateOfBirth: '',
           gender: '',
-          role: 'student'
         }}
       >
         {({
@@ -189,11 +177,11 @@ const AddStudent = () => {
               />
               <Select
                 label='Khối'
-                name='classGroup'
+                name='classGroupId'
                 useFormik
                 onChange={e => {
                   onChangeGroup(e.value);
-                  setFieldValue('classGroup', e.value)
+                  setFieldValue('classGroupId', e.value)
                 }}
                 options={listGroup}
               />
@@ -230,6 +218,9 @@ const AddStudent = () => {
                   defaultOptions
                   onChange={e => setFieldValue('parent', handleParent(e))}
                 />
+                <div className="text-danger mt-[5px]">
+                  <ErrorMessage  name='parent'/>
+                </div>
               </div>
             </div>
             {!_.isEmpty(parents) ? (
