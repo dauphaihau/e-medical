@@ -25,8 +25,9 @@ const AddSchoolYear = () => {
   });
 
   useEffect(() => {
+    if(!router.isReady) return;
     loadInit();
-  }, [])
+  }, [router.isReady])
 
   const loadInit = async () => {
     let initDataSelected = {};
@@ -45,17 +46,11 @@ const AddSchoolYear = () => {
 
   const handleSubmitForm = async (data) => {
     const result = await schoolYearService.create(data);
-    if (result.message === 'account existed') {
-      swal({
-        text: "Mỗi trường chỉ tạo được 1 niên khoá",
-        icon: "error"
-      });
-    } else {
-      swal({
-        text: "Tạo Niên Khoá thành công",
-        icon: "success"
-      }).then(() => router.push('/to-chuc/nien-khoa/'));
-    }
+    swal({
+      title: result.message,
+      icon: result.status?"success":"error"
+    })
+      .then(() => (result.status || result.statusCode === 403) && router.push('/to-chuc/nien-khoa'))
   };
 
   return (
@@ -64,7 +59,7 @@ const AddSchoolYear = () => {
       onSubmit={handleSubmitForm}
       enableReinitialize
       initialValues={{
-        schoolId: user && user.role !== 'admin' && !_.isNil(user.schoolWorking?.schoolId)?user.schoolWorking.schoolId:'',
+        schoolId: initData.school?.value,
         schoolYearName: '',
       }}
     >
@@ -78,6 +73,7 @@ const AddSchoolYear = () => {
               name='schoolId'
               options={listSchool}
               isDisable={user.role !== 'admin'}
+              value={initData.school}
               onChange={(e) => {
                 setFieldValue('schoolId', e.value);
               }}

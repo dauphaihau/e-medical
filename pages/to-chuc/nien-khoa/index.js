@@ -73,10 +73,10 @@ const SchoolYearList = () => {
     }).then(async (willDelete) => {
       if (willDelete) {
         const result = await schoolYearService.delete(id)
-        if (result) {
+        if (result.status) {
           router.reload();
         } else {
-          swal('Xóa không thành công!!', '', 'error');
+          swal(result.messages, '', 'error');
         }
       }
     });

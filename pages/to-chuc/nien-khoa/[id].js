@@ -20,9 +20,8 @@ const validationSchema = Yup.object().shape({
 const DetailSchoolYear = () => {
   const router = useRouter();
   const [schoolYear, setSchoolYear] = useState();
-  const {school, user} = useAuth();
+  const {user} = useAuth();
   const [listSchool, setListSchool] = useState();
-  const [schoolSelected, setSchoolSelected] = useState();
   const [initData, setInitData] = useState({
     school: {},
   });
@@ -37,12 +36,13 @@ const DetailSchoolYear = () => {
   const loadInit = async () => {
     const {id} = router.query;
     const schoolYear = await schoolYearService.detail(id);
-    if (schoolYear) {
-      setSchoolYear(schoolYear);
+    if (schoolYear && schoolYear.status && !_.isEmpty(schoolYear.data)) {
+      setSchoolYear(schoolYear.data);
     } else {
       swal('Thông tin này không tồn tại!!', '', 'error')
         .then(() => router.push('/to-chuc/nien-khoa/'));
     }
+
     let initDataSelected = {};
     const schools = await schoolService.list({limit: 100});
     if (schools.total) {
@@ -51,7 +51,8 @@ const DetailSchoolYear = () => {
         label: data.schoolname,
       }));
       setListSchool(schoolOptions);
-      const initSchool = _.find(schoolOptions, {value: schoolYear.schoolId});
+
+      const initSchool = _.find(schoolOptions, {value: schoolYear.data.schoolId});
       initDataSelected.school = initSchool;
       setInitData(initDataSelected)
     }

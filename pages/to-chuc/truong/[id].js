@@ -9,9 +9,9 @@ import Input from "@components/form/input";
 import Region from "@components/form/region";
 import {schoolService, locationService} from "@services";
 import {useAuth} from "../../../context/auth";
-import Select from "../../../components/form/select";
 import Link from "next/link";
 import {PencilIcon} from "@heroicons/react/outline";
+import _ from "lodash";
 
 const validationSchema = Yup.object().shape({
   schoolname: Yup.string()
@@ -37,10 +37,9 @@ const defaultSelectValue = {
 
 const UpdateSchool = () => {
   const router = useRouter();
-  const {school: schoolFormProfile, user} = useAuth();
+  const {user} = useAuth();
   const [listProvince, setListProvince] = useState([]);
   const [school, setSchool] = useState()
-  const [isAdminOrManager, setIsAdminOrManager] = useState(false)
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -53,18 +52,16 @@ const UpdateSchool = () => {
     const provinces = await locationService.listProvince();
     setListProvince(provinces);
 
-    if (user.role === 'admin' || user.role === 'manager') {
-      setIsAdminOrManager(true)
-    }
+    // if (user.role === 'admin' || user.role === 'manager') {
+    //   setIsAdminOrManager(true)
+    // }
 
-    if (id) {
-      const school = await schoolService.detail(id);
-      if (!school) {
-        swal('Truờng này không tồn tại', '', 'error')
-          .then(Router.push('/to-chuc/truong'))
-      }
-      setSchool(school);
+    const school = await schoolService.detail(id);
+    if (!school.status || _.isEmpty(school.data)) {
+      swal('Truờng này không tồn tại', '', 'error')
+        .then(Router.push('/to-chuc/truong'))
     }
+    setSchool(school.data);
   }
 
   const handleSubmitForm = async (data) => {
@@ -82,18 +79,11 @@ const UpdateSchool = () => {
     bodyData = {...data, ...bodyData};
 
     const result = await schoolService.update(id, bodyData)
-    if (result) {
-      swal({
-        title: "Cập nhật thành công",
-        icon: "success"
-      })
-        .then(() => Router.push('/to-chuc/truong'))
-    } else {
-      swal({
-        title: "Cập nhật không thành công",
-        icon: "error"
-      })
-    }
+    swal({
+      title: result.message,
+      icon: result.status?"success":"error"
+    })
+      .then(() => (result.status || result.statusCode === 403) && Router.push('/to-chuc/truong'))
   }
 
   return (
@@ -102,7 +92,7 @@ const UpdateSchool = () => {
       onSubmit={handleSubmitForm}
       enableReinitialize
       initialValues={{
-        schoolname: isAdminOrManager ? school?.schoolname : schoolFormProfile?.schoolname,
+        schoolname: school?school.schoolname:'',
         address: school ? school.address : '',
         province: school && school.province ? {
           value: school.province.code,
@@ -124,29 +114,19 @@ const UpdateSchool = () => {
       {({handleChange, values}) => (
         <Form className='form'>
           <h3>Cập nhật thông tin trường</h3>
-          {isAdminOrManager ? <>
-              <Input
-                label='Tên trường'
-                name='schoolname'
-                onChange={handleChange}
-                value={values.schoolname}
-              />
-            </>
-            : <>
-              <Select
-                label='Tên trường'
-                name='schoolId'
-                isDisable={true}
-                value={{value: schoolFormProfile?._id, label: schoolFormProfile?.schoolname}}
-              />
-            </>
-          }
+          <Input
+            label='Tên trường'
+            name='schoolname'
+            onChange={handleChange}
+            value={values.schoolname}
+            useFormik
+          />
           <Input
             label='Địa chỉ'
             name='address'
             onChange={handleChange}
             value={values.address}
-            useFormik={true}
+            useFormik
           />
           <Field
             component={Region}

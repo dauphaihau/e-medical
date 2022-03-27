@@ -9,6 +9,7 @@ import _ from 'lodash';
 import Select from "@components/form/select";
 import Input from "@components/form/input";
 import Button from "@components/button";
+import {useAuth} from "../../../context/auth";
 import {classroomService, schoolService, schoolYearService} from "@services";
 
 const validationSchema = Yup.object().shape({
@@ -16,12 +17,14 @@ const validationSchema = Yup.object().shape({
     .required('Tên lớp không được để trống')
     .min(5, 'Tên lớp ít nhất là 5 ký tự')
     .max(50, 'Tên lớp tối đa là 50 ký tự'),
+  schoolId: Yup.string().required('Vui lòng chọn khối.'),
+  schoolYearId: Yup.string().required('Vui lòng chọn khối.'),
   parentId: Yup.string().required('Vui lòng chọn khối.'),
 });
 
 const DetailClassroom = () => {
-
   const router = useRouter();
+  const {user} = useAuth();
   const [classRoom, setClassRoom] = useState();
   const [listSchool, setListSchool] = useState();
   const [listSchoolYear, setListSchoolYear] = useState();
@@ -44,11 +47,12 @@ const DetailClassroom = () => {
   useEffect(() => {
     if (!router.isReady) return;
     loadInit();
+    return () => {}
   }, [router.isReady])
 
   const loadInit = async () => {
     const {id} = router.query;
-    const cls = await classroomService.detail(id);
+    const {status, data: cls} = await classroomService.detail(id);
     const initDataState = {
       school: {
         value: "",
@@ -63,49 +67,17 @@ const DetailClassroom = () => {
         label: "",
       },
     };
-    if (cls) {
-      setClassRoom(cls);
-      const schoolYear = await schoolYearService.list({schoolId: cls.schoolId})
-      if (schoolYear.total) {
-        setListSchoolYear(schoolYear.data.map((data) => ({
-          value: data._id,
-          label: data.schoolYearName,
-        })));
-      }
-      console.log('cls', cls)
-      const clsGrp = await classroomService.listGroup({schoolYearId: cls.schoolYearId, limit: 100});
-      if (clsGrp.total) {
-        setListGroup(clsGrp.data.map((data) => ({
-          value: data._id,
-          label: data.className,
-        })));
-        console.log('list-group', listGroup)
-        const clsGroupSelected = _.find(listGroup, {value: cls.parentId});
-        console.log('cls-group-selected', clsGroupSelected)
-        if (clsGroupSelected) {
-          initDataState.classGroup = clsGroupSelected;
-        }
-      }
+
+    if( !status || !cls ){
+      swal('Thông tin này không tồn tại!!', '', 'error')
+        .then(() => router.push('/to-chuc/lop/'));
+      return
     }
 
-    // const clsGroup = await classroomService.listGroup({schoolYearId: cls.schoolYearId, limit: 100});
-    // if (clsGroup && clsGroup.total) {
-    //   const clsGroupOpt = clsGroup.data.map((data) => ({
-    //     value: data._id,
-    //     label: data.className,
-    //   }));
-    //   setListGroup(clsGroupOpt);
-    //   const clsGroupSelected = _.find(clsGroupOpt, {value: cls.parentId});
-    //   if (clsGroupSelected) {
-    //     initDataState.classGroup = clsGroupSelected;
-    //   }
-    // } else {
-    //   swal('Thông tin này không tồn tại!!', '', 'error')
-    //     .then(() => router.push('/to-chuc/lop/'));
-    // }
+    setClassRoom(cls);
 
     const schools = await schoolService.list({limit: 100});
-    if (schools.total) {
+    if (schools.status && schools.total) {
       const schoolOpts = schools.data.map((data) => ({
         value: data._id,
         label: data.schoolname,
@@ -115,7 +87,7 @@ const DetailClassroom = () => {
       if (schoolSelected) {
         initDataState.school = schoolSelected;
         const schoolYears = await schoolYearService.list({schoolId: schoolSelected.value, limit: 100})
-        if (schoolYears && schoolYears.total) {
+        if (schoolYears.status && schoolYears.total) {
           const schoolYearOpt = schoolYears.data.map((data) => ({
             value: data._id,
             label: data.schoolYearName,
@@ -143,7 +115,6 @@ const DetailClassroom = () => {
       }
       setInitData(initDataState);
     }
-
   }
 
   const handleSubmitForm = async (values) => {
@@ -160,6 +131,44 @@ const DetailClassroom = () => {
         text: "Cập nhật không thành công",
         icon: "error"
       });
+    }
+  };
+
+  const onChangeSchool = async (e) => {
+    const schoolYear = await schoolYearService.list({schoolId: e.value})
+    if (schoolYear) {
+      const schoolYearOptions = schoolYear.data.map((data) => ({
+        value: data._id,
+        label: data.schoolYearName,
+      }));
+      setListSchoolYear(schoolYearOptions);
+      setInitData({...initData, ...{
+        schoolYear: {
+          value: "",
+          label: "",
+        },
+        classGroup: {
+          value: "",
+          label: "",
+        },
+      }})
+    }
+  };
+
+  const onChangeSchoolYear = async (e) => {
+    const clsGroup = await classroomService.listGroup({schoolYearId: e.value})
+    if (clsGroup.status && clsGroup.total) {
+      const clsGroupOtps = clsGroup.data.map((data) => ({
+        value: data._id,
+        label: data.className,
+      }));
+      setListGroup(clsGroupOtps);
+      setInitData({...initData, ...{
+        classGroup: {
+          value: "",
+          label: "",
+        },
+      }})
     }
   };
 
@@ -188,23 +197,38 @@ const DetailClassroom = () => {
                 label='Tên Trường'
                 name='schoolId'
                 value={initData.school}
-                // options={listSchool}
-                isDisable={true}
+                options={listSchool}
+                isDisable={ user?.role !== 'admin' }
+                onChange={ e => {
+                  setFieldValue('schoolId', e.value);
+                  setFieldValue('schoolYearId', '');
+                  setFieldValue('parentId', '');
+                  onChangeSchool(e);
+                }}
+                useFormik
               />
               <Select
                 label='Niên khoá trường'
                 name='schoolYearId'
                 value={initData.schoolYear}
+                options={listSchoolYear}
+                useFormik
+                onChange={e => {
+                  setFieldValue('schoolYearId', e.value);
+                  setFieldValue('parentId', '');
+                  onChangeSchoolYear(e);
+                }}
               />
               <Select
                 label='Khối'
                 name='parentId'
                 onChange={e => {
-                  setInitData({...initData, ...{classGroup: e}});
                   setFieldValue('parentId', e.value);
+                  setInitData({...initData, ...{classGroup:e}})
                 }}
                 options={listGroup}
                 value={initData.classGroup}
+                useFormik
               />
               <Input
                 label='Tên lớp'
