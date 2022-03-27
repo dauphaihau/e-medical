@@ -25,8 +25,9 @@ export function AuthProvider({children}) {
         const userRes = await accountService.me();
         if (userRes) {
           if (!_.isNil(userRes.schoolWorking?.schoolId)) {
+            console.log(userRes.schoolWorking?.schoolId);
             const school = await schoolService.detail(userRes.schoolWorking.schoolId);
-            userRes.schoolWorking.schoolName = school.schoolname;
+            userRes.schoolWorking.schoolName = school.status && school.data ? school.data.schoolname : '';
           }
           setUser(userRes);
         } else {
