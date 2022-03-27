@@ -15,7 +15,10 @@ import {useAuth} from "../../../context/auth";
 
 const phoneRegExp = /(([03+[2-9]|05+[6|8|9]|07+[0|6|7|8|9]|08+[1-9]|09+[1-4|6-9]]){3})+[0-9]{7}\b/
 const validationSchema = Yup.object().shape({
-  classId: Yup.string().required(),
+  schoolId: Yup.string().required('Trường không được để trống'),
+  schoolYearId: Yup.string().required('Niên khoá không được để trống'),
+  classGroupId: Yup.string().required('Khối không được để trống'),
+  classId: Yup.string().required('Lớp không được để trống'),
   fullName: Yup.string()
     .min(5, 'Tên trường ít nhất là 5 ký tự')
     .max(50, 'Tên trường tối đa là 50 ký tự')
@@ -38,7 +41,6 @@ const UpdateTeacher = () => {
   const [listGroup, setListGroup] = useState();
   const [listClass, setListClass] = useState([]);
   const [provinceOptions, setProvinceOptions] = useState([]);
-  const [addType, setAddType] = useState();
   const [initData, setInitData] = useState({
     school: {},
     schoolYear: {},
@@ -51,13 +53,8 @@ const UpdateTeacher = () => {
 
   useEffect(() => {
     if (!router.isReady) return;
-    let abortController = new AbortController();
-
-    if (router.pathname.includes('giao-vien')) {
-      setAddType('giao-vien');
-    }
     loadInit();
-    return () => abortController.abort();
+    return () => {}
   }, [router.isReady]);
 
   const loadInit = async () => {
@@ -65,92 +62,93 @@ const UpdateTeacher = () => {
     setProvinceOptions(provinces);
 
     const {id} = router.query;
-    if (id) {
-      const memberRes = await memberService.detail(id);
-      setMember(memberRes);
+    const {status, data: memberRes} = await memberService.detail(id);
+    if(!status || !memberRes){
+      router.push('/nhan-su/giao-vien/');
+      return;
+    }
+    setMember(memberRes);
 
-      let initDataSelected = {};
-      if (memberRes && !_.isEmpty(memberRes) && memberRes.province !== undefined) {
-        initDataSelected.province = _.find(provinces, (o) => o.code === memberRes.province.code);
-        if (memberRes.district !== undefined) {
-          const districts = await locationService.listDistrict(memberRes.province.code);
-          initDataSelected.district = _.find(districts, (o) => o.code === memberRes.district.code);
-          if (memberRes.ward !== undefined) {
-            const wards = await locationService.listWard(memberRes.district.code);
-            initDataSelected.ward = _.find(wards, (o) => o.code === memberRes.ward.code);
-          }
+    let initDataSelected = {};
+    if (memberRes && !_.isEmpty(memberRes) && memberRes.province !== undefined) {
+      initDataSelected.province = _.find(provinces, (o) => o.code === memberRes.province.code);
+      if (memberRes.district !== undefined) {
+        const districts = await locationService.listDistrict(memberRes.province.code);
+        initDataSelected.district = _.find(districts, (o) => o.code === memberRes.district.code);
+        if (memberRes.ward !== undefined) {
+          const wards = await locationService.listWard(memberRes.district.code);
+          initDataSelected.ward = _.find(wards, (o) => o.code === memberRes.ward.code);
         }
       }
-      setMember(memberRes);
+    }
 
-      const schools = await schoolService.list({limit: 20});
-      if (schools.total) {
-        const schoolSelect = schools.data.map((data) => ({
-          value: data._id,
-          label: data.schoolname,
-        }));
-        setListSchool(schoolSelect);
-        const initSchool = _.find(schoolSelect, {value: memberRes.schoolWorking?.schoolId});
-        initDataSelected.school = initSchool;
+    const schools = await schoolService.list({limit: 100});
+    if (schools.total) {
+      const schoolSelect = schools.data.map((data) => ({
+        value: data._id,
+        label: data.schoolname,
+      }));
+      setListSchool(schoolSelect);
+      const initSchool = _.find(schoolSelect, {value: memberRes.schoolWorking[0]?.schoolId});
+      initDataSelected.school = initSchool;
 
-        if (initSchool && !_.isEmpty(initSchool)) {
-          const schoolYears = await schoolYearService.list({schoolId: initSchool.value});
-          if (schoolYears && schoolYears.total) {
-            const schoolYearSelect = schoolYears.data.map((data) => ({
-              value: data._id,
-              label: data.schoolYearName,
-            }));
-            setListSchoolYear(schoolYearSelect);
+      if (initSchool && !_.isEmpty(initSchool)) {
+        const schoolYears = await schoolYearService.list({schoolId: initSchool.value});
+        if (schoolYears && schoolYears.total) {
+          const schoolYearSelect = schoolYears.data.map((data) => ({
+            value: data._id,
+            label: data.schoolYearName,
+          }));
+          setListSchoolYear(schoolYearSelect);
 
-            const initYear = _.find(schoolYearSelect, {value: memberRes.schoolWorking?.schoolYearId});
-            initDataSelected.schoolYear = initYear;
+          const initYear = _.find(schoolYearSelect, {value: memberRes.schoolWorking[0]?.schoolYearId});
+          initDataSelected.schoolYear = initYear;
 
-            if (!_.isEmpty(initYear)) {
-              const clsGroup = await classroomService.listGroup({
-                schoolYearId: memberRes.schoolWorking?.schoolYearId,
-                limit: 100
-              });
-              if (clsGroup && clsGroup.total) {
-                const clsGroupOpt = clsGroup.data.map((data) => ({
-                  value: data._id,
-                  label: data.className,
-                }));
-                setListGroup(clsGroupOpt);
-                const clsGroupSelected = _.find(clsGroupOpt, {value: memberRes.schoolWorking?.classGroupId});
-                if (clsGroupSelected) {
-                  initDataSelected.classGroup = clsGroupSelected;
+          if (!_.isEmpty(initYear)) {
+            const clsGroup = await classroomService.listGroup({
+              schoolYearId: memberRes.schoolWorking?.schoolYearId,
+              limit: 100
+            });
+            if (clsGroup && clsGroup.total) {
+              const clsGroupOpt = clsGroup.data.map((data) => ({
+                value: data._id,
+                label: data.className,
+              }));
+              setListGroup(clsGroupOpt);
+              const clsGroupSelected = _.find(clsGroupOpt, {value: memberRes.schoolWorking[0]?.classGroupId});
+              if (clsGroupSelected) {
+                initDataSelected.classGroup = clsGroupSelected;
 
-                  const listCls = await classroomService.list({parentId: clsGroupSelected.value})
-                  if (listCls && listCls.total) {
-                    const listClsOpt = listCls.data.map((data) => ({
-                      value: data._id,
-                      label: data.className,
-                    }));
-                    setListClass(listClsOpt);
-                    const clsSelected = _.find(listClsOpt, {value: memberRes.schoolWorking?.classId});
-                    initDataSelected.class = clsSelected;
-                  }
+                const listCls = await classroomService.list({parentId: clsGroupSelected.value})
+                if (listCls && listCls.total) {
+                  const listClsOpt = listCls.data.map((data) => ({
+                    value: data._id,
+                    label: data.className,
+                  }));
+                  setListClass(listClsOpt);
+                  const clsSelected = _.find(listClsOpt, {value: memberRes.schoolWorking[0]?.classId});
+                  initDataSelected.class = clsSelected;
                 }
               }
             }
           }
         }
       }
-      setInitData(initDataSelected);
-    } else {
-      Router.push('/nhan-su/giao-vien/');
     }
+    setInitData(initDataSelected);
+    // } else {
+    //   Router.push('/nhan-su/giao-vien/');
+    // }
   }
 
   const handleSubmitForm = async (data) => {
     const {id} = router.query;
-    try {
-      await memberService.update(id, data);
-      swal('Cập nhật thành công', '', 'success')
-        .then(() => Router.push('/nhan-su/giao-vien/'));
-    } catch (error) {
-      swal('Cập nhật không thành công.', 'Vui lòng thử lại.', 'error');
-    }
+    const result = await memberService.update(id, data);
+    swal({
+      title: result.message,
+      icon: result.status?"success":"error"
+    })
+      .then(() => (result.status || result.statusCode === 403) && router.push('/nhan-su/giao-vien'))
   };
 
   const onChangeSchool = async (idSchool) => {
@@ -190,10 +188,10 @@ const UpdateTeacher = () => {
       onSubmit={handleSubmitForm}
       enableReinitialize
       initialValues={{
-        schoolId: member && member.schoolWorking.schoolId,
-        schoolYearId: member && member.schoolWorking.schoolYearId,
-        classGroupId: member && member.schoolWorking.classGroupId,
-        classId: member && member.schoolWorking.classId,
+        schoolId: member && member.schoolWorking[0]?.schoolId,
+        schoolYearId: member && member.schoolWorking[0]?.schoolYearId,
+        classGroupId: member && member.schoolWorking[0]?.classGroupId,
+        classId: member && member.schoolWorking[0]?.classId,
         fullName: member?.fullName ?? '',
         address: member?.address ?? '',
         phoneNumber: member?.phoneNumber ?? '',

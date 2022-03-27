@@ -12,9 +12,9 @@ import Select from "@components/form/select";
 import Region from "@components/form/region";
 import {useAuth} from "../../../context/auth";
 
-const phoneRegExp = /(([03+[2-9]|05+[6|8|9]|07+[0|6|7|8|9]|08+[1-9]|09+[1-4|6-9]]){3})+[0-9]{7}\b/
+const phoneRegExp = /^[+|0]?\d+$/;
 const validationSchema = Yup.object().shape({
-  schoolId: Yup.string().required(),
+  schoolId: Yup.string().required("Trường không được để trống"),
   fullName: Yup.string()
     .min(5, 'Tên trường ít nhất là 5 ký tự')
     .max(50, 'Tên trường tối đa là 50 ký tự')
@@ -44,19 +44,28 @@ const AddStaff = () => {
   }, [router.isReady]);
 
   const loadInit = async () => {
+    let initDataSelected = {};
     const provinces = await locationService.listProvince();
     setListProvince(provinces);
     const schools = await schoolService.list({limit:20});
     if(schools.total){
-      setListSchool(schools.data.map((data) => ({
+      const schoolSelect = schools.data.map((data) => ({
         value: data._id,
         label: data.schoolname,
-      })));
+      }))
+      setListSchool(schoolSelect);
+
+      if(user && user?.role !== 'admin'){
+        const initSchool = _.find(schoolSelect, {value: user?.schoolWorking[0]?.schoolId});
+        if(initSchool){
+          initDataSelected.school = initSchool;
+        }
+      }
     }
+    setInitData(initDataSelected);
   }
 
   const handleSubmitForm = async (data, {resetForm}) => {
-    console.log('data', data)
     //format data
     let bodyData = {};
     if(data.province && !_.isEmpty(data.province)){
@@ -71,13 +80,11 @@ const AddStaff = () => {
     bodyData = {...data, ...bodyData};
 
     const result = await memberService.createStaff(bodyData);
-    if(result){
-      swal('Cập nhật thành công', '', 'success')
-        .then(() => Router.push('/nhan-su/nhan-vien/'));
-    }
-    else {
-      swal('Cập nhật không thành công', '', 'error');
-    }
+    swal({
+      title: result.message,
+      icon: result.status?"success":"error"
+    })
+      .then(() => (result.status || result.statusCode === 403) && router.push('/nhan-su/nhan-vien'))
   };
 
   return (
@@ -87,7 +94,7 @@ const AddStaff = () => {
       onSubmit={handleSubmitForm}
       enableReinitialize
       initialValues={{
-        schoolId: user && user.role !== 'admin' && !_.isNil(user.schoolWorking?.schoolId)?user.schoolWorking.schoolId:'',
+        schoolId: initData.school?.value,
         fullName: '',
         address: '',
         phoneNumber: '',
@@ -114,6 +121,7 @@ const AddStaff = () => {
               setFieldValue('schoolId', e.value);
               setInitData({...initData, school: e})
             }}
+            useFormik
           />
           <Input
             label='Họ tên'

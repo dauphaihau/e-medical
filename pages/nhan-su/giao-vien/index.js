@@ -120,11 +120,11 @@ const Teacher = () => {
     }).then(async (willDelete) => {
       if (willDelete) {
         const result = await memberService.remove(id);
-        if (result) {
-          router.reload();
-        } else {
-          swal('Xóa không thành công!!', '', 'error');
-        }
+        swal({
+          title: result.message,
+          icon: result.status?"success":"error"
+        })
+          .then(() => router.reload())
       }
     });
   };
@@ -217,7 +217,7 @@ const Teacher = () => {
                         <td>{idz + 1}</td>
                         <td>{row.fullName}</td>
                         <td>{row.phoneNumber}</td>
-                        <td>{(row.schoolWorking) ? row.schoolWorking?.className : ''}</td>
+                        <td>{(row.schoolWorking) ? row.schoolWorking[0]?.className : ''}</td>
                         <td className='text-center'>
                           <Link href={router.pathname + '/' + row._id}>
                                <a><PencilIcon className='h-5 w-5 inline'/></a>

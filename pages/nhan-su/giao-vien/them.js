@@ -14,6 +14,7 @@ import {useAuth} from "../../../context/auth";
 
 const phoneRegExp = /(([03+[2-9]|05+[6|8|9]|07+[0|6|7|8|9]|08+[1-9]|09+[1-4|6-9]]){3})+[0-9]{7}\b/
 const validationSchema = Yup.object().shape({
+  schoolId: Yup.string().required('Trường không được để trống'),
   schoolYearId: Yup.string().required('Niên khoá không được để trống'),
   classGroupId: Yup.string().required('Khối không được để trống'),
   classId: Yup.string().required('Lớp không được để trống'),
@@ -30,11 +31,6 @@ const validationSchema = Yup.object().shape({
   ward: Yup.object().shape({}),
 });
 
-const labelAddType = {
-  'giao-vien': 'Giáo Viên',
-  'nhan-vien': 'Nhân viên',
-};
-
 const AddTeacher = () => {
   const router = useRouter();
   const [listSchool, setListSchool] = useState();
@@ -43,16 +39,12 @@ const AddTeacher = () => {
   const [listClass, setListClass] = useState();
   const [listProvince, setListProvince] = useState();
   const {user} = useAuth();
-  const [addType, setAddType] = useState();
   const [initData, setInitData] = useState({
     school: {},
   });
 
   useEffect(() => {
     if (!router.isReady) return;
-    if (router.pathname.includes('giao-vien')) {
-      setAddType('giao-vien');
-    }
     loadInit();
     return () => {};
   }, [router.isReady]);
@@ -69,11 +61,14 @@ const AddTeacher = () => {
         label: data.schoolname,
       }))
       setListSchool(schoolSelect);
-      const initSchool = _.find(schoolSelect, {value: user.schoolWorking?.schoolId});
-      if(initSchool){
-        initDataSelected.school = initSchool;
-        onChangeSchool(initSchool.value)
+      if(user && user?.role !== 'admin'){
+        const initSchool = _.find(schoolSelect, {value: user?.schoolWorking[0]?.schoolId});
+        if(initSchool){
+          initDataSelected.school = initSchool;
+          onChangeSchool(initSchool.value)
+        }
       }
+      
     }
     setInitData(initDataSelected);
   }
@@ -91,16 +86,14 @@ const AddTeacher = () => {
       bodyData.ward = {code: data.ward.code, wardName: data.ward.label}
     }
     bodyData = {...data, ...bodyData};
-    console.log('body-data', bodyData)
 
     const result = await memberService.createTeacher(bodyData);
-    if (result) {
-      console.log('result', result);
-      swal('Cập nhật thành công', '', 'success')
-        .then(() => Router.push('/nhan-su/giao-vien/'));
-    } else {
-      swal('Cập nhật không thành công', '', 'error');
-    }
+    swal({
+      title: result.message,
+      icon: result.status?"success":"error"
+    })
+      .then(() => (result.status || result.statusCode === 403) && router.push('/nhan-su/giao-vien'))
+    
   };
 
   const onChangeSchool = async (idSchool) => {
@@ -140,7 +133,7 @@ const AddTeacher = () => {
       onSubmit={handleSubmitForm}
       enableReinitialize
       initialValues={{
-        schoolId: user && user.role !== 'admin' && !_.isNil(user.schoolWorking?.schoolId)?user.schoolWorking.schoolId:'',
+        schoolId: initData.school?.value,
         schoolYearId: '',
         classGroupId: '',
         classId: '',
@@ -150,7 +143,6 @@ const AddTeacher = () => {
         province: {},
         district: {},
         ward: {},
-        role: 'teacher',
       }}
     >
       {({
@@ -159,17 +151,19 @@ const AddTeacher = () => {
           setFieldValue,
         }) => (
         <Form className='form py-8'>
-          <h3>Thêm {labelAddType[addType]}</h3>
+          <h3>Thêm Giáo Viên</h3>
           <div className='grid lg:grid-cols-2 gap-x-4'>
             <Select
               label='Tên trường'
               name='schoolId'
               isDisable={user?.role !== 'admin'}
               options={listSchool}
+              value={initData.school}
               onChange={(e) => {
                 onChangeSchool(e.value);
                 setFieldValue('schoolId', e.value);
               }}
+              useFormik
             />
             <Select
               label='Niên khoá'

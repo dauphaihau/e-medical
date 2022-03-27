@@ -55,7 +55,7 @@ const Manager = () => {
     const provinces = await locationService.listProvince();
     setProvinceOptions(provinces);
 
-    if (user.role === 'admin') {
+    if (user && user?.role === 'admin') {
       const schools = await schoolService.list({limit: 100});
       if (schools.total) {
         const schoolOptions = schools.data.map((data) => ({
@@ -114,11 +114,11 @@ const Manager = () => {
     }).then(async (willDelete) => {
       if (willDelete) {
         const result = await memberService.remove(id);
-        if (result) {
-          router.reload();
-        } else {
-          swal('Xóa không thành công!!', '', 'error');
-        }
+        swal({
+          title: result.message,
+          icon: result.status?"success":"error"
+        })
+          .then(() => (result.status || result.statusCode === 403) && router.reload())
       }
     });
   };
@@ -190,7 +190,7 @@ const Manager = () => {
             }}
             options={wardOptions}
           />
-          {user.role === 'admin' &&
+          {user && user?.role === 'admin' &&
             <>
               <Select
                 label='Tên trường'

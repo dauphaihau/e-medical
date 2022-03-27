@@ -12,8 +12,9 @@ import Select from "@components/form/select";
 import Region from "@components/form/region";
 import {useAuth} from "../../../context/auth";
 
-const phoneRegExp = /(([03+[2-9]|05+[6|8|9]|07+[0|6|7|8|9]|08+[1-9]|09+[1-4|6-9]]){3})+[0-9]{7}\b/
+const phoneRegExp = /^[+|0]?\d+$/;
 const validationSchema = Yup.object().shape({
+  schoolId: Yup.string().required("Trường không được để trống"),
   fullName: Yup.string()
     .min(5, 'Tên trường ít nhất là 5 ký tự')
     .max(50, 'Tên trường tối đa là 50 ký tự')
@@ -21,7 +22,7 @@ const validationSchema = Yup.object().shape({
   phoneNumber: Yup.string()
     .required('Vui lòng nhập số điện thoại')
     .matches(phoneRegExp, 'Số điện thoại không hợp lệ'),
-  address: Yup.string().required('Địa chỉ không được để trống'),
+  // address: Yup.string().required('Địa chỉ không được để trống'),
   province: Yup.object().shape({}),
   district: Yup.object().shape({}),
   ward: Yup.object().shape({}),
@@ -54,8 +55,10 @@ const AddManager = () => {
         label: data.schoolname,
       }))
       setListSchool(schoolSelect);
-      const initSchool = _.find(schoolSelect, {value: user.schoolWorking?.schoolId});
-      initDataSelected.school = initSchool;
+      if(user && user?.role !== 'admin'){
+        const initSchool = _.find(schoolSelect, {value: user.schoolWorking[0]?.schoolId});
+        initDataSelected.school = initSchool;
+      }
     }
     setInitData(initDataSelected);
   }
@@ -76,13 +79,11 @@ const AddManager = () => {
     console.log('body-data', bodyData)
 
     const result = await memberService.createManager(bodyData);
-    if(result){
-      swal('Cập nhật thành công', '', 'success')
-        .then(() => Router.push('/nhan-su/can-bo/'));
-    }
-    else {
-      swal('Cập nhật không thành công', '', 'error');
-    }
+    swal({
+      title: result.message,
+      icon: result.status?"success":"error"
+    })
+      .then(() => (result.status || result.statusCode === 403) && router.push('/nhan-su/can-bo'))
   };
 
   return (
@@ -92,7 +93,7 @@ const AddManager = () => {
       onSubmit={handleSubmitForm}
       enableReinitialize
       initialValues={{
-        schoolId: user && user.role !== 'admin' && !_.isNil(user.schoolWorking?.schoolId)?user.schoolWorking.schoolId:'',
+        schoolId: initData.school?.value,
         fullName: '',
         address: '',
         phoneNumber: '',
@@ -112,11 +113,13 @@ const AddManager = () => {
           <Select
             label='Tên trường'
             name='schoolId'
-            isDisable={user?.role !== 'admin'}
+            isDisable={user && user?.role !== 'admin'}
             options={listSchool}
             onChange={(e) => {
               setFieldValue('schoolId', e.value);
             }}
+            value={initData.school}
+            useFormik
           />
           <Input
             label='Họ tên'

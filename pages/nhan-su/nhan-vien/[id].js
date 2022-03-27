@@ -16,6 +16,7 @@ import {locationService} from "../../../services";
 
 const phoneRegExp = /(([03+[2-9]|05+[6|8|9]|07+[0|6|7|8|9]|08+[1-9]|09+[1-4|6-9]]){3})+[0-9]{7}\b/
 const validationSchema = Yup.object().shape({
+  schoolId: Yup.string().required("Trường không được để trống"),
   fullName: Yup.string()
     .min(5, 'Tên trường ít nhất là 5 ký tự')
     .max(50, 'Tên trường tối đa là 50 ký tự')
@@ -56,36 +57,38 @@ const UpdateStaff = () => {
     const provinces = await locationService.listProvince();
     setProvinceOptions(provinces);
     const {id} = router.query;
-    if (id) {
-      const memberRes = await memberService.detail(id);
-      let initDataSelected = {};
-      if (memberRes && !_.isEmpty(memberRes) && memberRes.province !== undefined) {
-        initDataSelected.province = _.find(provinces, (o) => o.code === memberRes.province.code);
-        if (memberRes.district !== undefined) {
-          const districts = await locationService.listDistrict(memberRes.province.code);
-          initDataSelected.district = _.find(districts, (o) => o.code === memberRes.district.code);
-          if (memberRes.ward !== undefined) {
-            const wards = await locationService.listWard(memberRes.district.code);
-            initDataSelected.ward = _.find(wards, (o) => o.code === memberRes.ward.code);
-          }
+    
+    const {status, data: memberRes} = await memberService.detail(id);
+    if(!status || !memberRes){
+      router.push('/nhan-su/nhan-vien/');
+      return;
+    }
+    setMember(memberRes);
+    let initDataSelected = {};
+    if (memberRes && !_.isEmpty(memberRes) && memberRes.province !== undefined) {
+      initDataSelected.province = _.find(provinces, (o) => o.code === memberRes.province.code);
+      if (memberRes.district !== undefined) {
+        const districts = await locationService.listDistrict(memberRes.province.code);
+        initDataSelected.district = _.find(districts, (o) => o.code === memberRes.district.code);
+        if (memberRes.ward !== undefined) {
+          const wards = await locationService.listWard(memberRes.district.code);
+          initDataSelected.ward = _.find(wards, (o) => o.code === memberRes.ward.code);
         }
       }
-
-      const schools = await schoolService.list({limit: 20});
-      if (schools.total) {
-        const schoolSelect = schools.data.map((data) => ({
-          value: data._id,
-          label: data.schoolname,
-        }));
-        setListSchool(schoolSelect);
-        const initSchool = _.find(schoolSelect, {value: memberRes.schoolWorking?.schoolId});
-        initDataSelected.school = initSchool;
-      }
-      setInitData(initDataSelected);
-      setMember(memberRes);
-    } else {
-      Router.push('/nhan-su/nhan-vien/');
     }
+
+    const schools = await schoolService.list({limit: 20});
+    if (schools.total) {
+      const schoolSelect = schools.data.map((data) => ({
+        value: data._id,
+        label: data.schoolname,
+      }));
+      setListSchool(schoolSelect);
+      const initSchool = _.find(schoolSelect, {value: memberRes.schoolWorking[0]?.schoolId});
+      initDataSelected.school = initSchool;
+    }
+    setInitData(initDataSelected);
+    
   }
 
 
@@ -102,15 +105,13 @@ const UpdateStaff = () => {
       bodyData.ward = {code: data.ward.code, wardName: data.ward.label}
     }
     bodyData = {...data, ...bodyData};
-    console.log('body-data', bodyData)
 
-    try {
-      await memberService.update(id, bodyData);
-      swal('Cập nhật thành công', '', 'success')
-        .then(() => Router.push('/nhan-su/nhan-vien/'));
-    } catch (error) {
-      swal('Cập nhật không thành công.', 'Vui lòng thử lại.', 'error');
-    }
+    const result = await memberService.update(id, bodyData);
+    swal({
+      title: result.message,
+      icon: result.status?"success":"error"
+    })
+      .then(() => (result.status || result.statusCode === 403) && router.push('/nhan-su/nhan-vien'))
   };
 
   return (
@@ -120,7 +121,7 @@ const UpdateStaff = () => {
       onSubmit={handleSubmitForm}
       enableReinitialize
       initialValues={{
-        schoolId: member && member.schoolWorking.schoolId,
+        schoolId: member && member.schoolWorking[0]?.schoolId,
         fullName: member?.fullName ?? '',
         address: member?.address ?? '',
         phoneNumber: member?.phoneNumber ?? '',
@@ -184,19 +185,14 @@ const UpdateStaff = () => {
               options={[
                 {value: 'staff', label: 'Nhân viên'},
                 {value: 'manager', label: 'Cán bộ quản lý'},
-              ].filter((option) => {
-                if (user.role === 'manager' || user.role === 'admin') {
-                  return option
-                }
-                return option.value === 'staff'
-              })}
+              ]}
               onChange={(e) => {
                 setFieldValue('role', e.value);
               }}
               defaultValue={{value: 'staff', label: 'Nhân viên'}}
             />
           </div>
-          {user.role === 'staff'
+          {user && user?.role === 'staff'
             ? <Link href={'/nhan-su/nhan-vien/'}><a><Button type='submit' className='mr-4'>Quay lại</Button></a></Link>
             : <Button type='submit' className='mr-4'>Cập nhật</Button>
           }
