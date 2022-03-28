@@ -129,7 +129,7 @@ const DetailGroup = () => {
             <Select
               label='Tên trường'
               name='schoolId'
-              isDisable={user?.role !== 'admin'}
+              isDisable={user && user?.role !== 'admin'}
               value={initData.school}
               options={listSchool}
               useFormik

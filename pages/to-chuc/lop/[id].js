@@ -198,7 +198,7 @@ const DetailClassroom = () => {
                 name='schoolId'
                 value={initData.school}
                 options={listSchool}
-                isDisable={ user?.role !== 'admin' }
+                isDisable={user && user?.role !== 'admin' }
                 onChange={ e => {
                   setFieldValue('schoolId', e.value);
                   setFieldValue('schoolYearId', '');

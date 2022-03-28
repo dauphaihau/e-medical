@@ -135,7 +135,7 @@ const UpdateSchool = () => {
             districtSelected={values.district}
             wardSelected={values.ward}
           />
-          {user.role !== 'staff'
+          {user && user.role !== 'staff'
             ? <Button type='submit' className='mr-4'>Cập nhật</Button>
             : <Link href={'/to-chuc/truong/'}>
               <a><Button type='submit' className='mr-4'>Trở lại</Button></a>

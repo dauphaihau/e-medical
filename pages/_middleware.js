@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import {useAuth} from "../context/auth";
-import {MENU} from "../constants";
+// import {useAuth} from "../context/auth";
+// import {MENU} from "../constants";
 
 export function middleware(req) {
 

@@ -112,7 +112,7 @@ const AddClassroom = () => {
               <Select
                 label='Tên Trường'
                 name='schoolId'
-                isDisable={user.role !== 'admin'}
+                isDisable={user && user?.role !== 'admin'}
                 options={listSchool}
                 value={initData.school}
                 onChange={(e) => {
