@@ -110,7 +110,7 @@ const UpdateStaff = () => {
       title: result.message,
       icon: result.status?"success":"error"
     })
-      // .then(() => (result.status || result.statusCode === 403) && Router.push('/phu-huynh'))
+      .then(() => (result.status || result.statusCode === 403) && Router.push('/phu-huynh'))
   };
 
   return (
