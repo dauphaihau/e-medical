@@ -164,7 +164,8 @@ const AddTeacher = () => {
             <Select
               label='Tên trường'
               name='schoolId'
-              isDisable={user?.role !== 'admin'}
+              isDisable={user?.role !== 'admin' && user?.role !== 'manager'}
+              value={user.role !== 'admin' && {value: user.schoolWorking?.schoolId, label: user.schoolWorking?.schoolName}}
               options={listSchool}
               onChange={(e) => {
                 onChangeSchool(e.value);

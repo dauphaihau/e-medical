@@ -168,7 +168,7 @@ const AddStudent = () => {
               <Select
                 label='Tên Trường'
                 name='schoolId'
-                isDisable={user?.role !== 'admin'}
+                isDisable={user?.role !== 'admin' && user?.role !== 'manager'}
                 value={initData.school}
                 onChange={e => {
                   onChangeSchool(e.value);

@@ -75,7 +75,6 @@ const AddParent = () => {
       bodyData.ward = {code: data.ward.code, wardName: data.ward.label}
     }
     bodyData = {...data, ...bodyData};
-    console.log('body-data', bodyData)
     const result = await memberService.createParent(bodyData);
     if(result){
       swal('Thêm thành công', '', 'success')
@@ -113,7 +112,7 @@ const AddParent = () => {
           <Select
             label='Tên trường'
             name='schoolId'
-            isDisable={user?.role !== 'admin'}
+            isDisable={user?.role !== 'admin' && user?.role !== 'manager'}
             options={listSchool}
             onChange={(e) => {
               setFieldValue('schoolId', e.value);

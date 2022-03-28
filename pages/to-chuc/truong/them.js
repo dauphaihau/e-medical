@@ -11,10 +11,10 @@ import { schoolService, locationService } from "@services";
 import {useAuth} from "../../../context/auth";
 
 const validationSchema = Yup.object().shape({
-  schoolname: Yup.string()
-    .min(5, 'Tên trường ít nhất là 5 ký tự')
-    .max(50, 'Tên trường tối đa là 50 ký tự')
-    .required('Tên người dùng không được để trống'),
+  // schoolname: Yup.string()
+  //   .min(5, 'Tên trường ít nhất là 5 ký tự')
+  //   .max(50, 'Tên trường tối đa là 50 ký tự')
+  //   .required('Tên người dùng không được để trống'),
   address: Yup.string().required('Địa chỉ không được để trống'),
   province: Yup.object().shape({
     value: Yup.string().required('Vui lòng chọn tỉnh/thành'),
@@ -29,7 +29,7 @@ const validationSchema = Yup.object().shape({
 
 const AddSchool = () => {
   const router = useRouter();
-  const {school, user} = useAuth();
+  const {user} = useAuth();
   const [listProvince, setListProvince] = useState([]);
 
   useEffect(() => {
@@ -72,7 +72,7 @@ const AddSchool = () => {
       onSubmit={handleSubmitForm}
       enableReinitialize
       initialValues={{
-        schoolname: school?._id || '',
+        schoolname: user.role === 'admin' ? '' : user.schoolWorking?.schoolname,
         address: '',
         province: {},
         district: {},
@@ -85,8 +85,9 @@ const AddSchool = () => {
           <Input
             label='Tên trường'
             name='schoolname'
-            disable={user.role !== 'admin'}
-            value={school?.schoolname}
+            onChange={handleChange}
+            disable={user?.role !== 'admin'}
+            value={values.schoolname}
           />
           <Input
             label='Địa chỉ'

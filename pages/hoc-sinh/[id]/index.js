@@ -291,7 +291,7 @@ const DetailStudent = () => {
                   <h3>Thông tin cá nhân</h3>
                   <Select
                     label='Tên Trường'
-                    isDisable={user?.role !== 'admin'}
+                    isDisable={user?.role !== 'admin' && user?.role !== 'admin'}
                     name='schoolId'
                     onChange={e => {
                       onChangeSchool(e.value);
@@ -311,7 +311,7 @@ const DetailStudent = () => {
                     }}
                     options={listSchoolYear}
                     value={initData.schoolYear}
-                    useFormik='true'
+                    useFormik
                   />
                   <Select
                     label='Khối'
@@ -419,15 +419,12 @@ const DetailStudent = () => {
             >
               {({
                   handleChange,
-                  setFieldValue,
                   values,
                 }) => (
                 <Form>
                   <h3>Thể trạng</h3>
-
                   <Input label='Chiều cao (cm)' name='height' useFormik onChange={handleChange} value={values.height}/>
                   <Input label='Cân nặng (kg)' name='weight' useFormik onChange={handleChange} value={values.weight}/>
-
                   <RadioGroup label='Sản khoa'>
                     <Radio name='obstetric' checked={values.obstetric === 'normal'} onChange={handleChange}
                            value='normal' labelName="Bình thường" id="obstetric-1"/>

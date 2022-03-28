@@ -129,7 +129,7 @@ const UpdateStaff = () => {
             name='schoolId'
             options={listSchool}
             value={initData.school && !_.isEmpty(initData.school) ? initData.school : ''}
-            isDisable={user?.role !== 'admin'}
+            isDisable={user?.role !== 'admin' && user?.role !== 'manager'}
             onChange={(e) => {
               setFieldValue('schoolId', e.value);
               setInitData({

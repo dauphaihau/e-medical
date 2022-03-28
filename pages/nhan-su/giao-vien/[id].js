@@ -38,7 +38,6 @@ const UpdateTeacher = () => {
   const [listGroup, setListGroup] = useState();
   const [listClass, setListClass] = useState([]);
   const [provinceOptions, setProvinceOptions] = useState([]);
-  const [addType, setAddType] = useState();
   const [initData, setInitData] = useState({
     school: {},
     schoolYear: {},
@@ -51,13 +50,8 @@ const UpdateTeacher = () => {
 
   useEffect(() => {
     if (!router.isReady) return;
-    let abortController = new AbortController();
-
-    if (router.pathname.includes('giao-vien')) {
-      setAddType('giao-vien');
-    }
     loadInit();
-    return () => abortController.abort();
+    return () => {};
   }, [router.isReady]);
 
   const loadInit = async () => {
@@ -197,9 +191,9 @@ const UpdateTeacher = () => {
         fullName: member?.fullName ?? '',
         address: member?.address ?? '',
         phoneNumber: member?.phoneNumber ?? '',
-        province: initData.province,
-        district: initData.district,
-        ward: initData.ward,
+        province: initData.province || {},
+        district: initData.district || {},
+        ward: initData.ward || {},
       }}
     >
       {({
@@ -213,8 +207,7 @@ const UpdateTeacher = () => {
             <Select
               label='Tên trường'
               name='schoolId'
-              isDisable={user?.role !== 'admin'}
-              options={listSchool}
+              isDisable={user?.role !== 'admin' && user?.role !== 'manager'}
               value={initData.school}
               onChange={(e) => {
                 onChangeSchool(e.value);
@@ -236,15 +229,21 @@ const UpdateTeacher = () => {
               }}
               options={listSchoolYear}
               value={initData.schoolYear && !_.isEmpty(initData.schoolYear) ? initData.schoolYear : ''}
-              useFormik='true'
+              useFormik
             />
             <Select
               label='Khối'
               name='classGroupId'
-              useFormik='true'
+              useFormik
               onChange={e => {
                 onChangeGroup(e.value);
                 setFieldValue('classGroupId', e.value)
+                setInitData({
+                  ...initData, ...{
+                    classGroup: e,
+                    class: {},
+                  }
+                });
               }}
               value={initData.classGroup && !_.isEmpty(initData.classGroup) ? initData.classGroup : ''}
               options={listGroup}

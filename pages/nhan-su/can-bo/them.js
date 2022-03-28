@@ -112,7 +112,7 @@ const AddManager = () => {
           <Select
             label='Tên trường'
             name='schoolId'
-            isDisable={user?.role !== 'admin'}
+          isDisable={user?.role !== 'admin' && user.role !== 'manager'}
             options={listSchool}
             onChange={(e) => {
               setFieldValue('schoolId', e.value);

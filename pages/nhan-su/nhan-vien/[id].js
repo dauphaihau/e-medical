@@ -139,7 +139,7 @@ const UpdateStaff = () => {
           <Select
             label='Tên trường'
             name='schoolId'
-            isDisable={user?.role !== 'admin'}
+            isDisable={user?.role !== 'admin' && user?.role !== 'manager'}
             value={initData.school}
             options={listSchool}
             onChange={(e) => {
