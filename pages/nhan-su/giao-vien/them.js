@@ -12,7 +12,7 @@ import Select from "@components/form/select";
 import Region from "@components/form/region";
 import {useAuth} from "../../../context/auth";
 
-const phoneRegExp = /(([03+[2-9]|05+[6|8|9]|07+[0|6|7|8|9]|08+[1-9]|09+[1-4|6-9]]){3})+[0-9]{7}\b/
+const phoneRegExp = /^[+|0]?\d+$/;
 const validationSchema = Yup.object().shape({
   schoolId: Yup.string().required('Trường không được để trống'),
   schoolYearId: Yup.string().required('Niên khoá không được để trống'),

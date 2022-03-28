@@ -13,7 +13,7 @@ import Button from "@components/button";
 import logo2 from "../public/images/logo2.png";
 import {accountService} from '@services';
 
-const phoneRegExp = /^[+|0]?\d{12}$/;
+const phoneRegExp = /^[+|0]?\d+$/;
 const pinRegExp = /^\d{4}$/
 
 const loginSchema = Yup.object().shape({
