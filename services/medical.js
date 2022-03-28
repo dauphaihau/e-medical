@@ -5,20 +5,31 @@ export const medicalService = {
   list: async (params) => {
     try{
       const {...response} = await api.get("/medical-condition", {params});
-      return response.data;
+      return {...response.data, status: true};
     }
-    catch(e){
-      return false;
+    catch ({response}) {
+      return {
+        status: false,
+        message: response.data.statusCode === 403 ? 'Bạn không đủ quyền thực hiện thao tác này' : 'Vui lòng thử lại!',
+        statusCode: response.data.statusCode
+      };
     }
   },
   
   create: async (data) => {
     try{
-      const {...response} = await api.post("/medical-condition", data);
-      return true;
+      await api.post("/medical-condition", data);
+      return {
+        status:true,
+        message: 'Thêm thành công',
+      }
     }
-    catch(e){
-      return false;
+    catch ({response}) {
+      return {
+        status: false,
+        message: response.data.statusCode === 403? 'Bạn không đủ quyền thực hiện thao tác này' : 'Thêm không thành công!',
+        statusCode: response.data.statusCode
+      };
     }
   },
   

@@ -47,17 +47,17 @@ const MedicalForm = () => {
 
   const loadInit = async () => {
     const { id } = router.query;
-    const member = await memberService.detail(id);
+    const {status, data: memberRes} = await memberService.detail(id);
 
-    if( !member ){
+    if(!status || !memberRes ){
       swal('Thông tin này không tồn tại!!', '', 'error')
         .then( () => router.push('/hoc-sinh') );
+      return
     }
-    setMember(member);
+    setMember(memberRes);
   }
 
   const handleSubmitForm = async (values) => {
-    console.log('values', values);
     const { id } = router.query;
     const result = await memberService.addHealthDeclaration(id, values);
 
@@ -97,7 +97,7 @@ const MedicalForm = () => {
           </ul>
         </div>
         <Formik
-          validationSchema={validationSchema}
+          // validationSchema={validationSchema}
           onSubmit={handleSubmitForm}
           enableReinitialize
           initialValues={{
@@ -120,15 +120,15 @@ const MedicalForm = () => {
                 <div>
                   <p className='font-bold text-base'>Trong vòng 14 ngày qua, Anh/Chị có đến tỉnh/thành phố, quốc gia/vùng lãnh thổ nào (Có thể đi qua nhiều nơi) *</p>
                   <RadioGroup>
-                    <Radio name='haveTravel' id='haveTravel-1' useFormik onChange={handleChange} value={true} labelName='Có'/>
-                    <Radio name='haveTravel' id='haveTravel-2' useFormik onChange={handleChange} value={false} labelName='Không'/>
+                    <Radio name='haveTravel' id='haveTravel-1' checked={values.haveTravel} useFormik onChange={handleChange} value={true} labelName='Có'/>
+                    <Radio name='haveTravel' id='haveTravel-2' checked={!values.haveTravel} useFormik onChange={handleChange} value={false} labelName='Không'/>
                   </RadioGroup>
                 </div>
                 <div>
                   <p className='font-bold text-base'>Trong vòng 14 ngày qua, Anh/Chị có thấy xuất hiện ít nhất 1 trong các dấu hiệu: sốt, ho, khó thở, viêm phổi, đau họng, mệt mỏi không? *</p>
                   <RadioGroup>
-                    <Radio name='haveSick' onChange={handleChange} useFormik id='haveSick-1' value={true} labelName='Có'/>
-                    <Radio name='haveSick' onChange={handleChange} useFormik id='haveSick-2' value={false} labelName='Không'/>
+                    <Radio name='haveSick' onChange={handleChange} checked={values.haveSick} useFormik id='haveSick-1' value={true} labelName='Có'/>
+                    <Radio name='haveSick' onChange={handleChange} checked={!values.haveSick} useFormik id='haveSick-2' value={false} labelName='Không'/>
                   </RadioGroup>
                 </div>
                 <div>

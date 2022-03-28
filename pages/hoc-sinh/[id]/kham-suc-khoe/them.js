@@ -28,10 +28,11 @@ const AddMedical = () => {
 
   const loadInit = async () => {
     const { id } = router.query;
-    const member = await memberService.detail(id);
-    if( !member ){
+    const {status, data: member} = await memberService.detail(id);
+    if(!status || !member ){
       swal('Thông tin này không tồn tại!!', '', 'error')
         .then( () => router.push('/hoc-sinh') );
+      return
     }
     setMember(member);
   }
@@ -43,21 +44,13 @@ const AddMedical = () => {
       createByUserId: user._id,
     }}
     values.musculoskeletal.scoliosis =  values.musculoskeletal.scoliosis.join(',');
-    console.log(values);
-    const result = await medicalService.create(values);
     
-    if(result){
-      swal({
-        text: "Cập nhật thành công",
-        icon: "success"
-      });
-    }
-    else{
-      swal({
-        text: "Cập nhật không thành công",
-        icon: "error"
-      });
-    }
+    const result = await medicalService.create(values);
+    swal({
+      title: result.message,
+      icon: result.status?"success":"error"
+    })
+      .then(() => (result.status || result.statusCode === 403) && router.push(`/hoc-sinh/${member._id}/kham-suc-khoe`))
   }
 
   return (

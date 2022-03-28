@@ -20,10 +20,11 @@ const HealthDeclaration = () => {
 
   const loadInit = async () => {
     const {id} = router.query;
-    const memberRes = await memberService.detail(id);
-    if(!memberRes) {
+    const {status, data: memberRes} = await memberService.detail(id);
+    if(!status || !memberRes) {
       swal('Thông tin này không tồn tại!!', '', 'error')
         .then( () => router.push('/hoc-sinh') );
+      return
     }
     setMember(memberRes);
   }
