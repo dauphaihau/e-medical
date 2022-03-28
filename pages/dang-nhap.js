@@ -11,7 +11,7 @@ import * as Yup from "yup";
 import Input from "@components/form/input";
 import Button from "@components/button";
 import logo2 from "../public/images/logo2.png";
-import { accountService } from '@services';
+import {accountService} from '@services';
 
 const phoneRegExp = /(([03+[2-9]|05+[6|8|9]|07+[0|6|7|8|9]|08+[1-9]|09+[1-4|6-9]]){3})+[0-9]{7}\b/
 const pinRegExp = /^\d{4}$/
@@ -83,7 +83,7 @@ export default function Login() {
           phoneNumber,
         });
         const result = await accountService.requestPhonePin(phoneNumber);
-        if(!result.status){
+        if (!result.status) {
           swal(result.message, '', 'error');
         }
       }
@@ -116,18 +116,20 @@ export default function Login() {
               <h2 className='text-[2rem] text-primary pb-8'>Y Tế Học Đường - eDoctor</h2>
               <p>Vui lòng nhập số điện thoại để tiếp tục</p>
             </div>
-            <Input
-              label='Số điện thoại'
-              name='phoneNumber'
-              onBlur={handleBlur}
-              useFormik
-              onChange={(e) => {
-                handleChange(e);
-                handlePhoneNumberChange(e.target.value);
-              }}
-            />
-            <Input label='OTP' name='pin' onChange={handleChange} onBlur={handleBlur}/>
-            <Button type='submit'>Đăng nhập</Button>
+            <div className="px-4 lg:px-0">
+              <Input
+                label='Số điện thoại'
+                name='phoneNumber'
+                onBlur={handleBlur}
+                useFormik
+                onChange={(e) => {
+                  handleChange(e);
+                  handlePhoneNumberChange(e.target.value);
+                }}
+              />
+              <Input label='OTP' name='pin' onChange={handleChange} onBlur={handleBlur}/>
+              <Button type='submit'>Đăng nhập</Button>
+            </div>
             <div className="copyright text-center mt-8">
               <div>
                 <strong className="d-block">
