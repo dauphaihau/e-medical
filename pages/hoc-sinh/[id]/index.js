@@ -137,6 +137,7 @@ const DetailStudent = () => {
         }
       }
     }
+
     setInitData(initDataState);
   }
 

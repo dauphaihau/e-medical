@@ -107,7 +107,7 @@ const DetailGroup = () => {
       title: result.message,
       icon: result.status?"success":"error"
     })
-      .then(() => (result.status || result.statusCode === 403) && router.push('/to-chuc/truong'))
+      .then(() => (result.status || result.statusCode === 403) && router.push('/to-chuc/khoi'))
   };
 
   return (

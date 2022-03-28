@@ -85,7 +85,7 @@ const UpdateStaff = () => {
         label: data.schoolname,
       }));
       setListSchool(schoolSelect);
-      const initSchool = _.find(schoolSelect, {value: user?.role === 'admin' ? memberRes?.schoolWorking[0]?.schoolId : user?.schoolWorking?.schoolId});
+      const initSchool = _.find(schoolSelect, {value: memberRes?.schoolWorking[0]?.schoolId});
       initDataSelected.school = initSchool;
     }
     setInitData(initDataSelected);

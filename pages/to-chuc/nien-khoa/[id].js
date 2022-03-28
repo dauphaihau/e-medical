@@ -35,14 +35,15 @@ const DetailSchoolYear = () => {
 
   const loadInit = async () => {
     const {id} = router.query;
-    const schoolYear = await schoolYearService.detail(id);
-    if (schoolYear && schoolYear.status && !_.isEmpty(schoolYear.data)) {
-      setSchoolYear(schoolYear.data);
-    } else {
+    const {status, data: schoolYear} = await schoolYearService.detail(id);
+
+    if(!status || !schoolYear){
       swal('Thông tin này không tồn tại!!', '', 'error')
         .then(() => router.push('/to-chuc/nien-khoa/'));
+      return;
     }
 
+    setSchoolYear(schoolYear);
     let initDataSelected = {};
     const schools = await schoolService.list({limit: 100});
     if (schools.total) {
@@ -52,8 +53,11 @@ const DetailSchoolYear = () => {
       }));
       setListSchool(schoolOptions);
 
-      const initSchool = _.find(schoolOptions, {value: schoolYear.data.schoolId});
+      console.log(schoolOptions);
+      console.log(schoolYear.schoolId);
+      const initSchool = _.find(schoolOptions, {value: schoolYear.schoolId});
       initDataSelected.school = initSchool;
+      console.log(initSchool);
       setInitData(initDataSelected)
     }
   }

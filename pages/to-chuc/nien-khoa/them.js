@@ -38,8 +38,10 @@ const AddSchoolYear = () => {
         label: data.schoolname,
       }))
       setListSchool(schoolSelect);
-      const initSchool = _.find(schoolSelect, {value: user.schoolWorking?.schoolId});
-      initDataSelected.school = initSchool;
+      if(user && user?.role !== 'admin'){
+        const initSchool = _.find(schoolSelect, {value: user.schoolWorking[0]?.schoolId});
+        initDataSelected.school = initSchool;
+      }
     }
     setInitData(initDataSelected);
   }

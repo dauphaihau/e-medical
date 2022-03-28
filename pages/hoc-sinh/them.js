@@ -57,8 +57,8 @@ const AddStudent = () => {
         label: data.schoolname,
       }))
       setListSchool(schoolSelect);
-      if(user?.role !== 'admin'){
-        const initSchool = _.find(schoolSelect, {value: user.schoolWorking?.schoolId});
+      if(user && user?.role !== 'admin'){
+        const initSchool = _.find(schoolSelect, {value: user.schoolWorking[0]?.schoolId});
         initDataSelected.school = initSchool;
         onChangeSchool(initSchool?.value);
       }
