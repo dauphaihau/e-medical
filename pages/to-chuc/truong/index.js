@@ -107,12 +107,11 @@ const SchoolList = () => {
     }).then(async (willDelete) => {
       if (willDelete) {
         const result = await schoolService.delete(id);
-        if (result.status) {
-          router.reload();
-        } 
-        else {
-          swal(result.message, '', 'error');
-        }
+        swal({
+          title: result.message,
+          icon: result.status?"success":"error"
+        })
+          .then(() => router.reload())
       }
     });
   };
