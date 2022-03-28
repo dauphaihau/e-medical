@@ -1,4 +1,3 @@
-import {useState} from "react";
 import Head from "next/head";
 import _ from "lodash";
 
@@ -7,9 +6,10 @@ import Sidebar from "../sidebar";
 import Content from "./content";
 
 import {useAuth} from "../../context/auth";
+import {useUtil} from "../../context/util";
 
 const Layout = ({children}) => {
-  const [stateSideBar, setStateSideBar] = useState(false)
+  const {stateSideBar} = useUtil()
   const {user} = useAuth();
 
   const renderLayout = (children) => {
@@ -26,8 +26,8 @@ const Layout = ({children}) => {
       return (
         <>
           <Sidebar stateSidebar={stateSideBar}/>
-          <Header stateSidebar={stateSideBar} setStateSidebar={setStateSideBar}/>
-          <Content stateSidebar={stateSideBar}>
+          <Header/>
+          <Content>
             {children}
           </Content>
         </>

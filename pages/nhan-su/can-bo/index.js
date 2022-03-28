@@ -207,7 +207,7 @@ const Manager = () => {
         <Button type='submit'>Tìm kiếm</Button>
       </form>
       <div className="mt-8 drop-shadow-2xl overflow-x-auto lg:overflow-x-visible">
-        <div className='container-table'>
+        <div className='container-table w-[1000px] lg:w-full'>
           <table className='table'>
             <thead>
               <tr>

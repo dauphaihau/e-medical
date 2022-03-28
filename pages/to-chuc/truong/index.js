@@ -222,7 +222,7 @@ const SchoolList = () => {
                     <td>{school.district?.districtName}</td>
                     <td>{school.ward?.wardName}</td>
                     <td>
-                        {user.role === 'staff' ?
+                        {user?.role === 'staff' ?
                           <Link href={`/to-chuc/truong/${school._id}`}>
                             <a><EyeIcon className='h-5 w-5 inline'/></a>
                           </Link> :
@@ -230,7 +230,7 @@ const SchoolList = () => {
                             <a><PencilIcon className='h-5 w-5 inline'/></a>
                           </Link>
                         }
-                      {user.role === 'admin' &&
+                      {user?.role === 'admin' &&
                         <TrashIcon
                           className='h-5 w-5 inline ml-4 cursor-pointer'
                           onClick={() => handleDelete(school._id)}

@@ -14,15 +14,16 @@ const handleActive = (pathName, item) => {
   return ''
 }
 
-const SubMenu = ({open, items}) => {
+const SubMenu = ({open, items, stateSidebar}) => {
 
   if (!items) return null;
   const router = useRouter();
   items.map((item) => {
     if ([item.link, item.link + "/them", item.link + "/[id]"].includes(router.pathname)) open = true;
   })
+
   return (
-    <ul className={`${!open ? 'hidden' : ''} sidebar-submenu`}>
+    <ul className={`${!open ? 'hidden' : ''} ${!stateSidebar && 'hidden'} sidebar-submenu`}>
       {items?.map((item, idz) => (
         <Link passHref href={item.link} key={idz}>
           <li key={item.title} className={handleActive(router.pathname, item)}>
@@ -40,9 +41,9 @@ const SubMenu = ({open, items}) => {
   );
 }
 
-const ArrowDropdown = ({open, stateSidebar}) => {
+const ArrowDropdown = ({open}) => {
   return (
-    <div className={`${stateSidebar && 'md:hidden'}`}>
+    <div className='pt-[5px]'>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         className={open ? 'hidden' : 'sidebar-dropdown'}
@@ -68,22 +69,38 @@ const Item = ({item, stateSidebar}) => {
 
   const handleActive = (item) => router.pathname == item.link ? 'active' : '';
 
+  const renderSubMenu = () => {
+    if (window.matchMedia('(min-width: 768px)').matches) {
+      return (
+        !stateSidebar
+          ? <><SubMenu items={item.subNav} open={active} stateSidebar={!stateSidebar}/></>
+          : <><SubMenu items={item.subNav} open={active} stateSidebar={stateSidebar}/></>
+      )
+    } else {
+      return (
+        // mobile
+        stateSidebar && <>
+          <SubMenu items={item.subNav} open={active} stateSidebar={stateSidebar}/>
+        </>
+      )
+    }
+  }
+
   return (
-    <li className={`${handleActive(item)} handleRole(`}>
-      <Link href={item.link ? item.link : '#'}>
+    <li className={`${handleActive(item)}`}>
+      <Link href={item.link ? item.link : ''}>
         <div onClick={() => setActive(!active)}>
-          <i className={`text-gray-400 ${item.icon} ${handleActive(item)}`}>
-            <span className="path1"/>
-            <span className="path2"/>
-          </i>
-          <a>
-            <span className={`${stateSidebar ? 'md:hidden' : ''} ${handleActive(item)}`}>{item.title}</span>
-          </a>
-          {!stateSidebar && <>
-            {item.subNav && <ArrowDropdown open={active}/>}
-            <SubMenu items={item.subNav} open={active}/>
-          </>
-          }
+          <div className='flex items-center'>
+            <i className={`text-gray-400 mr-[1.6rem] ${item.icon} ${handleActive(item)}`}>
+              <span className="path1"/>
+              <span className="path2"/>
+            </i>
+            <a className='w-[13rem] md:w-[12rem]' >
+              <span className={`${handleActive(item)} `}>{item.title}</span>
+            </a>
+            {item.subNav && <ArrowDropdown open={active} stateSidebar={stateSidebar}/>}
+          </div>
+          {renderSubMenu()}
         </div>
       </Link>
     </li>
@@ -95,9 +112,9 @@ const Sidebar = ({stateSidebar}) => {
   const {user} = useAuth();
 
   return (
-    <aside className={`sidebar ${stateSidebar ? 'sidebar-open w-75 md:w-16' : 'sidebar-open'}`}>
+    <aside className={`sidebar ${stateSidebar ? 'sidebar-open w-75 md:w-[3.76rem]' : 'sidebar-open'} `}>
       <ul className='sidebar-menu'>
-        {user && MENU[user?.role].map((item, idz) => (
+        {MENU[user?.role].map((item, idz) => (
           <Item key={idz} item={item} stateSidebar={stateSidebar}/>
         ))}
       </ul>

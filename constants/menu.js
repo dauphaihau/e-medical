@@ -59,7 +59,6 @@ export const MENU = {
     },
     {
       title: "Quản lý hồ sơ học sinh",
-      link: "/hoc-sinh",
       id: 'student',
       roles: ["agent", "manager", "admin"],
       icon: "icon-User",
@@ -133,14 +132,14 @@ export const MENU = {
       // link: "/protection",
       id: 'covid-19',
       roles: ["manager", "admin"],
-      icon: "mdi mdi-account-card-details",
+      icon: "icon-Shield-user",
     },
     {
       title: "Thông tin tuyên truyền",
       id: 'news',
       link: "/thong-tin",
       roles: ["manager", "admin"],
-      icon: "mdi mdi-account-card-details",
+      icon: "icon-Cloud-sun",
     },
   ],
 
@@ -203,7 +202,6 @@ export const MENU = {
     },
     {
       title: "Quản lý hồ sơ học sinh",
-      link: "/hoc-sinh",
       id: 'student',
       roles: ["agent", "manager", "admin"],
       icon: "icon-User",
@@ -277,14 +275,14 @@ export const MENU = {
       // link: "/protection",
       id: 'covid-19',
       roles: ["manager", "admin"],
-      icon: "mdi mdi-account-card-details",
+      icon: "icon-Shield-user",
     },
     {
       title: "Thông tin tuyên truyền",
       id: 'news',
       link: "/thong-tin",
       roles: ["manager", "admin"],
-      icon: "mdi mdi-account-card-details",
+      icon: "icon-Cloud-sun",
     },
     {
       title: "Người dùng",
@@ -354,7 +352,6 @@ export const MENU = {
     },
     {
       title: "Quản lý hồ sơ học sinh",
-      link: "/hoc-sinh",
       id: 'student',
       roles: ["agent", "manager", "admin"],
       icon: "icon-User",
@@ -424,14 +421,14 @@ export const MENU = {
       // link: "/protection",
       id: 'covid-19',
       roles: ["manager", "admin"],
-      icon: "mdi mdi-account-card-details",
+      icon: "icon-Shield-user",
     },
     {
       title: "Thông tin tuyên truyền",
       id: 'news',
       link: "/thong-tin",
       roles: ["manager", "admin"],
-      icon: "mdi mdi-account-card-details",
+      icon: "icon-Cloud-sun",
     },
     {
       title: "Người dùng",
@@ -452,7 +449,6 @@ export const MENU = {
     },
     {
       title: "Quản lý hồ sơ học sinh",
-      link: "/hoc-sinh",
       id: 'student',
       roles: ["agent", "manager", "admin"],
       icon: "icon-User",
@@ -477,14 +473,14 @@ export const MENU = {
       // link: "/protection",
       id: 'covid-19',
       roles: ["manager", "admin"],
-      icon: "mdi mdi-account-card-details",
+      icon: "icon-Shield-user",
     },
     {
       title: "Thông tin tuyên truyền",
       id: 'news',
       link: "/thong-tin",
       roles: ["manager", "admin"],
-      icon: "mdi mdi-account-card-details",
+      icon: "icon-Cloud-sun",
     },
     {
       title: "Người dùng",
@@ -505,7 +501,6 @@ export const MENU = {
     },
     {
       title: "Quản lý hồ sơ học sinh",
-      link: "/hoc-sinh",
       id: 'student',
       roles: ["agent", "manager", "admin"],
       icon: "icon-User",
@@ -540,14 +535,14 @@ export const MENU = {
       // link: "/protection",
       id: 'covid-19',
       roles: ["manager", "admin"],
-      icon: "mdi mdi-account-card-details",
+      icon: "icon-Shield-user",
     },
     {
       title: "Thông tin tuyên truyền",
       id: 'news',
       link: "/thong-tin",
       roles: ["manager", "admin"],
-      icon: "mdi mdi-account-card-details",
+      icon: "icon-Cloud-sun",
     },
     {
       title: "Người dùng",

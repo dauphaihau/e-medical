@@ -8,6 +8,7 @@ import logo from "../../assets/images/logo.svg";
 import onlyLogo from "../../assets/images/onlylogo.png";
 import Button from "../button";
 import {useAuth} from "../../context/auth";
+import {useUtil} from "../../context/util";
 
 const logout = () => {
   Cookie.set("accessToken", "", {
@@ -118,33 +119,34 @@ const handleRole = (role, schoolName = '') => {
   return labelRoles[role] ? `${labelRoles[role]} ${schoolName}` : '';
 };
 
-const Header = ({stateSidebar, setStateSidebar}) => {
+const Header = () => {
   const router = useRouter();
   const [dropdown, setDropdown] = useState(false)
   const {user} = useAuth();
+  const {stateSideBar, setStateSideBar} = useUtil()
   const innerRef = useOuterClick(() => {
     setDropdown(false)
   });
 
   return (
     <div className="header">
-      {stateSidebar ? (
+      {stateSideBar ? (
           <div className='logo-mini'>
             <Image src={onlyLogo} alt="logomini"/>
           </div>
         )
-        : (<div className={stateSidebar ? ' md:logo-box w-[4.34rem]' : 'hidden md:block logo-box'}>
+        : (<div className={stateSideBar ? ' md:logo-box w-[4.34rem]' : 'hidden md:block logo-box'}>
             <a className='logo'>
               <Image src={logo} alt="logo3"/>
             </a>
           </div>
         )
       }
-      <div className={stateSidebar ? 'ml-0  navbar' : 'ml-0 navbar'}>
+      <div className={stateSideBar ? 'ml-0  navbar' : 'ml-0 navbar'}>
         <div className='navbar-left'>
           <button
             className='btn-hamburger'
-            onClick={() => setStateSidebar(!stateSidebar)}
+            onClick={() => setStateSideBar(!stateSideBar)}
           >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
               <path
