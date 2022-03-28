@@ -202,7 +202,7 @@ const Student = () => {
                     <tr key={idz}>
                     <td>{idz + 1}</td>
                     <td className='text-center'>{row.fullName}</td>
-                    <td className='text-center'>{(row.schoolWorking) ? row.schoolWorking?.className : ''}</td>
+                    <td className='text-center'>{(row.schoolWorking) ? row.schoolWorking[0]?.className : ''}</td>
                     <td className='text-center'>
                       <Link href={`/phu-huynh/${row.parent[0]?.parentId}`}>
                         <a>{row.parent && row.parent[0]?.fullName}</a>
