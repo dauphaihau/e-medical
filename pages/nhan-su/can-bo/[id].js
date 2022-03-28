@@ -13,9 +13,9 @@ import Region from "@components/form/region";
 import {locationService} from "../../../services";
 import {useAuth} from "../../../context/auth";
 
-const phoneRegExp = /(([03+[2-9]|05+[6|8|9]|07+[0|6|7|8|9]|08+[1-9]|09+[1-4|6-9]]){3})+[0-9]{7}\b/
+const phoneRegExp = /^[+|0]?\d+$/;
 const validationSchema = Yup.object().shape({
-  schoolId: Yup.string().required(),
+  schoolId: Yup.string().required("Trường không được để trống"),
   fullName: Yup.string()
     .min(5, 'Tên trường ít nhất là 5 ký tự')
     .max(50, 'Tên trường tối đa là 50 ký tự')
@@ -54,49 +54,54 @@ const UpdateStaff = () => {
 
   const loadInit = async () => {
     const {id} = router.query;
-    if (id) {
-      const memberRes = await memberService.detail(id);
-      const provinces = await locationService.listProvince();
-      setProvinceOptions(provinces);
-      let initDataSelected = {};
-      if (memberRes && !_.isEmpty(memberRes) && memberRes.province !== undefined) {
-        initDataSelected.province = _.find(provinces, (o) => o.code === memberRes.province.code);
-        if (memberRes.district !== undefined) {
-          const districts = await locationService.listDistrict(memberRes.province.code);
-          initDataSelected.district = _.find(districts, (o) => o.code === memberRes.district.code);
-          if (memberRes.ward !== undefined) {
-            const wards = await locationService.listWard(memberRes.district.code);
-            initDataSelected.ward = _.find(wards, (o) => o.code === memberRes.ward.code);
-          }
+    
+    const {status, data: memberRes} = await memberService.detail(id);
+    if(!status || !memberRes){
+      router.push('/nhan-su/can-bo');
+      return
+    }
+    setMember(memberRes);
+    const provinces = await locationService.listProvince();
+    setProvinceOptions(provinces);
+    let initDataSelected = {};
+    if (memberRes && !_.isEmpty(memberRes) && memberRes.province !== undefined) {
+      initDataSelected.province = _.find(provinces, (o) => o.code === memberRes.province.code);
+      if (memberRes.district !== undefined) {
+        const districts = await locationService.listDistrict(memberRes.province.code);
+        initDataSelected.district = _.find(districts, (o) => o.code === memberRes.district.code);
+        if (memberRes.ward !== undefined) {
+          const wards = await locationService.listWard(memberRes.district.code);
+          initDataSelected.ward = _.find(wards, (o) => o.code === memberRes.ward.code);
         }
       }
-
-      const schools = await schoolService.list({limit: 20});
-      if (schools.total) {
-        const schoolSelect = schools.data.map((data) => ({
-          value: data._id,
-          label: data.schoolname,
-        }));
-        setListSchool(schoolSelect);
-        const initSchool = _.find(schoolSelect, {value: memberRes.schoolWorking?.schoolId});
-        initDataSelected.school = initSchool;
-      }
-      setInitData(initDataSelected);
-      setMember(memberRes);
-    } else {
-      Router.push('/nhan-su/nhan-vien/');
     }
+
+    const schools = await schoolService.list({limit: 20});
+    if (schools.total) {
+      const schoolSelect = schools.data.map((data) => ({
+        value: data._id,
+        label: data.schoolname,
+      }));
+      setListSchool(schoolSelect);
+      
+      const initSchool = _.find(schoolSelect, {value: memberRes.schoolWorking[0]?.schoolId});
+      initDataSelected.school = initSchool;
+    }
+    setInitData(initDataSelected);
+    
+    // } else {
+    //   Router.push('/nhan-su/nhan-vien/');
+    // }
   }
 
   const handleSubmitForm = async (data) => {
     const {id} = router.query;
-    try {
-      await memberService.update(id, data);
-      swal('Cập nhật thành công', '', 'success')
-        .then(() => Router.push('/nhan-su/can-bo/'));
-    } catch (error) {
-      swal('Cập nhật không thành công.', 'Vui lòng thử lại.', 'error');
-    }
+    const result = await memberService.update(id, data);
+    swal({
+      title: result.message,
+      icon: result.status?"success":"error"
+    })
+      .then(() => (result.status || result.statusCode === 403) && router.push('/nhan-su/can-bo'))
   };
 
   return (
@@ -106,7 +111,7 @@ const UpdateStaff = () => {
       onSubmit={handleSubmitForm}
       enableReinitialize
       initialValues={{
-        schoolId: member && member.schoolWorking?.schoolId,
+        schoolId: member && member.schoolWorking[0]?.schoolId,
         fullName: member?.fullName ?? '',
         address: member?.address ?? '',
         phoneNumber: member?.phoneNumber ?? '',
@@ -128,17 +133,12 @@ const UpdateStaff = () => {
             label='Tên trường'
             name='schoolId'
             options={listSchool}
-            value={initData.school && !_.isEmpty(initData.school) ? initData.school : ''}
-            isDisable={user?.role !== 'admin' && user?.role !== 'manager'}
+            isDisable={user?.role !== 'admin'}
             onChange={(e) => {
               setFieldValue('schoolId', e.value);
-              setInitData({
-                ...initData, ...{
-                  school: e,
-                  class: {},
-                }
-              });
             }}
+            value={initData.school}
+            useFormik
           />
           <Input
             label='Họ tên'

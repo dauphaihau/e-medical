@@ -220,7 +220,7 @@ const Profile = () => {
             />
 
           <div className='grid lg:grid-cols-2 gap-x-4'>
-            {user.role !== 'staff' && user.role !== 'manager' ?
+            {user && user.role !== 'staff' && user.role !== 'manager' ?
               <>
                 <Select
                   label='Niên khoá'

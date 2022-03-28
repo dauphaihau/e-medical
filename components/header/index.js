@@ -160,7 +160,7 @@ const Header = ({stateSidebar, setStateSidebar}) => {
           <div className='navbar-right__info' ref={innerRef} onClick={() => setDropdown(!dropdown)}>
             <div>
               <p>{user?.fullName}</p>
-              <p>{handleRole(user?.role, user?.schoolWorking?.schoolName)}</p>
+              <p>{handleRole(user?.role, user?.schoolWorking[0]?.schoolName)}</p>
             </div>
             <img src="https://i.pravatar.cc/300" alt='avatar'/>
           </div>

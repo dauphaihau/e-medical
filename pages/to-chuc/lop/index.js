@@ -134,11 +134,11 @@ const ClassroomList = () => {
     }).then(async (willDelete) => {
       if (willDelete) {
         const result = await classroomService.delete(id)
-        if (result) {
-          router.reload();
-        } else {
-          swal('Xóa không thành công!!', '', 'error');
-        }
+        swal({
+          title: result.message,
+          icon: result.status?"success":"error"
+        })
+          .then(() => router.reload())
       }
     });
   };

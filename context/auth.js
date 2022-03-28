@@ -4,6 +4,7 @@ import Cookie from "cookie-cutter";
 
 import {accountService} from '@services';
 import {schoolService} from "../services";
+import _ from "lodash";
 
 const defaultValues = {
   user: {},
@@ -17,16 +18,23 @@ export function useAuth() {
 }
 
 export function AuthProvider({children}) {
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState();
 
   useEffect(() => {
     if (Cookie.get('accessToken')) {
       async function verifyAuth() {
         const userRes = await accountService.me();
         if (userRes) {
-          if (!_.isNil(userRes.schoolWorking?.schoolId)) {
-            const school = await schoolService.detail(userRes.schoolWorking.schoolId);
-            userRes.schoolWorking.schoolName = school.schoolname;
+          if(!_.isEmpty(userRes.schoolWorking)){
+            if(!_.isArray(userRes.schoolWorking)) userRes.schoolWorking = [userRes.schoolWorking]
+          
+            if (userRes.schoolWorking[0] && userRes.schoolWorking[0].schoolId) {
+              const school = await schoolService.detail(userRes.schoolWorking[0].schoolId);
+              userRes.schoolWorking[0].schoolName = school.status && school.data ? school.data.schoolname : '';
+            }
+          }
+          else{
+            userRes.schoolWorking = []
           }
           setUser(userRes);
         } else {

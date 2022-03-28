@@ -25,8 +25,9 @@ const AddSchoolYear = () => {
   });
 
   useEffect(() => {
+    if(!router.isReady) return;
     loadInit();
-  }, [])
+  }, [router.isReady])
 
   const loadInit = async () => {
     let initDataSelected = {};
@@ -37,25 +38,21 @@ const AddSchoolYear = () => {
         label: data.schoolname,
       }))
       setListSchool(schoolSelect);
-      const initSchool = _.find(schoolSelect, {value: user.schoolWorking?.schoolId});
-      initDataSelected.school = initSchool;
+      if(user && user?.role !== 'admin'){
+        const initSchool = _.find(schoolSelect, {value: user.schoolWorking[0]?.schoolId});
+        initDataSelected.school = initSchool;
+      }
     }
     setInitData(initDataSelected);
   }
 
   const handleSubmitForm = async (data) => {
     const result = await schoolYearService.create(data);
-    if (result.message === 'account existed') {
-      swal({
-        text: "Mỗi trường chỉ tạo được 1 niên khoá",
-        icon: "error"
-      });
-    } else {
-      swal({
-        text: "Tạo Niên Khoá thành công",
-        icon: "success"
-      }).then(() => router.push('/to-chuc/nien-khoa/'));
-    }
+    swal({
+      title: result.message,
+      icon: result.status?"success":"error"
+    })
+      .then(() => (result.status || result.statusCode === 403) && router.push('/to-chuc/nien-khoa'))
   };
 
   return (
@@ -64,7 +61,7 @@ const AddSchoolYear = () => {
       onSubmit={handleSubmitForm}
       enableReinitialize
       initialValues={{
-        schoolId: user && user.role !== 'admin' && !_.isNil(user.schoolWorking?.schoolId)?user.schoolWorking.schoolId:'',
+        schoolId: initData.school?.value,
         schoolYearName: '',
       }}
     >
@@ -77,7 +74,8 @@ const AddSchoolYear = () => {
               placeholder='Chọn trường'
               name='schoolId'
               options={listSchool}
-              isDisable={user.role !== 'admin'}
+              isDisable={user && user?.role !== 'admin'}
+              value={initData.school}
               onChange={(e) => {
                 setFieldValue('schoolId', e.value);
               }}

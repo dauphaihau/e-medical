@@ -5,33 +5,80 @@ export const memberService = {
   list: async (params) => {
     try {
       const {...response} = await api.get("/member", {params});
-      return response.data;
-    } catch (e) {
-      return false
+      return {...response.data, status: true};
+    } 
+    catch ({response}) {
+      return {
+        status: false,
+        message: response.data.statusCode === 403 ? 'Bạn không đủ quyền thực hiện thao tác này' : 'Vui lòng thử lại!',
+        statusCode: response.data.statusCode
+      };
     }
   },
   detail: async (id) => {
     if (!id) return false;
     try {
-      const {...response} = await api.get("/member/" + id);
-      return response.data;
-    } catch (e) {
-      return false;
+      const response = await api.get("/member/" + id);
+      return {
+        status: true, 
+        data: response.data
+      };
+    } 
+    catch ({response}) {
+      return {
+        status: false,
+        message: response.data.statusCode === 403 ? 'Bạn không đủ quyền thực hiện thao tác này' : 'Vui lòng thử lại!',
+        statusCode: response.data.statusCode
+      };
     }
   },
   create: async (data) => {
-    return await api.post("/member/", data);
+    try {
+      await api.post("/member/", data);
+      return {
+        status:true,
+        message: 'Thêm thành công',
+      }
+    }
+    catch ({response}) {
+      return {
+        status: false,
+        message: response.data.statusCode === 403? 'Bạn không đủ quyền thực hiện thao tác này' : 'Thêm không thành công!',
+        statusCode: response.data.statusCode
+      };
+    }
   },
   update: async (id, data) => {
-    return await api.patch(`/member/${id}`, data);
+    try {
+      await api.patch(`/member/${id}`, data);
+      return {
+        status: true, 
+        message: 'Cập nhật thành công'
+      };
+    }
+    catch ({response}) {
+      return {
+        status: false,
+        message: response.data.statusCode === 403? 'Bạn không đủ quyền thực hiện thao tác này' : 'Cập nhật không thành công!',
+        statusCode: response.data.statusCode
+      };
+    }
   },
   remove: async (id) => {
     if (!id) return false;
     try {
       await api.delete("/member/" + id);
-      return true
-    } catch (e) {
-      return false;
+      return {
+        status: true, 
+        message: 'Xóa thành công'
+      };
+    }
+    catch ({response}) {
+      return {
+        status: false,
+        message: response.data.statusCode === 403? 'Bạn không đủ quyền thực hiện thao tác này' : 'Xóa không thành công!',
+        statusCode: response.data.statusCode
+      };
     }
   },
   listStaff: async (params) => {
@@ -42,17 +89,30 @@ export const memberService = {
         }
       };
       const response = await api.get("/member", {params});
-      return response.data;
-    } catch (e) {
-      return false
+      return {...response.data, status: true};
+    } 
+    catch ({response}) {
+      return {
+        status: false,
+        message: response.data.statusCode === 403 ? 'Bạn không đủ quyền thực hiện thao tác này' : 'Vui lòng thử lại!',
+        statusCode: response.data.statusCode
+      };
     }
   },
   createStaff: async (data) => {
     try {
-      const {...response} = await api.post("/member/", data);
-      return true;
-    } catch (e) {
-      return false;
+      await api.post("/member/", data);
+      return {
+        status:true,
+        message: 'Thêm thành công',
+      }
+    }
+    catch ({response}) {
+      return {
+        status: false,
+        message: response.data.statusCode === 403? 'Bạn không đủ quyền thực hiện thao tác này' : 'Thêm không thành công!',
+        statusCode: response.data.statusCode
+      };
     }
   },
   //teacher
@@ -63,10 +123,18 @@ export const memberService = {
           role: 'teacher',
         }
       }
-      const res = await api.post("/member/", data);
-      return true;
-    } catch (e) {
-      return false;
+      await api.post("/member/", data);
+      return {
+        status:true,
+        message: 'Thêm thành công',
+      }
+    }
+    catch ({response}) {
+      return {
+        status: false,
+        message: response.data.statusCode === 403? 'Bạn không đủ quyền thực hiện thao tác này' : 'Thêm không thành công!',
+        statusCode: response.data.statusCode
+      };
     }
   },
   // parents
@@ -78,9 +146,14 @@ export const memberService = {
         }
       };
       const response = await api.get("/member", {params});
-      return response.data;
-    } catch (e) {
-      return false
+      return {...response.data, status: true};
+    }
+    catch ({response}) {
+      return {
+        status: false,
+        message: response.data.statusCode === 403 ? 'Bạn không đủ quyền thực hiện thao tác này' : 'Vui lòng thử lại!',
+        statusCode: response.data.statusCode
+      };
     }
   },
   createParent: async (data) => {
@@ -90,18 +163,34 @@ export const memberService = {
           role: 'parent',
         }
       }
-      const {...response} = await api.post("/member/", data);
-      return true;
-    } catch (e) {
-      return false;
+      await api.post("/member/", data);
+      return {
+        status:true,
+        message: 'Thêm thành công',
+      }
+    }
+    catch ({response}) {
+      return {
+        status: false,
+        message: response.data.statusCode === 403? 'Bạn không đủ quyền thực hiện thao tác này' : 'Thêm không thành công!',
+        statusCode: response.data.statusCode
+      };
     }
   },
   updateParent: async (id, data) => {
     try {
-      const {...response} = await api.patch(`/member/${id}`, data);
-      return true;
-    } catch (e) {
-      return false;
+      await api.patch(`/member/${id}`, data);
+      return {
+        status: true, 
+        message: 'Cập nhật thành công'
+      };
+    }
+    catch ({response}) {
+      return {
+        status: false,
+        message: response.data.statusCode === 403? 'Bạn không đủ quyền thực hiện thao tác này' : 'Cập nhật không thành công!',
+        statusCode: response.data.statusCode
+      };
     }
   },
   // students
@@ -113,9 +202,14 @@ export const memberService = {
         }
       };
       const {...response} = await api.get("/member", {params});
-      return response.data;
-    } catch ({response}) {
-      return false
+      return {...response.data, status: true};
+    }
+    catch ({response}) {
+      return {
+        status: false,
+        message: response.data.statusCode === 403 ? 'Bạn không đủ quyền thực hiện thao tác này' : 'Vui lòng thử lại!',
+        statusCode: response.data.statusCode
+      };
     }
   },
   createStudent: async (data) => {
@@ -125,18 +219,34 @@ export const memberService = {
           role: 'student',
         }
       }
-      const {...response} = await api.post("/member/", data);
-      return true;
-    } catch (e) {
-      return false;
+      await api.post("/member/", data);
+      return {
+        status:true,
+        message: 'Thêm thành công',
+      }
+    }
+    catch ({response}) {
+      return {
+        status: false,
+        message: response.data.statusCode === 403? 'Bạn không đủ quyền thực hiện thao tác này' : 'Thêm không thành công!',
+        statusCode: response.data.statusCode
+      };
     }
   },
   updateStudent: async (id, data) => {
     try {
-      const {...response} = await api.patch(`/member/${id}`, data);
-      return true;
-    } catch (e) {
-      return false;
+      await api.patch(`/member/${id}`, data);
+      return {
+        status: true, 
+        message: 'Cập nhật thành công'
+      };
+    }
+    catch ({response}) {
+      return {
+        status: false,
+        message: response.data.statusCode === 403? 'Bạn không đủ quyền thực hiện thao tác này' : 'Cập nhật không thành công!',
+        statusCode: response.data.statusCode
+      };
     }
   },
   // manager
@@ -148,9 +258,14 @@ export const memberService = {
         }
       };
       const {...response} = await api.get("/member", {params});
-      return response.data;
-    } catch (e) {
-      return false
+      return {...response.data, status: true};
+    }
+    catch ({response}) {
+      return {
+        status: false,
+        message: response.data.statusCode === 403 ? 'Bạn không đủ quyền thực hiện thao tác này' : 'Vui lòng thử lại!',
+        statusCode: response.data.statusCode
+      };
     }
   },
   createManager: async (data) => {
@@ -161,9 +276,17 @@ export const memberService = {
         }
       }
       await api.post("/member/", data);
-      return true;
-    } catch (e) {
-      return false;
+      return {
+        status:true,
+        message: 'Thêm thành công',
+      }
+    }
+    catch ({response}) {
+      return {
+        status: false,
+        message: response.data.statusCode === 403? 'Bạn không đủ quyền thực hiện thao tác này' : 'Thêm không thành công!',
+        statusCode: response.data.statusCode
+      };
     }
   },
   addVaccination: async (id, data) => {

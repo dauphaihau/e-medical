@@ -55,7 +55,7 @@ const Staff = () => {
     const provinces = await locationService.listProvince();
     setProvinceOptions(provinces);
 
-    if (user.role === 'admin') {
+    if (user && user?.role === 'admin') {
       const schools = await schoolService.list({limit: 100});
       if (schools.total) {
         const schoolOptions = schools.data.map((data) => ({
@@ -114,11 +114,11 @@ const Staff = () => {
     }).then(async (willDelete) => {
       if (willDelete) {
         const result = await memberService.remove(id);
-        if (result) {
-          router.reload();
-        } else {
-          swal('Xóa không thành công!!', '', 'error');
-        }
+        swal({
+          title: result.message,
+          icon: result.status?"success":"error"
+        })
+          .then(() => (result.status || result.statusCode === 403) && router.reload())
       }
     });
   };
@@ -190,7 +190,7 @@ const Staff = () => {
             }}
             options={wardOptions}
           />
-          {user.role === 'admin' &&
+          {user && user?.role === 'admin' &&
             <>
               <Select
                 label='Tên trường'
@@ -230,13 +230,13 @@ const Staff = () => {
                     <td className='text-center'>
                       <Link href={router.pathname + '/' + row._id}>
                         <a>
-                          {user.role === 'staff'
+                          {user && user?.role === 'staff'
                             ? <EyeIcon className='h-5 w-5 inline'/>
                             : <PencilIcon className='h-5 w-5 inline'/>
                           }
                         </a>
                       </Link>
-                      {user.role !== 'staff' &&
+                      {user && user?.role !== 'staff' &&
                         <TrashIcon
                           className='h-5 w-5 inline ml-4 cursor-pointer'
                           onClick={() => handleDelete(row._id)}

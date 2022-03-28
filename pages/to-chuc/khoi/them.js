@@ -18,19 +18,18 @@ const validationSchema = Yup.object().shape({
     .required('Tên khối không được để trống')
     .max(50, 'Tên khối tối đa là 50 ký tự')
     .min(5, 'Tên khối phải ít nhất 5 ký tự'),
+  schoolYearId: Yup.string().required('Vui lòng chọn niên khóa'),
 });
 
 const AddGroup = () => {
   const router = useRouter();
   const {user} = useAuth();
   const [listSchoolYear, setListSchoolYear] = useState([])
-  const [listSchool, setListSchool] = useState();
-  const [schoolYearSelected, setSchoolYearSelected] = useState()
+  const [listSchool, setListSchool] = useState([]);
   const [initData, setInitData] = useState({
     school: {},
+    schoolYear: {},
   });
-
-  console.log('user', user)
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -46,18 +45,11 @@ const AddGroup = () => {
         label: data.schoolname,
       }))
       setListSchool(schoolOptions);
-      const initSchool = _.find(schoolOptions, {value: user.schoolWorking?.schoolId});
-      initDataSelected.school = initSchool;
-
-      // const schoolYears = await schoolYearService.list({schoolId: school?._id, limit: 100})
-      // if (schoolYears && schoolYears.total) {
-      //   const schoolYearOptions = schoolYears.data.map((data) => ({
-      //     value: data._id,
-      //     label: data.schoolYearName,
-      //   }));
-      //   setListSchoolYear(schoolYearOptions)
-      //   const initSchoolYear = _.find(schoolYearOptions, {value: user.schoolWorking?.schoolYearId});
-      // }
+      if(user && user?.role !== 'admin'){
+        const initSchool = _.find(schoolOptions, {value: user.schoolWorking[0]?.schoolId});
+        initDataSelected.school = initSchool;
+        if(!_.isEmpty(initSchool)) onChangeSchool(initSchool.value);
+      }
     }
     setInitData(initDataSelected);
   }
@@ -76,18 +68,11 @@ const AddGroup = () => {
 
   const handleSubmitForm = async (data) => {
     const result = await classroomService.createGroup(data);
-    if (result) {
-      swal({
-        text: "Thêm mới thành công",
-        icon: "success"
-      })
-        .then(() => router.push('/to-chuc/khoi/'));
-    } else {
-      swal({
-        text: "Thêm mới không thành công",
-        icon: "error"
-      });
-    }
+    swal({
+      title: result.message,
+      icon: result.status?"success":"error"
+    })
+      .then(() => (result.status || result.statusCode === 403) && router.push('/to-chuc/khoi'))
   };
 
   return (
@@ -97,9 +82,8 @@ const AddGroup = () => {
       enableReinitialize
       initialValues={{
         className: '',
-        schoolId: user && user.role !== 'admin' && !_.isNil(user.schoolWorking?.schoolId) ? user.schoolWorking.schoolId : '',
-        schoolYearId: listSchoolYear[0]?.value,
-        parentId: null,
+        schoolId: initData.school?.value,
+        schoolYearId: '',
         status: 1
       }}
     >
@@ -115,7 +99,8 @@ const AddGroup = () => {
               placeholder='Chọn trường'
               name='schoolId'
               options={listSchool}
-              isDisable={user.role !== 'admin'}
+              isDisable={user && user.role !== 'admin'}
+              value={initData.school}
               onChange={(e) => {
                 onChangeSchool(e);
                 setFieldValue('schoolId', e.value);
@@ -126,6 +111,10 @@ const AddGroup = () => {
               name='schoolYearId'
               options={listSchoolYear}
               placeholder='Chọn niên khoá'
+              onChange={(e) => {
+                setFieldValue('schoolYearId', e.value);
+              }}
+              useFormik
             />
             <Input
               name='className'

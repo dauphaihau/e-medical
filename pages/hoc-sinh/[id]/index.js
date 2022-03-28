@@ -21,7 +21,7 @@ const validationSchema = Yup.object().shape({
     .max(50, 'Họ tên tối đa là 50 ký tự'),
   dateOfBirth: Yup.string().required('Ngày sinh không được để trống'),
   schoolYearId: Yup.string().required('Vui lòng chọn niên khóa'),
-  parent: Yup.array().min(1, 'Vui lòng chọn phụ huynh').required(),
+  // parent: Yup.array().min(1, 'Vui lòng chọn phụ huynh').required(),
   schoolId: Yup.string().required('Vui lòng chọn trường.'),
   classId: Yup.string().required('Vui lòng chọn lớp.'),
 });
@@ -33,6 +33,12 @@ const bodyMassSchema = Yup.object().shape({
     .required('Vui lòng nhập cân nặng.'),
   // obstetric: Yup.string().required('Vui lòng chọn 1 trong 2'),
 });
+
+const defaultSelectValue = {
+  value: "",
+  label: "",
+  code: "",
+};
 
 const DetailStudent = () => {
   const router = useRouter();
@@ -69,28 +75,16 @@ const DetailStudent = () => {
 
   const loadInit = async () => {
     const {id} = router.query;
-    const memberRes = await memberService.detail(id);
+    const {status, data: memberRes} = await memberService.detail(id);
 
-    if (!memberRes) {
+    if (!status || !memberRes) {
       swal('Thông tin này không tồn tại!!', '', 'error')
         .then(() => router.push('/hoc-sinh'));
+      return
     }
     setMember(memberRes);
 
-    const initDataState = {
-      school: {
-        value: "",
-        label: "",
-      },
-      schoolYear: {
-        value: "",
-        label: "",
-      },
-      classGroup: {
-        value: "",
-        label: "",
-      },
-    };
+    const initDataState = {};
 
     const schools = await schoolService.list({limit: 100});
     if (schools.total) {
@@ -99,24 +93,22 @@ const DetailStudent = () => {
         label: data.schoolname,
       }));
       setListSchool(schoolOpts);
-      const schoolSelected = _.find(schoolOpts, {value: memberRes.schoolWorking?.schoolId});
+      const schoolSelected = _.find(schoolOpts, {value: memberRes.schoolWorking[0]?.schoolId});
 
       if (schoolSelected) {
         initDataState.school = schoolSelected;
         const schoolYears = await schoolYearService.list({schoolId: schoolSelected.value, limit: 100})
-
         if (schoolYears && schoolYears.total) {
           const schoolYearOpt = schoolYears.data.map((data) => ({
             value: data._id,
             label: data.schoolYearName,
           }));
           setListSchoolYear(schoolYearOpt);
-          const schoolYearSelected = _.find(schoolYearOpt, {value: memberRes.schoolWorking?.schoolYearId});
-
+          const schoolYearSelected = _.find(schoolYearOpt, {value: memberRes.schoolWorking[0]?.schoolYearId});
           if (schoolYearSelected) {
             initDataState.schoolYear = schoolYearSelected;
             const clsGroup = await classroomService.listGroup({
-              schoolYearId: memberRes.schoolWorking?.schoolYearId,
+              schoolYearId: schoolYearSelected.value,
               limit: 100
             });
 
@@ -126,7 +118,7 @@ const DetailStudent = () => {
                 label: data.className,
               }));
               setListGroup(clsGroupOpt);
-              const clsGroupSelected = _.find(clsGroupOpt, {value: memberRes.schoolWorking?.classGroupId});
+              const clsGroupSelected = _.find(clsGroupOpt, {value: memberRes.schoolWorking[0]?.classGroupId});
               if (clsGroupSelected) {
                 initDataState.classGroup = clsGroupSelected;
                 const listCls = await classroomService.list({parentId: clsGroupSelected.value})
@@ -136,7 +128,7 @@ const DetailStudent = () => {
                     label: data.className,
                   }));
                   setListClass(listClsOpt);
-                  const clsSelected = _.find(listClsOpt, {value: memberRes.schoolWorking?.classId});
+                  const clsSelected = _.find(listClsOpt, {value: memberRes.schoolWorking[0]?.classId});
                   initDataState.class = clsSelected;
                 }
               }
@@ -145,6 +137,7 @@ const DetailStudent = () => {
         }
       }
     }
+
     setInitData(initDataState);
   }
 
@@ -271,10 +264,10 @@ const DetailStudent = () => {
               onSubmit={handleSubmitForm}
               enableReinitialize
               initialValues={{
-                schoolId: member ? member.schoolWorking?.schoolId : '',
-                schoolYearId: member ? member.schoolWorking?.schoolYearId : '',
-                classGroupId: member ? member.schoolWorking?.classGroupId : '',
-                classId: member ? member.schoolWorking?.classId : '',
+                schoolId: member && member.schoolWorking ? member?.schoolWorking[0]?.schoolId : '',
+                schoolYearId: member && member.schoolWorking ? member?.schoolWorking[0]?.schoolYearId : '',
+                classGroupId: member && member.schoolWorking ? member?.schoolWorking[0]?.classGroupId : '',
+                classId: member && member.schoolWorking ? member?.schoolWorking[0]?.classId : '',
                 // parent: '',
                 fullName: member ? member.fullName : '',
                 dateOfBirth: member ? member.dateOfBirth : '',
@@ -286,6 +279,7 @@ const DetailStudent = () => {
                   handleChange,
                   setFieldValue,
                   values,
+                  errors,
                 }) => (
                 <Form>
                   <h3>Thông tin cá nhân</h3>
@@ -300,6 +294,7 @@ const DetailStudent = () => {
                     }}
                     value={initData.school}
                     options={listSchool}
+                    useFormik
                   />
                   <Select
                     label='Niên khoá'

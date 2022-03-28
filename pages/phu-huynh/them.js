@@ -13,7 +13,8 @@ import Select from "@components/form/select";
 import {useAuth} from "../../context/auth";
 import {schoolService} from "../../services";
 
-const phoneRegExp = /(([03+[2-9]|05+[6|8|9]|07+[0|6|7|8|9]|08+[1-9]|09+[1-4|6-9]]){3})+[0-9]{7}\b/
+//const phoneRegExp = /(([03+[2-9]|05+[6|8|9]|07+[0|6|7|8|9]|08+[1-9]|09+[1-4|6-9]]){3})+[0-9]{7}\b/
+const phoneRegExp = /^[+|0]?\d+$/;
 const validationSchema = Yup.object().shape({
   fullName: Yup.string()
     .min(5, 'Tên trường ít nhất là 5 ký tự')
@@ -26,6 +27,7 @@ const validationSchema = Yup.object().shape({
   province: Yup.object().shape({}),
   district: Yup.object().shape({}),
   ward: Yup.object().shape({}),
+  schoolId: Yup.string().required('Vui lòng chọn trường'),
 });
 
 const AddParent = () => {
@@ -55,15 +57,15 @@ const AddParent = () => {
         label: data.schoolname,
       }))
       setListSchool(schoolSelect);
-      const initSchool = _.find(schoolSelect, {value: user.schoolWorking?.schoolId});
-      initDataSelected.school = initSchool;
+      if(user && user?.role !== 'admin'){
+        const initSchool = _.find(schoolSelect, {value: user.schoolWorking[0]?.schoolId});
+        initDataSelected.school = initSchool;
+      }
     }
     setInitData(initDataSelected);
   }
 
   const handleSubmitForm = async (data, {resetForm}) => {
-    console.log('data', data)
-    //format data
     let bodyData = {};
     if(data.province && !_.isEmpty(data.province)){
       bodyData.province = {code: data.province.code, provinceName: data.province.label}
@@ -75,14 +77,14 @@ const AddParent = () => {
       bodyData.ward = {code: data.ward.code, wardName: data.ward.label}
     }
     bodyData = {...data, ...bodyData};
+    
     const result = await memberService.createParent(bodyData);
-    if(result){
-      swal('Thêm thành công', '', 'success')
-      .then(() => Router.push('/phu-huynh'));
-    }
-    else{
-      swal('Thêm không thành công', '', 'error'); 
-    }
+
+    swal({
+      title: result.message,
+      icon: result.status?"success":"error"
+    })
+      .then(() => (result.status || result.statusCode === 403) && Router.push('/phu-huynh'))
   };
 
   return (
@@ -92,7 +94,7 @@ const AddParent = () => {
       onSubmit={handleSubmitForm}
       enableReinitialize
       initialValues={{
-        schoolId: user && user.role !== 'admin' && !_.isNil(user.schoolWorking?.schoolId)?user.schoolWorking.schoolId:'',
+        schoolId: initData.school?.value,
         fullName: '',
         address: '',
         phoneNumber: '',
@@ -112,8 +114,9 @@ const AddParent = () => {
           <Select
             label='Tên trường'
             name='schoolId'
-            isDisable={user?.role !== 'admin' && user?.role !== 'manager'}
+            isDisable={user?.role !== 'admin'}
             options={listSchool}
+            value={initData.school}
             onChange={(e) => {
               setFieldValue('schoolId', e.value);
             }}
