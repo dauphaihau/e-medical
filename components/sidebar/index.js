@@ -112,5 +112,3 @@ const Sidebar = ({stateSidebar}) => {
 }
 
 export default Sidebar;
-
-

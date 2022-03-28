@@ -91,7 +91,6 @@ const AddTeacher = () => {
       bodyData.ward = {code: data.ward.code, wardName: data.ward.label}
     }
     bodyData = {...data, ...bodyData};
-    console.log('body-data', bodyData)
 
     const result = await memberService.createTeacher(bodyData);
     if (result) {
