@@ -19,7 +19,19 @@ export function UtilProvider({children}) {
     if (window.matchMedia('(max-width: 414px)').matches) {
       setStateSideBar(false)
     }
-  },[router.pathname])
+  }, [router.pathname])
+
+  useEffect(() => {
+    if (window.matchMedia('(min-width: 768px)').matches) {
+      let sb = localStorage.getItem('sb');
+      if (sb) {
+        setStateSideBar(true)
+      } else {
+        setStateSideBar(false)
+      }
+    }
+  }, [])
+
 
   return (
     <UtilContext.Provider value={{stateSideBar, setStateSideBar}}>

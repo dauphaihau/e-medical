@@ -128,6 +128,16 @@ const Header = () => {
     setDropdown(false)
   });
 
+  useEffect(() => {
+    if (window.matchMedia('(min-width: 768px)').matches) {
+      if (stateSideBar) {
+        localStorage.setItem('sb', 'sb');
+      } else {
+        localStorage.removeItem('sb')
+      }
+    }
+  }, [stateSideBar])
+
   return (
     <div className="header">
       {stateSideBar ? (

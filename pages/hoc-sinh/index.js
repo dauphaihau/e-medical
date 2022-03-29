@@ -93,7 +93,6 @@ const Student = () => {
     setWardOptions(wards);
   }
 
-
   const handleDelete = async (id) => {
     swal({
       title: "Bạn chắc chắn muốn xóa?",
