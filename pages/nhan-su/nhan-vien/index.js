@@ -48,7 +48,8 @@ const Staff = () => {
   useEffect(() => {
     if (!router.isReady) return;
     loadInit();
-    return () => {};
+    return () => {
+    };
   }, [router.isReady]);
 
   const loadInit = async () => {
@@ -116,7 +117,7 @@ const Staff = () => {
         const result = await memberService.remove(id);
         swal({
           title: result.message,
-          icon: result.status?"success":"error"
+          icon: result.status ? "success" : "error"
         })
           .then(() => (result.status || result.statusCode === 403) && router.reload())
       }
@@ -230,9 +231,10 @@ const Staff = () => {
                     <td className='text-center'>
                       <Link href={router.pathname + '/' + row._id}>
                         <a>
-                          {user && user?.role === 'staff'
-                            ? <EyeIcon className='h-5 w-5 inline'/>
-                            : <PencilIcon className='h-5 w-5 inline'/>
+                          {
+                            user && user?.role === 'staff'
+                              ? <EyeIcon className='h-5 w-5 inline'/>
+                              : <PencilIcon className='h-5 w-5 inline'/>
                           }
                         </a>
                       </Link>

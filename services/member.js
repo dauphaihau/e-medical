@@ -178,6 +178,7 @@ export const memberService = {
     }
   },
   updateParent: async (id, data) => {
+
     try {
       await api.patch(`/member/${id}`, data);
       return {

@@ -1,36 +1,38 @@
-.pagination {
-  @apply mt-4 flex justify-between;
+@layer components {
+  .pagination {
+    @apply mt-4 flex justify-between;
 
-  &__num {
-    @apply flex items-center justify-end;
+    &__num {
+      @apply flex items-center justify-end;
 
-    &__item {
-      @apply block mb-[6px] flex flex-row items-center;
+      &__item {
+        @apply block mb-[6px] flex flex-row items-center;
 
-      figure {
-        @apply h-4 w-4;
-      }
+        figure {
+          @apply h-4 w-4;
+        }
 
-      figure.disabled {
-        @apply text-gray-300;
-      }
+        figure.disabled {
+          @apply text-gray-300;
+        }
 
-      p {
-        @apply text-black cursor-pointer hover:bg-primary hover:text-white duration-300 transition ease-in-out rounded;
-        padding: 7px 14px;
-      }
+        p {
+          @apply text-black cursor-pointer hover:bg-primary hover:text-white duration-300 transition ease-in-out rounded;
+          padding: 7px 14px;
+        }
 
-      a {
-        @apply cursor-pointer mx-1 text-center rounded-sm text-black;
-        padding: 7px 14px;
-      }
+        a {
+          @apply cursor-pointer mx-1 text-center rounded-sm text-black;
+          padding: 7px 14px;
+        }
 
-      a.selected {
-        @apply bg-primary text-white;
-      }
+        a.selected {
+          @apply bg-primary text-white;
+        }
 
-      a:hover {
-        @apply bg-primary text-white;
+        a:hover {
+          @apply bg-primary text-white;
+        }
       }
     }
   }

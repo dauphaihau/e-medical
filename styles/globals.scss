@@ -1,5 +1,4 @@
 @tailwind base;
-@tailwind components;
 
 //custom components
 @import './components/header';
@@ -14,6 +13,7 @@
 @import './components/modal';
 @import './pages/login';
 @import './icomoon/style.css';
+@tailwind components;
 @tailwind utilities;
 
 @layer base {
@@ -21,6 +21,7 @@
   // body {
   //   @apply text-black;
   //   font-family: 'IBM Plex Sans', sans-serif;
+
   //   font-size: 14px;
   // }
 
@@ -58,3 +59,4 @@
     @apply grid md:grid-cols-2 lg:grid-cols-4 gap-0 md:gap-x-4;
   }
 }
+

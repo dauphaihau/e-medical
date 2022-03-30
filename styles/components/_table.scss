@@ -3,44 +3,46 @@
 //   // template: https://medical-admin-template.multipurposethemes.com/main/patients.html
 // }
 
-.overflow-table {
-  @apply mt-8 overflow-x-auto lg:overflow-x-visible;
-}
+@layer components {
+  .overflow-table {
+    @apply mt-8 overflow-x-auto lg:overflow-x-visible;
+  }
 
-.container-table {
-  @apply w-fit lg:w-full relative h-auto bg-white flex flex-col mr-[20px] rounded-xl
-  pt-[20px] p-6;
-  box-shadow: 0 3px 5px 1px rgba(0, 0, 0, 0.05);
-  border: 1px solid #e4e6ef;
+  .container-table {
+    @apply w-fit lg:w-full relative h-auto bg-white flex flex-col mr-[20px] rounded-xl
+    pt-[20px] p-6;
+    box-shadow: 0 3px 5px 1px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e4e6ef;
 
-  .table {
-    border-collapse: separate !important;
+    .table {
+      border-collapse: separate !important;
 
-    thead {
-      tr {
-        th:nth-child(1) {
-          @apply text-center
-        }
+      thead {
+        tr {
+          th:nth-child(1) {
+            @apply text-center
+          }
 
-        th {
-          @apply font-bold p-4 text-black;
-          // height: 50px !important;
-          border-bottom: 1px solid black;
+          th {
+            @apply font-bold p-4 text-black;
+            // height: 50px !important;
+            border-bottom: 1px solid black;
+          }
         }
       }
-    }
 
-    tbody {
-      tr {
-        @apply hover:text-primary ;
-        td:nth-child(1) {
-          @apply text-center
-        }
+      tbody {
+        tr {
+          @apply hover:text-primary ;
+          td:nth-child(1) {
+            @apply text-center
+          }
 
-        td {
-          @apply  text-black w-auto p-4 items-center;
-          border-bottom: 1px solid #DDDDDD;
-          vertical-align: middle;
+          td {
+            @apply text-black w-auto p-4 items-center;
+            border-bottom: 1px solid #DDDDDD;
+            vertical-align: middle;
+          }
         }
       }
     }

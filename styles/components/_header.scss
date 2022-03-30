@@ -1,21 +1,23 @@
-.header {
-  @apply fixed flex inset-x-0 top-0 bg-white max-h-[125px] z-[200];
-}
+@layer components {
+  .header {
+    @apply fixed flex inset-x-0 top-0 bg-white max-h-[125px] z-[200];
+  }
 
-.logo-mini {
-  @apply hidden md:block md:w-[4.1rem] lg:w-[3.88rem] pt-[13px] ;
-}
+  .logo-mini {
+    @apply hidden md:block md:w-[4.1rem] lg:w-[3.88rem] pt-[13px] ;
+  }
 
-.logo-box {
-  @apply flex items-center justify-center float-left
-  md:w-[26.8rem] lg:w-[333px] ;
-  border-bottom: 1px solid #fbfaff;
-  border-right: 1px solid rgba(72, 94, 144, 0);
-  background: #fbfaff;
-}
+  .logo-box {
+    @apply flex items-center justify-center float-left
+    md:w-[26.8rem] lg:w-[333px] ;
+    border-bottom: 1px solid #fbfaff;
+    border-right: 1px solid rgba(72, 94, 144, 0);
+    background: #fbfaff;
+  }
 
-.logo {
-  @apply flex justify-center;
-  height: 80px;
-  padding: 0 15px;
+  .logo {
+    @apply flex justify-center;
+    height: 80px;
+    padding: 0 15px;
+  }
 }

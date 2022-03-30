@@ -1,39 +1,41 @@
-.btn-hamburger {
+@layer components {
+  .btn {
+    @apply
+    transition duration-500
+    hover:shadow-2xl text-white
+    text-center rounded-[5px]
+    text-base leading-7;
+    padding: 8px 16px;
 
-  @apply bg-primary-light h-[45px] w-[45px] p-[10px] text-center text-2xl rounded-xl mx-[5px];
-  -webkit-box-shadow: 0 3px 5px 1px rgb(0 0 0 / 0%);
-  box-shadow: 0 3px 5px 1px rgb(0 0 0 / 0%);
-}
+    .btn-primary {
+      @apply bg-primary;
+    }
 
-.btn {
-  @apply
-  transition duration-500
-  hover:shadow-2xl text-white
-  text-center rounded-[5px]
-  text-base leading-7;
-  padding: 8px 16px;
+    .btn-success {
+      @apply bg-success;
+    }
 
-  .btn-primary {
-    @apply bg-primary;
+    .btn-info {
+      @apply bg-info;
+    }
+
+    .btn-warning {
+      @apply bg-warning;
+    }
+
+    .btn-info {
+      @apply bg-info;
+    }
+
+    .btn-danger {
+      @apply bg-danger;
+    }
   }
 
-  .btn-success {
-    @apply bg-success;
+  .btn-hamburger {
+    @apply bg-primary-light h-[45px] w-[45px] p-[10px] text-center text-2xl rounded-xl mx-[5px];
+    -webkit-box-shadow: 0 3px 5px 1px rgb(0 0 0 / 0%);
+    box-shadow: 0 3px 5px 1px rgb(0 0 0 / 0%);
   }
 
-  .btn-info {
-    @apply bg-info;
-  }
-
-  .btn-warning {
-    @apply bg-warning;
-  }
-
-  .btn-info {
-    @apply bg-info;
-  }
-
-  .btn-danger {
-    @apply bg-danger;
-  }
 }

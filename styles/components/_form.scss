@@ -2,106 +2,108 @@
 // stylesheet cho input, select, textarea, checkbox,...
 // form-control: ví dụ https://getbootstrap.com/docs/5.1/forms/form-control/ chuan bi css
 
-.form {
-  @apply mx-4 ml-0 mr-0 p-6 rounded-lg shadow-lg bg-white;
-  box-shadow: 0 3px 5px 1px rgba(0, 0, 0, 0.05);
-  border: 1px solid #e4e6ef;
+@layer components {
+  .form {
+    @apply mx-4 ml-0 mr-0 p-6 rounded-lg shadow-lg bg-white;
+    box-shadow: 0 3px 5px 1px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e4e6ef;
 
-  h3 {
-    @apply border-b-2 mb-4 pb-4 text-xl leading-[1.2rem] text-[1.28rem];
+    h3 {
+      @apply border-b-2 mb-4 pb-4 text-xl leading-[1.2rem] text-[1.28rem];
+    }
   }
-}
 
-.form-kskdk {
-  @apply w-full p-4;
-  &__tabs {
-    @apply grid lg:grid-cols-6 gap-y-4 gap-x-4;
-    div {
-      @apply rounded-[5px] cursor-pointer border border-gray-100;
-      padding: 0.5rem 0.5rem;
+  .form-kskdk {
+    @apply w-full p-4;
+    &__tabs {
+      @apply grid lg:grid-cols-6 gap-y-4 gap-x-4;
+      div {
+        @apply rounded-[5px] cursor-pointer border border-gray-100;
+        padding: 0.5rem 0.5rem;
 
-      p {
-        @apply my-auto mx-auto text-center;
+        p {
+          @apply my-auto mx-auto text-center;
+        }
       }
     }
   }
-}
 
-.form-login {
-  @apply flex p-8 justify-center items-center h-screen;
-  background-image: url("/images/bg-1.jpg");
+  .form-login {
+    @apply flex p-8 justify-center items-center h-screen;
+    background-image: url("/images/bg-1.jpg");
 
-  form {
-    @apply w-[500px] h-[720px] bg-white rounded-2xl lg:p-8 py-8 lg:shadow-2xl;
-    h2 {
-      @apply text-[1.6rem] lg:text-[2rem] text-primary pb-8
+    form {
+      @apply w-[500px] h-[720px] bg-white rounded-2xl lg:p-8 py-8 lg:shadow-2xl;
+      h2 {
+        @apply text-[1.6rem] lg:text-[2rem] text-primary pb-8
+      }
     }
   }
-}
 
-.form-group {
-  @apply mb-4;
+  .form-group {
+    @apply mb-4;
 
-  label {
-    @apply block mb-2 text-base ;
+    label {
+      @apply block mb-2 text-base ;
+    }
+
+    p {
+      @apply text-sm font-medium tracking-[0.0333em] leading-6 text-left text-danger;
+      margin: 3px 14px 0 4px;
+    }
   }
 
-  p {
-    @apply text-sm font-medium tracking-[0.0333em] leading-6 text-left text-danger;
-    margin: 3px 14px 0 4px;
-  }
-}
-
-.form-control-input {
-  @apply
-  h-[38.5px]
-  border border-[#8d8d8d]
-  text-black text-base font-medium
-  rounded-[5px]
-  block w-full leading-6
-  disabled:bg-gray-100 disabled:text-gray-400 disabled:border-gray-200 disabled:shadow-none
-  appearance-none;
-  padding: 0.375rem 0.75rem;
-  background-clip: padding-box;
-  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-}
-
-.form-radio-input {
-  @apply mr-4 ;
-  input {
-    @apply mr-2;
-  }
-
-  label {
-    @apply inline-flex items-center;
-  }
-}
-
-.form-check-input {
-  @apply mb-4;
-  input {
-    @apply appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white
-    checked:bg-info checked:border-info focus:outline-none transition duration-200
-    align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer;
-  }
-
-  label {
-    @apply inline-block;
-  }
-}
-
-.form-textarea-input {
-  @apply mb-3;
-  label {
-    @apply inline-block mb-2 text-black;
-  }
-
-  textarea {
-    @apply resize-none block w-full px-3 py-1.5 text-base font-normal
-    text-black bg-white bg-clip-padding border border-solid border-black rounded
-    transition ease-in-out m-0 focus:text-black focus:bg-white
-    focus:border-primary-light focus:outline-none
+  .form-control-input {
+    @apply
+    h-[38.5px]
     border border-[#8d8d8d]
+    text-black text-base font-medium
+    rounded-[5px]
+    block w-full leading-6
+    disabled:bg-gray-100 disabled:text-gray-400 disabled:border-gray-200 disabled:shadow-none
+    appearance-none;
+    padding: 0.375rem 0.75rem;
+    background-clip: padding-box;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  }
+
+  .form-radio-input {
+    @apply mr-4 ;
+    input {
+      @apply mr-2;
+    }
+
+    label {
+      @apply inline-flex items-center;
+    }
+  }
+
+  .form-check-input {
+    @apply mb-4;
+    input {
+      @apply appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white
+      checked:bg-info checked:border-info focus:outline-none transition duration-200
+      align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer;
+    }
+
+    label {
+      @apply inline-block;
+    }
+  }
+
+  .form-textarea-input {
+    @apply mb-3;
+    label {
+      @apply inline-block mb-2 text-black;
+    }
+
+    textarea {
+      @apply resize-none block w-full px-3 py-1.5 text-base font-normal
+      text-black bg-white bg-clip-padding border border-solid border-black rounded
+      transition ease-in-out m-0 focus:text-black focus:bg-white
+      focus:border-primary-light focus:outline-none
+      border border-[#8d8d8d]
+    }
   }
 }
 

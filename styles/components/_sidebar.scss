@@ -1,68 +1,69 @@
-.sidebar {
-  @apply w-[270px] fixed top-0 left-0 min-h-full grid-cols-2 bg-primary-light pt-20 lg:px-4 relative w-full;
-  transition: all 0.5s ease;
-  border-right: 0 solid rgba(72, 94, 144, .16);
+@layer components {
+  .sidebar {
+    @apply w-[270px] fixed top-0 left-0 min-h-full grid-cols-2 bg-primary-light pt-20 lg:px-4 relative w-full;
+    transition: all 0.5s ease;
+    border-right: 0 solid rgba(72, 94, 144, .16);
 
-  &-menu {
-    @apply overflow-hidden whitespace-nowrap list-none pb-7;
-    li {
-      @apply
-      my-[5px] mx-1.5 cursor-pointer hover:text-primary transition duration-500 ;
-      > div {
-        @apply text-black opacity-90 whitespace-nowrap items-center font-medium py-2.5 px-[10px] leading-6 pl-[0.8005rem];
-        > i {
-          @apply w-8.5 leading-7 text-xl inline-block align-middle text-center rounded-xl mr-[0.7rem] ;
-        }
-
-        i.active {
-          @apply text-primary;
-        }
-
-        a {
-          span {
-            @apply relative top-[3px] text-base
-            text-[#5C607B] duration-300 ease-in transition-all hover:text-primary ;
+    &-menu {
+      @apply overflow-hidden whitespace-nowrap list-none pb-7;
+      li {
+        @apply
+        my-[5px] mx-1.5 cursor-pointer hover:text-primary transition duration-500 ;
+        > div {
+          @apply text-black opacity-90 whitespace-nowrap items-center font-medium py-2.5 px-[10px] leading-6 pl-[0.8005rem];
+          > i {
+            @apply w-8.5 leading-7 text-xl inline-block align-middle text-center rounded-xl mr-[0.7rem] ;
           }
 
-          span.active {
+          i.active {
             @apply text-primary;
           }
-        }
 
-        .sidebar-submenu {
-          @apply duration-300 transition-all;
+          a {
+            span {
+              @apply relative top-[3px] text-base
+              text-[#5C607B] duration-300 ease-in transition-all hover:text-primary ;
+            }
 
-          li {
-            @apply h-[35px] text-gray-400 ;
-            padding: 5px 5px 5px 25px;
+            span.active {
+              @apply text-primary;
+            }
           }
 
-          li.active {
-            @apply text-primary ;
+          .sidebar-submenu {
+            @apply duration-300 transition-all;
+
+            li {
+              @apply h-[35px] text-gray-400 ;
+              padding: 5px 5px 5px 25px;
+            }
+
+            li.active {
+              @apply text-primary ;
+            }
           }
         }
       }
     }
-  }
 
-  &-copyright {
-    div {
-      @apply text-center;
+    &-copyright {
+      div {
+        @apply text-center;
+      }
     }
   }
-}
 
-.sidebar-open {
-  @apply fixed top-0 left-0 min-h-full  p-0
-  duration-300 ease-in transition-all pt-20 z-[100] bg-[#fbfaff]
-  w-0 md:w-[269.5px] lg:w-[276.5px]
-  hover:md:w-[269.5px] hover:lg:w-[276.5px];
-  // on hover expand sidebar
-  border-right: 0 solid rgba(72, 94, 144, .16);
-}
+  .sidebar-open {
+    @apply fixed top-0 left-0 min-h-full  p-0
+    duration-300 ease-in transition-all pt-20 z-[100] bg-[#fbfaff]
+    w-0 md:w-[269.5px] lg:w-[276.5px]
+    hover:md:w-[269.5px] hover:lg:w-[276.5px];
+    // on hover expand sidebar
+    border-right: 0 solid rgba(72, 94, 144, .16);
+  }
 
-.sidebar-dropdown {
-  @apply h-4 w-4 inline
-  hover:text-primary transition duration-500 text-[#5C607B] ;
+  .sidebar-dropdown {
+    @apply h-4 w-4 inline
+    hover:text-primary transition duration-500 text-[#5C607B] ;
+  }
 }
-

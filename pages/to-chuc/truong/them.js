@@ -91,6 +91,7 @@ const AddSchool = () => {
             onChange={handleChange}
             value={values.address}
             useFormik
+
           />
           <Field
             component={Region}
