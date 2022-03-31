@@ -81,7 +81,7 @@ const ClassroomList = () => {
       }
 
       if (query.schoolId) {
-        let schoolOption = await schoolService.detail(query.schoolId);
+        let {data: schoolOption} = await schoolService.detail(query.schoolId);
         schoolOption = {
           value: schoolOption._id,
           label: schoolOption.schoolname

@@ -40,13 +40,14 @@ const AddTeacher = () => {
   const [listProvince, setListProvince] = useState();
   const {user} = useAuth();
   const [initData, setInitData] = useState({
-    school: {},
+    school: {label: '', value: ''},
   });
 
   useEffect(() => {
     if (!router.isReady) return;
     loadInit();
-    return () => {};
+    return () => {
+    };
   }, [router.isReady]);
 
   const loadInit = async () => {
@@ -61,14 +62,14 @@ const AddTeacher = () => {
         label: data.schoolname,
       }))
       setListSchool(schoolSelect);
-      if(user && user?.role !== 'admin'){
+      if (user && user?.role !== 'admin') {
         const initSchool = _.find(schoolSelect, {value: user?.schoolWorking[0]?.schoolId});
-        if(initSchool){
+        if (initSchool) {
           initDataSelected.school = initSchool;
           onChangeSchool(initSchool.value)
         }
       }
-      
+
     }
     setInitData(initDataSelected);
   }
@@ -90,14 +91,14 @@ const AddTeacher = () => {
     const result = await memberService.createTeacher(bodyData);
     swal({
       title: result.message,
-      icon: result.status?"success":"error"
+      icon: result.status ? "success" : "error"
     })
       .then(() => (result.status || result.statusCode === 403) && router.push('/nhan-su/giao-vien'))
-    
+
   };
 
   const onChangeSchool = async (idSchool) => {
-    const schoolYear = await schoolYearService.list({schoolId: idSchool, limit:100})
+    const schoolYear = await schoolYearService.list({schoolId: idSchool, limit: 100})
     if (schoolYear.total) {
       setListSchoolYear(schoolYear.data.map((data) => ({
         value: data._id,
@@ -157,7 +158,10 @@ const AddTeacher = () => {
               label='Tên trường'
               name='schoolId'
               isDisable={user?.role !== 'admin' && user?.role !== 'manager'}
-              value={user.role !== 'admin' && {value: user.schoolWorking?.schoolId, label: user.schoolWorking?.schoolName}}
+              value={user.role !== 'admin' && {
+                value: user.schoolWorking?.schoolId,
+                label: user.schoolWorking?.schoolName
+              }}
               options={listSchool}
               value={initData.school}
               onChange={(e) => {

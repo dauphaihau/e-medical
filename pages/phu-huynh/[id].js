@@ -40,8 +40,8 @@ const UpdateStaff = () => {
   const [provinceOptions, setProvinceOptions] = useState([]);
   const {user} = useAuth()
   const [initData, setInitData] = useState({
-    school: {},
-    class: {},
+    school: {label:'', value:''},
+    class: {label:'', value:''},
     province: defaultSelectValue,
     district: defaultSelectValue,
     ward: defaultSelectValue,

@@ -1,4 +1,5 @@
 import {Formik, Form} from "formik";
+
 import {useRouter} from "next/router";
 import * as Yup from "yup";
 import swal from "sweetalert";
@@ -21,7 +22,7 @@ const AddSchoolYear = () => {
   const router = useRouter();
   const [listSchool, setListSchool] = useState();
   const [initData, setInitData] = useState({
-    school: {},
+    school: {label: '', value: ''},
   });
 
   useEffect(() => {

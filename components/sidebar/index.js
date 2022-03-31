@@ -41,7 +41,11 @@ const SubMenu = ({open, items, stateSidebar}) => {
   );
 }
 
-const ArrowDropdown = ({open}) => {
+const ArrowDropdown = ({open, items}) => {
+  const router = useRouter();
+  items.map((item) => {
+    if ([item.link, item.link + "/them", item.link + "/[id]"].includes(router.pathname)) open = true;
+  })
   return (
     <div className='pt-[5px]'>
       <svg
@@ -98,7 +102,7 @@ const Item = ({item, stateSidebar}) => {
             <a className='w-[13rem] md:w-[12rem]' >
               <span className={`${handleActive(item)} `}>{item.title}</span>
             </a>
-            {item.subNav && <ArrowDropdown open={active} stateSidebar={stateSidebar}/>}
+            {item.subNav && <ArrowDropdown open={active} items={item.subNav} stateSidebar={stateSidebar}/>}
           </div>
           {renderSubMenu()}
         </div>

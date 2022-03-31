@@ -23,7 +23,7 @@ const DetailSchoolYear = () => {
   const {user} = useAuth();
   const [listSchool, setListSchool] = useState();
   const [initData, setInitData] = useState({
-    school: {},
+    school: {label: '', value: ''},
   });
 
   useEffect(() => {
@@ -37,7 +37,7 @@ const DetailSchoolYear = () => {
     const {id} = router.query;
     const {status, data: schoolYear} = await schoolYearService.detail(id);
 
-    if(!status || !schoolYear){
+    if (!status || !schoolYear) {
       swal('Thông tin này không tồn tại!!', '', 'error')
         .then(() => router.push('/to-chuc/nien-khoa/'));
       return;
@@ -53,11 +53,8 @@ const DetailSchoolYear = () => {
       }));
       setListSchool(schoolOptions);
 
-      console.log(schoolOptions);
-      console.log(schoolYear.schoolId);
       const initSchool = _.find(schoolOptions, {value: schoolYear.schoolId});
       initDataSelected.school = initSchool;
-      console.log(initSchool);
       setInitData(initDataSelected)
     }
   }

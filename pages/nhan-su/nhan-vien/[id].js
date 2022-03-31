@@ -30,6 +30,17 @@ const validationSchema = Yup.object().shape({
   ward: Yup.object().shape({}),
 });
 
+const defaultSelectValue = {
+  value: '',
+  label: '',
+};
+
+const defaultSelectValueLocation = {
+  value: '',
+  label: '',
+  code: '',
+};
+
 const UpdateStaff = () => {
   const router = useRouter();
   const [member, setMember] = useState();
@@ -37,20 +48,19 @@ const UpdateStaff = () => {
   const [listSchool, setListSchool] = useState([]);
   const [provinceOptions, setProvinceOptions] = useState([]);
   const [initData, setInitData] = useState({
-    school: {},
-    schoolYear: {},
-    classGroup: {},
-    class: {},
-    province: {},
-    district: {},
-    ward: {},
+    school: defaultSelectValue,
+    schoolYear: defaultSelectValue,
+    classGroup: defaultSelectValue,
+    class: defaultSelectValue,
+    province: defaultSelectValueLocation,
+    district: defaultSelectValueLocation,
+    ward: defaultSelectValueLocation,
   });
 
   useEffect(() => {
     if (!router.isReady) return;
     loadInit();
-    return () => {
-    };
+    return () => {};
   }, [router.isReady]);
 
   const loadInit = async () => {
@@ -125,9 +135,9 @@ const UpdateStaff = () => {
         fullName: member?.fullName ?? '',
         address: member?.address ?? '',
         phoneNumber: member?.phoneNumber ?? '',
-        province: initData?.province ?? {},
-        district: initData?.district ?? {},
-        ward: initData?.ward ?? {},
+        province: initData?.province,
+        district: initData?.district,
+        ward: initData?.ward,
       }}
     >
       {({

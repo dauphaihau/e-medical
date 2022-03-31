@@ -54,10 +54,10 @@ const SchoolYearList = () => {
       }
 
       if (query.schoolId) {
-        const schoolOption = await schoolService.detail(query.schoolId);
+        const {data, status} = await schoolService.detail(query.schoolId);
         setSchoolSelected({
-          value: schoolOption._id,
-          label: schoolOption.schoolname
+          value: data._id,
+          label: data.schoolname
         })
       }
     }

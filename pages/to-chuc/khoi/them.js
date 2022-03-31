@@ -21,14 +21,19 @@ const validationSchema = Yup.object().shape({
   schoolYearId: Yup.string().required('Vui lòng chọn niên khóa'),
 });
 
+const defaultSelectValue = {
+  value: '',
+  label: '',
+};
+
 const AddGroup = () => {
   const router = useRouter();
   const {user} = useAuth();
   const [listSchoolYear, setListSchoolYear] = useState([])
   const [listSchool, setListSchool] = useState([]);
   const [initData, setInitData] = useState({
-    school: {},
-    schoolYear: {},
+    school: defaultSelectValue,
+    schoolYear: defaultSelectValue,
   });
 
   useEffect(() => {

@@ -13,6 +13,17 @@ import Region from "@components/form/region";
 import {useAuth} from "../../context/auth";
 import {locationService} from "../../services";
 
+const defaultSelectValue = {
+  value: '',
+  label: '',
+};
+
+const defaultSelectValueLocation = {
+  value: '',
+  label: '',
+  code: '',
+};
+
 const phoneRegExp = /(([03+[2-9]|05+[6|8|9]|07+[0|6|7|8|9]|08+[1-9]|09+[1-4|6-9]]){3})+[0-9]{7}\b/
 const validationSchema = Yup.object().shape({
   // classId: Yup.string().required(),
@@ -39,13 +50,13 @@ const Profile = () => {
   const [listClass, setListClass] = useState([]);
   const [provinceOptions, setProvinceOptions] = useState([]);
   const [initData, setInitData] = useState({
-    school: {},
-    schoolYear: {},
-    classGroup: {},
-    class: {},
-    province: {},
-    district: {},
-    ward: {},
+    school: defaultSelectValue,
+    schoolYear: defaultSelectValue,
+    classGroup: defaultSelectValue,
+    class: defaultSelectValue,
+    province: defaultSelectValueLocation,
+    district: defaultSelectValueLocation,
+    ward: defaultSelectValueLocation,
   });
 
   useEffect(() => {

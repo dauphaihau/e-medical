@@ -32,6 +32,17 @@ const validationSchema = Yup.object().shape({
   ward: Yup.object().shape({}),
 });
 
+const defaultSelectValue = {
+  value: '',
+  label: '',
+};
+
+const defaultSelectValueLocation = {
+  value: '',
+  label: '',
+  code: '',
+};
+
 const UpdateTeacher = () => {
   const router = useRouter();
   const [member, setMember] = useState();
@@ -42,13 +53,13 @@ const UpdateTeacher = () => {
   const [listClass, setListClass] = useState([]);
   const [provinceOptions, setProvinceOptions] = useState([]);
   const [initData, setInitData] = useState({
-    school: {},
-    schoolYear: {},
-    classGroup: {},
-    class: {},
-    province: {},
-    district: {},
-    ward: {},
+    school: defaultSelectValue,
+    schoolYear: defaultSelectValue,
+    classGroup: defaultSelectValue,
+    class: defaultSelectValue,
+    province: defaultSelectValueLocation,
+    district: defaultSelectValueLocation,
+    ward: defaultSelectValueLocation,
   });
 
   useEffect(() => {

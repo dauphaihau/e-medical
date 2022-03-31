@@ -34,7 +34,7 @@ const AddManager = () => {
   const [listProvince, setListProvince] = useState();
   const {user} = useAuth();
   const [initData, setInitData] = useState({
-    school: {},
+    school: {label:'', value:''},
   });
 
   useEffect( () => {

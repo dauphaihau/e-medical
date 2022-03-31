@@ -2,7 +2,7 @@ import {Formik, Form, Field} from "formik";
 import {useEffect, useState} from "react";
 import * as Yup from "yup";
 import swal from "sweetalert";
-import Router, {useRouter} from "next/router";
+import {useRouter} from "next/router";
 import _ from "lodash";
 
 import Button from "@components/button";
@@ -29,6 +29,17 @@ const validationSchema = Yup.object().shape({
   ward: Yup.object().shape({}),
 });
 
+const defaultSelectValue = {
+  value: '',
+  label: '',
+};
+
+const defaultSelectValueLocation = {
+  value: '',
+  label: '',
+  code: '',
+};
+
 const UpdateStaff = () => {
   const router = useRouter();
   const [member, setMember] = useState();
@@ -36,13 +47,13 @@ const UpdateStaff = () => {
   const {user} = useAuth();
   const [provinceOptions, setProvinceOptions] = useState([]);
   const [initData, setInitData] = useState({
-    school: {},
-    schoolYear: {},
-    classGroup: {},
-    class: {},
-    province: {},
-    district: {},
-    ward: {},
+    school: defaultSelectValue,
+    schoolYear: defaultSelectValue,
+    classGroup: defaultSelectValue,
+    class: defaultSelectValue,
+    province: defaultSelectValueLocation,
+    district: defaultSelectValueLocation,
+    ward: defaultSelectValueLocation,
   });
 
   useEffect(() => {
@@ -128,7 +139,6 @@ const UpdateStaff = () => {
         }) => (
         <Form className='form py-8'>
           <h3>Cập nhật thông tin</h3>
-
           <Select
             label='Tên trường'
             name='schoolId'

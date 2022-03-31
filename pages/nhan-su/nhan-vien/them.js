@@ -34,7 +34,7 @@ const AddStaff = () => {
   const [listSchool, setListSchool] = useState();
   const [listProvince, setListProvince] = useState();
   const [initData, setInitData] = useState({
-    school: {},
+    school: {label: '', value: ''},
   });
 
   useEffect( () => {
